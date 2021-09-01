@@ -1,38 +1,11 @@
-// let glob = require('glob')
-// 
-// //To configure pages Get the html and js
-// function getEntry(globPath) {
-//   let entries = {}, tmp, htmls = {};
-// 
-//   // read src/pages/**/All the html files below
-//   glob.sync(globPath+'html').forEach(function(entry) {
-//     tmp = entry.split('/').splice(-3);
-//     htmls[tmp[1]] = entry
-//   })
-// 
-//   // Read src/pages/**/Everything down there js file
-//   glob.sync(globPath+'js').forEach(function(entry) {
-//     tmp = entry.split('/').splice(-3);
-//     entries[tmp[1]] = {
-//       entry,
-//       template: htmls[tmp[1]] ? htmls[tmp[1]] : 'index.html', //  The current directory does not have any html Common public/index.html As template
-//       filename:tmp[1] + '.html'   //  By folder name.html As access address
-//     };
-//   });
-//   console.log(entries)
-//   return entries;
-// }
-// 
-// let htmls = getEntry('./src/pages/**/*.');
-// 
 module.exports = {
   publicPath: '/',
   pages: {
     home: {
-      // entry for the page
+      // entry js for the page
       entry: 'src/pages/home/main.js',
       // the source template
-      //template: 'public/index.html',
+      template: 'src/pages/home/home.html',
       // output as dist/index.html
       filename: 'index.html',
       // when using title option,
@@ -40,18 +13,29 @@ module.exports = {
       title: 'Home Page',
       // chunks to include on this page, by default includes
       // extracted common chunks and vendor chunks.
-      chunks: ['chunk-vendors', 'chunk-common', 'index']
+      chunks: ['chunk-vendors', 'chunk-common', 'home']
     },
     result: {
-      // entry for the page
       entry: 'src/pages/result/main.js',
-      //template: 'public/index.html',
+      template: '/src/pages/result/result.html',
       filename: 'result.html',
       title: 'Result Page',
-      chunks: ['chunk-vendors', 'chunk-common', 'index']
+      chunks: ['chunk-vendors', 'chunk-common', 'result']
+    },
+    terms: {
+      entry: 'src/pages/terms/main.js',
+      template: '/src/pages/terms/terms.html',
+      filename: 'terms.html',
+      title: 'Data Use Terms',
+      chunks: ['chunk-vendors', 'chunk-common', 'terms']
+    },
+    about: {
+      entry: 'src/pages/about/main.js',
+      template: '/src/pages/about/terms.html',
+      filename: 'about.html',
+      title: 'About Bravo',
+      chunks: ['chunk-vendors', 'chunk-common', 'about']
     },
   },
-  //  Solve the problem of static file path 404 after packaging
-  //publicPath: './',
   outputDir: 'dist',
 }

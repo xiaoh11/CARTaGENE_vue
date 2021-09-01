@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import App from './Home.vue'
+import App from './About.vue'
 import VueGtag from 'vue-gtag'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
