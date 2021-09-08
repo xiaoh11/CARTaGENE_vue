@@ -9,7 +9,7 @@ const app = createApp(App);
 if(process.env.GA_ID){
   app.use(VueGtag, {
     property: {
-      id: process.env.GA_ID,
+      id: process.env.VUE_APP_GA_ID,
       send_page_view: true
     }
   });

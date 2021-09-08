@@ -4,15 +4,17 @@
 
 <script>
 import $ from "jquery";
-import _ from "devbridge-autocomplete";
+// import _ from "devbridge-autocomplete";
+import "devbridge-autocomplete";
 
 export default {
   name: 'autocomplete',
-  props: ['autocompleteapi', 'searchapi', 'width', 'autofocus'],
+  props: ['width', 'autofocus'],
   emits: ['inputfocus', 'inputfocusout', 'dropdownopen', 'dropdownclose'],
   data: function() {
     return {
-      ready: false
+      ready: false,
+      searchapi: process.env.VUE_APP_BRAVO_API_URL + '/search'
     };
   },
   methods: {
@@ -29,7 +31,7 @@ export default {
       self.$emit('inputfocusout');
     });
     $(this.$el).autocomplete({
-      serviceUrl: self.autocompleteapi,
+      serviceUrl: process.env.VUE_APP_BRAVO_API_URL + '/autocomplete',
       dataType: "json",
       width: this.width,
       maxHeight: 250,
@@ -69,16 +71,16 @@ export default {
       },
       onSelect: function (suggestion) {
         if (suggestion.data.feature == 'gene') {
-          window.location.assign(self.searchapi + "?value=" + suggestion.value + "&chrom=" + suggestion.data.chrom + "&start=" + suggestion.data.start + "&stop=" + suggestion.data.stop);
+          window.location.assign(this.searchapi + "?value=" + suggestion.value + "&chrom=" + suggestion.data.chrom + "&start=" + suggestion.data.start + "&stop=" + suggestion.data.stop);
         } else if (suggestion.data.feature == 'snv') {
           let [chrom, pos, ref, alt] = suggestion.data.variant_id.split('-');
-          window.location.assign(self.searchapi + "?value=" + suggestion.value + "&chrom=" + chrom + "&pos=" + pos + "&ref=" + ref + "&alt=" + alt);
+          window.location.assign(this.searchapi + "?value=" + suggestion.value + "&chrom=" + chrom + "&pos=" + pos + "&ref=" + ref + "&alt=" + alt);
         }
       }
     });
     this.ready = true;
   },
-  beforeDestroy: function() {
+  beforeUnmount: function() {
     $(this.$el).off("focus");
     $(this.$el).off("focusout");
     $(this.$el).autocomplete().hide();
