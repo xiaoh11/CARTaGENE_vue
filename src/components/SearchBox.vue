@@ -2,7 +2,7 @@
   <div id="bravosearch">
     <div class="div-shadow" v-bind:style="{ width: width + 'px', height: height + 'px' }"  v-bind:class="{ 'div-shadow-show': showShadow(), 'div-shadow-expand': isDropdownOpen }"> </div>
 
-    <form id="form" :action="searchapi" class="search-box" @submit="isEmpty" v-on:mouseover="isHovered = true" v-on:mouseout="isHovered = false" v-bind:class="{ 'search-box-dropdown-open': isDropdownOpen }">
+    <form id="form" class="search-box" @submit.prevent="doSearch()" @mouseover="isHovered = true" @mouseout="isHovered = false" :class="{ 'search-box-dropdown-open': isDropdownOpen }">
       
       <autocomplete ref="autocomplete" v-bind:autofocus="autofocus" v-on:inputfocus="isActive = true" v-on:inputfocusout="isActive = false" v-on:dropdownopen="openDropdown(true)" v-on:dropdownclose="openDropdown(false)" v-bind:width = "width"></autocomplete> <!-- v-once should make jQuery plugin to ignore any updates -->
 
@@ -41,6 +41,22 @@ export default {
     };
   },
   methods: {
+    queryToResultTicket: function(query) {
+      return {query: query};
+
+    },
+    resultTicketToUrl: function(ticket) {
+      return ticket
+
+    },
+    doSearch: function() {
+      console.log('Search searhed!');
+      console.log(this.$refs.autocomplete.$el.value.trim());
+      let resultTicket = this.queryToResultTicket('');
+      let resultUrl = this.resultTicketToUrl(resultTicket);
+      console.log(resultUrl);
+      return false;
+    },
     onResize: function() {
       var height = this.$el.querySelector("form").getBoundingClientRect().height;
       if (this.isDropdownOpen) {
@@ -64,7 +80,7 @@ export default {
     },
     showShadow: function() {
       return this.isHovered || this.isActive;
-    }
+    },
   },
   mounted: function() {
     this.width = this.$el.querySelector("form").getBoundingClientRect().width;

@@ -70,11 +70,14 @@ export default {
         self.$emit('dropdownclose');
       },
       onSelect: function (suggestion) {
+        console.log(suggestion);
         if (suggestion.data.feature == 'gene') {
-          window.location.assign(this.searchapi + "?value=" + suggestion.value + "&chrom=" + suggestion.data.chrom + "&start=" + suggestion.data.start + "&stop=" + suggestion.data.stop);
+          //window.location.assign(self.searchapi + "?value=" + suggestion.value + "&chrom=" + suggestion.data.chrom + "&start=" + suggestion.data.start + "&stop=" + suggestion.data.stop);
+          console.log('gene');
         } else if (suggestion.data.feature == 'snv') {
-          let [chrom, pos, ref, alt] = suggestion.data.variant_id.split('-');
-          window.location.assign(this.searchapi + "?value=" + suggestion.value + "&chrom=" + chrom + "&pos=" + pos + "&ref=" + ref + "&alt=" + alt);
+          //let [chrom, pos, ref, alt] = suggestion.data.variant_id.split('-');
+          //window.location.assign(self.searchapi + "?value=" + suggestion.value + "&chrom=" + chrom + "&pos=" + pos + "&ref=" + ref + "&alt=" + alt);
+          console.log('snv');
         }
       }
     });
