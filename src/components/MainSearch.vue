@@ -7,10 +7,10 @@
           <template v-if="subtitle">
             <h5>{{ subtitle }}</h5>
             <template v-if="subtitle2">
-              <hr class="foo" width="25%">
               <small class="text-muted">{{ subtitle2 }}</small>
             </template>
           </template>
+          <hr class="foo" width="25%">
         </div>
       </div>
     </div>
@@ -41,7 +41,10 @@ export default {
   name: 'MainSearch',
   components: { bravosearch },
   props: { },
-  inject: ['subtitle', 'subtitle2'],
+  inject: {
+    'subtitle': {default: ''},
+    'subtitle2': {default: ''}
+  },
   data() {
     return {
       publicPath: process.env.BASE_URL,
