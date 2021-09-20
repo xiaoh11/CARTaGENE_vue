@@ -42,18 +42,68 @@ export default {
   },
   methods: {
     queryToResultTicket: function(query) {
-      return {query: query};
+      // pre-process query string
+      const p_query = query.replace(/,/g, '').trim();
+
+      // check for empty or null query
+      if(!p_query){
+        return {endpoint: 'notfound'};
+      }
+
+      // check query for DbSNP format 
+      const patt_rsid = /^rs(\d+)$/;
+      if(patt_rsid.test(p_query)){
+        return {
+          variant_type: 'snv',
+          endpoint: 'variant'
+        }
+      }
+
+      // check query for region format
+      //pattern parts:      chromsome-------------          start---          end-----
+      const patt_region = /^(?:CHR)?(\d+|X|Y|M|MT)\s*[-:]\s*([\d,]+)\s*[-:]\s*([\d,]+)$/i;
+      const region_matches = p_query.match(patt_region);
+      if(region_matches){
+        return {
+          variant_type: 'snv',
+          endpoint: 'region',
+          chrom: region_matches[1],
+          start: region_matches[2],
+          stop: region_matches[3]
+        }
+      }
+
+      // check query for VCF style variant format 
+      //pattern parts:           chromsome-------------          start---          end-----          ref------          alt-----
+      const vcf_variant_patt = /^(?:CHR)?(\d+|X|Y|M|MT)\s*[-:]\s*([\d,]+)\s*[-:]\s*([\d,]+)\s*[-:]\s*([ATCG]+)\s*[-:]\s*([ATCG]+)$/i; 
+      const vcf_variant_matches = p_query.match(vcf_variant_patt);
+      if(vcf_variant_matches){
+        return { 
+          variant_type: 'snv',
+          endpoint: 'variant',
+          chrom: vcf_variant_matches[1],
+          start: vcf_variant_matches[2],
+          stop: vcf_variant_matches[3],
+          ref: vcf_variant_matches[4],
+          alt: vcf_variant_matches[5]
+        }
+      }
+
+      return {endpoint: 'gene', variant_type: 'snv'}
 
     },
     resultTicketToUrl: function(ticket) {
+      /* KISS substitute for routing results from API */
       return ticket
 
     },
     doSearch: function() {
       console.log('Search searhed!');
       console.log(this.$refs.autocomplete.$el.value.trim());
+
       let resultTicket = this.queryToResultTicket('');
       let resultUrl = this.resultTicketToUrl(resultTicket);
+
       console.log(resultUrl);
       return false;
     },
