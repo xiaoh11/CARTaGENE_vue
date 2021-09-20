@@ -10,7 +10,7 @@
               <small class="text-muted">{{ subtitle2 }}</small>
             </template>
           </template>
-          <hr class="foo" width="25%">
+          <hr class="margin-centered" width="25%">
         </div>
       </div>
     </div>
@@ -67,7 +67,7 @@ export default {
   }
 
   /* override with no left or right margin to allow centering */
-  .foo {
+  .margin-centered {
     margin-top: 1rem;
     margin-bottom: 1rem;
     margin-left: auto;
