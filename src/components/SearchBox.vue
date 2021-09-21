@@ -88,14 +88,26 @@ export default {
           alt: vcf_variant_matches[5]
         }
       }
-
       return {endpoint: 'gene', variant_type: 'snv'}
-
     },
-    resultTicketToUrl: function(ticket) {
-      /* KISS substitute for routing results from API */
-      return ticket
+    resultTicketToHref: function(ticket) {
+      let href = ticket.endpoint
+      delete ticket.endpoint
 
+      let paramContent = []
+      for(var p in ticket){
+        if(Object.prototype.hasOwnProperty.call(ticket,p)){
+          paramContent.push(
+            encodeURIComponent(p) + "=" + encodeURIComponent(ticket[p]) 
+          )
+        }
+      }
+
+      if(paramContent.length){ 
+        href += "?" + paramContent.join('&')
+      }
+
+      return href
     },
     doSearch: function() {
       console.log('Search searhed!');
