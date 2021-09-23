@@ -65,7 +65,7 @@ describe('SearchBox.vue query parsing.', () => {
   })
 })
 
-describe('SearchBox.vue query result routing', () => {
+describe('SearchBox.vue query routing', () => {
   /*
    * Cannot directly verify window.location.href is set as expected.
    * jsdom does not implment nor handle location changes 
@@ -93,6 +93,47 @@ describe('SearchBox.vue query result routing', () => {
     expect(href_result).to.contain('foo?')
     expect(href_result).to.contain('geneName=duq')
   })
-
 })
 
+describe('SearchBox.vue suggestion routing', () => {
+  // representative responses from api autocomplete endpoint
+  const snv_suggest = {
+    "data": {
+      "feature": "snv",
+      "type": "missense_variant",
+      "variant_id": "8-19959376-A-G"
+    },
+    "value": "rs300"
+  }
+
+  const gene_suggest = {
+    "data": {
+      "chrom": "11",
+      "feature": "gene",
+      "start": 5225464,
+      "stop": 5229395,
+      "type": "protein_coding"
+    },
+    "value": "HBB"
+  }
+  
+  // Instantiate component once only to access the methods
+  const wrapper = shallowMount(SearchBox, { props: { autofocus: true } })
+
+  it('Converts suggestion feature to result ticket', () => {
+    const result = wrapper.vm.suggestToResultTicket(gene_suggest);
+
+    expect(result).to.have.property('endpoint');
+    expect(result.endpoint).to.equal(gene_suggest.data.feature);
+  })
+
+  it('Maps snv suggestion feature to endpoint: variant', () => {
+    const result = wrapper.vm.suggestToResultTicket(snv_suggest);
+
+    expect(result.endpoint).to.equal('variant');
+    expect(result.chrom).to.equal('8');
+    expect(result.pos).to.equal('19959376');
+    expect(result.ref).to.equal('A');
+    expect(result.alt).to.equal('G');
+  })
+})

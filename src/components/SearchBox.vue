@@ -3,8 +3,12 @@
     <div class="div-shadow" v-bind:style="{ width: width + 'px', height: height + 'px' }"  v-bind:class="{ 'div-shadow-show': showShadow(), 'div-shadow-expand': isDropdownOpen }"> </div>
 
     <form id="form" class="search-box" @submit.prevent="doSearch()" @mouseover="isHovered = true" @mouseout="isHovered = false" :class="{ 'search-box-dropdown-open': isDropdownOpen }">
-      
-      <autocomplete ref="autocomplete" v-bind:autofocus="autofocus" v-on:inputfocus="isActive = true" v-on:inputfocusout="isActive = false" v-on:dropdownopen="openDropdown(true)" v-on:dropdownclose="openDropdown(false)" v-bind:width = "width"></autocomplete> <!-- v-once should make jQuery plugin to ignore any updates -->
+
+       <!-- v-once should make jQuery plugin to ignore any updates -->
+      <autocomplete ref="autocomplete" v-bind:autofocus="autofocus" 
+        v-on:inputfocus="isActive = true" v-on:inputfocusout="isActive = false"
+        v-on:dropdownopen="openDropdown(true)" v-on:dropdownclose="openDropdown(false)" 
+        v-bind:width = "width" v-on:suggestionSelect="doSuggest"></autocomplete>
 
       <button class="search-box-button" type="submit">
         <font-awesome-icon :icon="searchIcon"></font-awesome-icon>
@@ -51,7 +55,7 @@ export default {
       }
 
       // check query for DbSNP format 
-      const patt_rsid = /^rs(\d+)$/;
+      const patt_rsid = /^rs(\d+)$/i;
       if(patt_rsid.test(p_query)){
         return {
           variant_type: 'snv',
@@ -106,23 +110,43 @@ export default {
       if(paramContent.length){ 
         href += "?" + paramContent.join('&')
       }
-
       return href
     },
+    suggestToResultTicket(suggestion){
+      let rTic = suggestion.data;
+      if(rTic.feature === 'snv'){
+        rTic.variant_type = 'snv';
+        rTic.endpoint = 'variant';
+        [rTic.chrom, rTic.pos, rTic.ref, rTic.alt] = suggestion.data.variant_id.split('-');
+      }else{
+        rTic.endpoint = rTic.feature;
+      }
+      return(rTic);
+    },
     doSearch: function() {
-      console.log('Search searhed!');
-      console.log(this.$refs.autocomplete.$el.value.trim());
-
-      let resultTicket = this.queryToResultTicket('');
-      let resultUrl = this.resultTicketToUrl(resultTicket);
-
+      //convert query string from autocomplete input element to result ticket
+      let resultTicket = this.queryToResultTicket(this.$refs.autocomplete.$el.value);
+      //convert result ticket to href
+      let resultUrl = this.resultTicketToHref(resultTicket);
+      //instruct browser to goto href
       console.log(resultUrl);
-      return false;
+      window.location.assign(resultUrl);
+    },
+    doSuggest: function(suggestion) {
+      //convert suggestion to resultTicket.
+      let resultTicket = this.suggestToResultTicket(suggestion);
+      //convert result ticket to href
+      let resultUrl = this.resultTicketToHref(resultTicket);
+      //instruct browser to goto href
+      console.log(resultUrl);
+      window.location.assign(resultUrl);
     },
     onResize: function() {
       var height = this.$el.querySelector("form").getBoundingClientRect().height;
       if (this.isDropdownOpen) {
-        height += this.$el.querySelector(".autocomplete-suggestions").getBoundingClientRect().height + 14; // extra 14 pixels to compensate rounded borders
+        // extra 14 pixels to compensate rounded borders
+        height += this.$el.querySelector(".autocomplete-suggestions")
+          .getBoundingClientRect().height + 14;
       }
       this.width = this.$el.querySelector("form").getBoundingClientRect().width;
       this.height = height;
@@ -130,7 +154,9 @@ export default {
     openDropdown: function(open) {
       var height = this.$el.querySelector("form").getBoundingClientRect().height;
       if (open) {
-        height += this.$el.querySelector(".autocomplete-suggestions").getBoundingClientRect().height + 14; // extra 14 pixels to compensate rounded borders
+        // extra 14 pixels to compensate rounded borders
+        height += this.$el.querySelector(".autocomplete-suggestions")
+          .getBoundingClientRect().height + 14;
       }
       this.height = height;
       this.isDropdownOpen = open;

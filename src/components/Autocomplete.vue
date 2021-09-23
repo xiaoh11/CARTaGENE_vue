@@ -10,7 +10,7 @@ import "devbridge-autocomplete";
 export default {
   name: 'autocomplete',
   props: ['width', 'autofocus'],
-  emits: ['inputfocus', 'inputfocusout', 'dropdownopen', 'dropdownclose'],
+  emits: ['inputfocus', 'inputfocusout', 'dropdownopen', 'dropdownclose', 'suggestionSelect'],
   data: function() {
     return {
       ready: false,
@@ -70,15 +70,8 @@ export default {
         self.$emit('dropdownclose');
       },
       onSelect: function (suggestion) {
-        console.log(suggestion);
-        if (suggestion.data.feature == 'gene') {
-          //window.location.assign(self.searchapi + "?value=" + suggestion.value + "&chrom=" + suggestion.data.chrom + "&start=" + suggestion.data.start + "&stop=" + suggestion.data.stop);
-          console.log('gene');
-        } else if (suggestion.data.feature == 'snv') {
-          //let [chrom, pos, ref, alt] = suggestion.data.variant_id.split('-');
-          //window.location.assign(self.searchapi + "?value=" + suggestion.value + "&chrom=" + chrom + "&pos=" + pos + "&ref=" + ref + "&alt=" + alt);
-          console.log('snv');
-        }
+        // Let parent component handle what to do with selected suggestion.
+        self.$emit('suggestionSelect', suggestion);
       }
     });
     this.ready = true;
