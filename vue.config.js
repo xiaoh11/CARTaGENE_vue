@@ -15,12 +15,26 @@ module.exports = {
       // extracted common chunks and vendor chunks.
       chunks: ['chunk-vendors', 'chunk-common', 'home']
     },
-    result: {
-      entry: 'src/pages/result/main.js',
-      template: '/src/pages/result/result.html',
-      filename: 'result.html',
-      title: 'Result Page',
-      chunks: ['chunk-vendors', 'chunk-common', 'result']
+    variant: {
+      entry: 'src/pages/variant/main.js',
+      template: '/src/pages/variant/variant.html',
+      filename: 'variant.html',
+      title: 'Variant Page',
+      chunks: ['chunk-vendors', 'chunk-common', 'variant']
+    },
+    region: {
+      entry: 'src/pages/region/main.js',
+      template: '/src/pages/region/region.html',
+      filename: 'region.html',
+      title: 'Region Page',
+      chunks: ['chunk-vendors', 'chunk-common', 'region']
+    },
+    gene: {
+      entry: 'src/pages/gene/main.js',
+      template: '/src/pages/gene/gene.html',
+      filename: 'gene.html',
+      title: 'Gene Page',
+      chunks: ['chunk-vendors', 'chunk-common', 'gene']
     },
     terms: {
       entry: 'src/pages/terms/main.js',
@@ -36,6 +50,16 @@ module.exports = {
       title: 'About Bravo',
       chunks: ['chunk-vendors', 'chunk-common', 'about']
     },
+    404: {
+      entry: 'src/pages/about/main.js',
+      template: '/src/pages/about/terms.html',
+      filename: '404.html',
+      title: 'About Bravo',
+      chunks: ['chunk-vendors', 'chunk-common', '404']
+    },
   },
   outputDir: 'dist',
+  devServer: {
+    historyApiFallback: false
+  }
 }
