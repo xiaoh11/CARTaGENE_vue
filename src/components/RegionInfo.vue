@@ -3,11 +3,11 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
-          <h1 class="display-5">{{region_title}}</h1>
+          <h1 class="display-5">{{regionTitle}}</h1>
           <ul class="list-unstyled">
-            <li class="list-item">Region length: {{region_length.toLocaleString()}} bp</li>
+            <li class="list-item">Region length: {{regionLength.toLocaleString()}} bp</li>
             <li class="list-item">External resources: 
-              <span><a v-bind:href="ext_url">UCSC Browser</a></span>
+              <span><a v-bind:href="extUrl">UCSC Browser</a></span>
             </li>
           </ul>
         </div>
@@ -25,17 +25,14 @@
       stop: {default: 1}
     },
     computed: {
-      region_length() { 
+      regionLength() { 
         return ((this.stop - this.start + 1).toLocaleString())
       },
-      region_title() { 
+      regionTitle() { 
         return (this.chrom + ':' + this.start.toLocaleString() + 
           '-' + this.stop.toLocaleString()) 
       },
-      region_position() { 
-        return (this.chrom + ':' + this.start + '-' + this.stop) 
-      },
-      ext_url() { 
+      extUrl() { 
         return ('https://genome.ucsc.edu/cgi-bin/hgTracks?db=GRCh38&position=' + 
           this.chrom + ':' + this.start + '-' + this.stop)
       }
