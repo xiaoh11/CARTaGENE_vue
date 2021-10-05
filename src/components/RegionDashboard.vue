@@ -13,7 +13,6 @@
         </button>
         <div v-if="showMenuDropDown" class="parent-menu-dropdown">
           <div>
-
             <a href="#" v-on:click.prevent="togglePanelAttr('showSummaries')">
               <div v-bind:style="onOffStyle(showSummaries)">&#10004;</div>
               Summary
@@ -118,6 +117,7 @@
       </div>
     </div>
     <div style="position: relative; min-height: 20px">
+      <FilterBar/>
       <!--
       <summaries v-if="showSummaries" v-on:close="showSummaries = false"
         v-bind:api="api" v-bind:region="region" v-bind:filters="activeFilters"/>
@@ -176,25 +176,21 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faWindowRestore, faEyeSlash, faEye, faDownload, faColumns } 
   from '@fortawesome/free-solid-svg-icons';
 import RegionInfo from '@/components/RegionInfo.vue'
+import FilterBar from '@/components/FilterBar.vue'
 
 export default {
   name: 'RegionDashboard',
   components: {
     FontAwesomeIcon,
-    RegionInfo
+    RegionInfo,
+    FilterBar
   },
   props: {
-  },
-  computed: {
-    gene_view() {
-      return (this.gene_name != null);
-    }
   },
   inject: {
     chrom: {default: null},
     start: {default: null},
-    stop: {default: null},
-    gene_name: {default: null}
+    stop: {default: null}
   },
   data: function(){
     return {

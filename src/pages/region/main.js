@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './RegionPage.vue'
 import VueGtag from 'vue-gtag'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import {clickOutside} from '@/CustomDirectives'
 
 const app = createApp(App);
 
@@ -15,4 +16,6 @@ if(process.env.GA_ID){
   });
 }
 
-createApp(App).mount('#app')
+app.directive('click-outside', clickOutside);
+
+app.mount('#app');
