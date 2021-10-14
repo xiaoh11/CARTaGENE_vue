@@ -117,7 +117,8 @@
       </div>
     </div>
     <div style="position: relative; min-height: 20px">
-      <FilterBar/>
+      <FilterBar v-on:filterChange='handleFilterChange' id='foo'/>
+      <RegionSummaries v-bind:filterArray='filterArray'/>
       <!--
       <summaries v-if="showSummaries" v-on:close="showSummaries = false"
         v-bind:api="api" v-bind:region="region" v-bind:filters="activeFilters"/>
@@ -166,6 +167,7 @@
       chrom: {{chrom}}
       start: {{start}}
       stop: {{stop}}
+      filterArray: {{filterArray}}
     </pre>
   </div>
 </template>
@@ -176,6 +178,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faWindowRestore, faEyeSlash, faEye, faDownload, faColumns } 
   from '@fortawesome/free-solid-svg-icons';
 import RegionInfo from '@/components/RegionInfo.vue'
+import RegionSummaries from '@/components/RegionSummaries.vue'
 import FilterBar from '@/components/FilterBar.vue'
 
 export default {
@@ -183,6 +186,7 @@ export default {
   components: {
     FontAwesomeIcon,
     RegionInfo,
+    RegionSummaries,
     FilterBar
   },
   props: {
@@ -219,6 +223,13 @@ export default {
       showColumnHet: true,
       showColumHomAlt: true,
       showColumnFrequency: true,
+
+      filter: {},
+    }
+  },
+  computed: {
+    filterArray: function() {
+      return(Object.values(this.filter).flat(1))
     }
   },
   methods: {
@@ -233,6 +244,9 @@ export default {
     onOffStyle: function(boolVar){
       return boolVar ? 'display: inline;' : 'display: inline; visibility: hidden;'
     },
+    handleFilterChange: function(filterCategory, filtArr){
+      this.filter[filterCategory] = filtArr
+    }
   }
 }
 </script>
