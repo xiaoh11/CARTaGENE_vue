@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12" style="padding-left: 0px; padding-top: 2px; padding-bottom: 2px;">
-          <QualityFilterButton/>
+          <QualityFilterButton v-bind="$attrs"/>
           <!--
           <AnnotationFilterButton/>
           <LOFTEEFilterButton/>
@@ -18,17 +18,18 @@
 </template>
 
 <script>
-  import QualityFilterButton from '@/components/filters/QualityFilterButton.vue'
-  export default {
-    name: "FilterBar",
-    props: {
-      filters: {
-        type: Object,
-        default: function(){ return {} }
-      }
-    },
-    components: {
-      QualityFilterButton
-    },
-  }
+import QualityFilterButton from '@/components/filters/QualityFilterButton.vue'
+export default {
+  name: "FilterBar",
+  inheritAttrs: false,
+  props: {
+    filters: {
+      type: Object,
+      default: function(){ return {} }
+    }
+  },
+  components: {
+    QualityFilterButton
+  },
+}
 </script>
