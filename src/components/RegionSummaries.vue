@@ -274,6 +274,31 @@
       }
     },
     methods:{
+      count_synonymous: function(category) {
+        return (this.summary[category]['synonymous_variant'] || 0) +
+          (this.summary[category]['start_retained_variant'] || 0) +
+          (this.summary[category]['stop_retained_variant'] || 0);
+      },
+      count_nonsynonymous: function(category) {
+        return (this.summary[category]['missense_variant'] || 0) +
+          (this.summary[category]['start_lost'] || 0) +
+          (this.summary[category]['stop_gained'] || 0) +
+          (this.summary[category]['stop_lost'] || 0);
+      },
+      count_frameshifts: function(category) {
+        return this.summary[category]['frameshift_variant'] || 0;
+      },
+      count_inframe_insertions: function(category) {
+        return (this.summary[category]['inframe_insertion'] || 0);
+      },
+      count_inframe_deletions: function(category) {
+        return (this.summary[category]['inframe_deletion'] || 0);
+      },
+      updateHorizontalScroll: function() {
+        var cards = this.$el.querySelector(".cards");
+        this.hasLeftScroll = cards.scrollLeft != 0;
+        this.hasRightScroll = Math.abs(cards.scrollWidth - cards.clientWidth - cards.scrollLeft) > 1;
+      },
       load: function() {
         if ((this.chrom == null) || (this.start == null) || (this.stop == null)) {
           return;
@@ -286,7 +311,7 @@
         axios
           .post(url, {
             filters: this.filterArray,
-            introns: this.computedRegion.introns,
+            introns: true,
           })
           .then(response => {
             var payload = response.data;
@@ -307,6 +332,9 @@
           })
           .finally(() => { });
       },
+    },
+    mounted: function() {
+      this.load();
     },
   }
 </script>
