@@ -17,44 +17,44 @@ module.exports = {
     },
     variant: {
       entry: 'src/pages/variant/main.js',
-      template: '/src/pages/variant/variant.html',
+      template: 'src/pages/variant/variant.html',
       filename: 'variant',
-      title: 'Variant Page',
+      title: 'Bravo:Variant',
       chunks: ['chunk-vendors', 'chunk-common', 'variant']
     },
     region: {
       entry: 'src/pages/region/main.js',
-      template: '/src/pages/region/region.html',
+      template: 'src/pages/region/region.html',
       filename: 'region',
-      title: 'Region Page',
+      title: 'Bravo:Region',
       chunks: ['chunk-vendors', 'chunk-common', 'region']
     },
     gene: {
       entry: 'src/pages/gene/main.js',
-      template: '/src/pages/gene/gene.html',
+      template: 'src/pages/gene/gene.html',
       filename: 'gene',
-      title: 'Gene Page',
+      title: 'Bravo:Gene',
       chunks: ['chunk-vendors', 'chunk-common', 'gene']
     },
     terms: {
       entry: 'src/pages/terms/main.js',
-      template: '/src/pages/terms/terms.html',
-      filename: 'terms',
+      template: 'src/pages/terms/terms.html',
+      filename: 'Bravo:Terms',
       title: 'Data Use Terms',
       chunks: ['chunk-vendors', 'chunk-common', 'terms']
     },
     about: {
       entry: 'src/pages/about/main.js',
-      template: '/src/pages/about/terms.html',
+      template: 'src/pages/about/terms.html',
       filename: 'about',
-      title: 'About Bravo',
+      title: 'Bravo:About',
       chunks: ['chunk-vendors', 'chunk-common', 'about']
     },
     404: {
       entry: 'src/pages/about/main.js',
-      template: '/src/pages/about/terms.html',
+      template: 'src/pages/about/terms.html',
       filename: '404',
-      title: 'About Bravo',
+      title: 'Bravo:404',
       chunks: ['chunk-vendors', 'chunk-common', '404']
     },
   },
