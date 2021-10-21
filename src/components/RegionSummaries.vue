@@ -238,6 +238,7 @@
       start: {default: 0},
       stop: {default: 1}
     },
+    emits: ['close'],
     props: {
       region: {
         type: Object,

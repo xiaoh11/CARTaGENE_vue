@@ -7,108 +7,11 @@
   -->
   <div id="bravoviz">
     <div class="parent-menu">
-      <div style="display: inline-block;">
-        <button class="parent-menu-button" v-on:click="showMenuDropDown = !showMenuDropDown">
-          Panels <font-awesome-icon style="background-color: transparent; display: inline-block; vertical-align: middle" :icon="panelsIcon"></font-awesome-icon>
-        </button>
-        <div v-if="showMenuDropDown" class="parent-menu-dropdown">
-          <div>
-            <a href="#" v-on:click.prevent="togglePanelAttr('showSummaries')">
-              <div v-bind:style="onOffStyle(showSummaries)">&#10004;</div>
-              Summary
-            </a>
-          </div>
-          <div>
-            <a href="#" v-on:click.prevent="togglePanelAttr('showDepth')">
-              <div v-bind:style="onOffStyle(showDepth)">&#10004;</div>
-              Avg. Depth
-            </a>
-          </div>
-            <a href="#" v-on:click.prevent="togglePanelAttr('showGenes')">
-              <div v-bind:style="onOffStyle(showGenes)">&#10004;</div>
-              Genes
-            </a>
-          <div>
-            <a href="#" v-on:click.prevent="togglePanelAttr('showSNV')">
-              <div v-bind:style="onOffStyle(showSNV)">&#10004;</div>
-              Variants Count
-            </a>
-          </div>
-        </div>
-      </div>
-      <div style="display: inline-block;">
-        <button class="parent-menu-button" v-on:click="showTableMenuDropDown = !showTableMenuDropDown">
-          Columns <font-awesome-icon style="background-color: transparent; display: inline-block; vertical-align: middle" :icon="columnsIcon"></font-awesome-icon>
-        </button>
-        <div v-if="showTableMenuDropDown" class="parent-menu-dropdown">
-          <div>
-            <a href="#" v-on:click.prevent="toggleColAttr('showColumnVariantID')">
-              <div v-bind:style="onOffStyle(showColumnVariantID)">&#10004;</div>
-              Variant ID
-            </a>
-          </div>
-          <div>
-            <a href="#" v-on:click.prevent="toggleColAttr('showColumnRsID')">
-              <div v-bind:style="onOffStyle(showColumnRsID)">&#10004;</div>
-              rsID
-            </a>
-          </div>
-          <div>
-            <a href="#" v-on:click.prevent="toggleColAttr('showColumnConsequence')">
-              <div v-bind:style="onOffStyle(showColumnConsequence)">&#10004;</div>
-              Consequence
-            </a>
-          </div>
-          <div>
-            <a href="#" v-on:click.prevent="toggleColAttr('showColumnAnnotation')">
-              <div v-bind:style="onOffStyle(showColumnAnnotation)">&#10004;</div>
-              Annotation
-            </a>
-          </div>
-          <div>
-            <a href="#" v-on:click.prevent="toggleColAttr('showColumnLOFTEE')">
-              <div v-bind:style="onOffStyle(showColumnLOFTEE)">&#10004;</div>
-              LOFTEE
-            </a>
-          </div>
-          <div>
-            <a href="#" v-on:click.prevent="toggleColAttr('showColumnQuality')">
-              <div v-bind:style="onOffStyle(showColumnQuality)">&#10004;</div>
-              Quality
-            </a>
-          </div>
-          <div>
-            <a href="#" v-on:click.prevent="toggleColAttr('showColumnCADD')">
-              <div v-bind:style="onOffStyle(showColumnCADD)">&#10004;</div>
-              CADD
-            </a>
-          </div>
-          <div>
-            <a href="#" v-on:click.prevent="toggleColAttr('showColumnNAlleles')">
-              <div v-bind:style="onOffStyle(showColumnNAlleles)">&#10004;</div>
-              N Alleles
-            </a>
-          </div>
-          <div>
-            <a href="#" v-on:click.prevent="toggleColAttr('showColumnHet')">
-              <div v-bind:style="onOffStyle(showColumnHet)">&#10004;</div>
-              Het
-            </a>
-          </div>
-          <div>
-            <a href="#" v-on:click.prevent="toggleColAttr('showColumHomAlt')">
-              <div v-bind:style="onOffStyle(showColumHomAlt)">&#10004;</div>
-              HomAlt
-            </a>
-          </div>
-          <div>
-            <a href="#" v-on:click.prevent="toggleColAttr('showColumnFrequency')">
-              <div v-bind:style="onOffStyle(showColumnFrequency)">&#10004;</div>
-              Frequency (%)
-            </a>
-          </div>
-        </div>
-      </div>
+      <ToggleList list-title="Panels" list-group="showPanels" :list-vars="showPanels"
+        @varToggled="handleInfoViewToggle" :icon="panelsIcon"/>
+      <ToggleList list-title="Columns" list-group="showCols" :list-vars="showCols"
+        @varToggled="handleInfoViewToggle" :icon="columnsIcon"/>
+
       <!-- don't show download button on mobile devices i.e. devices with very small screens -->
       <div class="d-none d-sm-inline" style="display: inline-block;"> 
         <button type="button" class="parent-menu-button" v-on:click="download++">CSV
@@ -118,10 +21,12 @@
     </div>
     <div style="position: relative; min-height: 20px">
       <FilterBar v-on:filterChange='handleFilterChange' id='foo'/>
-      <RegionSummaries v-bind:filterArray='filterArray'/>
+      <RegionSummaries v-if="showPanels.summaries.val" v-bind:filterArray='filterArray'
+        @close="showPanels.summaries.val = false"/>
       <!--
       <summaries v-if="showSummaries" v-on:close="showSummaries = false"
         v-bind:api="api" v-bind:region="region" v-bind:filters="activeFilters"/>
+      
       <depth v-if="showDepth" v-on:close="showDepth = false" v-bind:api="api"
         v-bind:region="region" v-bind:dimensions="dimensions"
         v-bind:hoveredVariant="hoveredVariant"/>
@@ -175,11 +80,12 @@
 <script>
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faWindowRestore, faEyeSlash, faEye, faDownload, faColumns } 
+import { faWindowRestore, faDownload, faColumns } 
   from '@fortawesome/free-solid-svg-icons';
-import RegionInfo from '@/components/RegionInfo.vue'
+import RegionInfo      from '@/components/RegionInfo.vue'
 import RegionSummaries from '@/components/RegionSummaries.vue'
-import FilterBar from '@/components/FilterBar.vue'
+import FilterBar       from '@/components/FilterBar.vue'
+import ToggleList      from '@/components/ToggleList.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -187,7 +93,8 @@ export default {
     FontAwesomeIcon,
     RegionInfo,
     RegionSummaries,
-    FilterBar
+    FilterBar,
+    ToggleList
   },
   props: {
   },
@@ -198,19 +105,36 @@ export default {
   },
   data: function(){
     return {
-      showSummaries: true,
-      showDepth: true,
-      showGenes: true,
-      showSNV: true,
-      showMenuDropDown: false,
-      showIntrons: true,
+      showPanels: {
+        summaries: {title: "Summary", val: true},
+        depth:     {title: "Avg. Depth", val: true},
+        genes:     {title: "Genes", val: true},
+        snv:       {title: "Variants Count", val: true},
+      },
+      //showSummaries: true,
+      //showDepth: true,
+      //showGenes: true,
+      //showSNV: true,
+      //showMenuDropDown: false,
+      //showIntrons: true,
 
       panelsIcon: faWindowRestore,
       columnsIcon: faColumns,
-      hideIntronsIcon: faEyeSlash,
-      showIntronsIcon: faEye,
       downloadIcon: faDownload,
 
+      showCols: {
+        colVariantID:      { title: "Variant ID", val: true},
+        colRsID:           { title: "rsID", val: true},
+        colConsequence:    { title: "Consequence", val: true},
+        colAnnotation:     { title: "Annotation", val: true},
+        colLOFTEE:         { title: "LOFTEE", val: true},
+        colQuality:        { title: "Quality", val: true},
+        colCADD:           { title: "CADD", val: true},
+        colNAlleles:       { title: "N Alleles", val: false},
+        colHet:            { title: "Het", val: true},
+        colHomAlt:         { title: "Hom Alt", val: true},
+        colFrequency:      { title: "Frequency (%)", val: true}
+      },
       showTableMenuDropDown: false,
       showColumnVariantID: true,
       showColumnRsID: true,
@@ -233,6 +157,9 @@ export default {
     }
   },
   methods: {
+    handleInfoViewToggle: function(listGroup, varKey){
+      this[listGroup][varKey].val = !this[listGroup][varKey].val
+    },
     togglePanelAttr: function(attrName) {
       this[attrName] = !this[attrName]
       this.showMenuDropDown = !this.showMenuDropDown
