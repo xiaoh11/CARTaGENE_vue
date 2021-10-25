@@ -39,8 +39,8 @@ module.exports = {
     terms: {
       entry: 'src/pages/terms/main.js',
       template: 'src/pages/terms/terms.html',
-      filename: 'Bravo:Terms',
-      title: 'Data Use Terms',
+      filename: 'terms',
+      title: 'Bravo:Terms',
       chunks: ['chunk-vendors', 'chunk-common', 'terms']
     },
     about: {
@@ -53,7 +53,7 @@ module.exports = {
     404: {
       entry: 'src/pages/about/main.js',
       template: 'src/pages/about/terms.html',
-      filename: '404',
+      filename: '404.html',
       title: 'Bravo:404',
       chunks: ['chunk-vendors', 'chunk-common', '404']
     },
