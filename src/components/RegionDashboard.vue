@@ -20,6 +20,9 @@
         <FilterBar @filterChange='handleFilterChange' id='foo'/>
         <RegionSummaries v-if="showPanels.summaries.val" :filterArray='filterArray'
           @close="showPanels.summaries.val = false"/>
+        <SeqDepth v-if="showPanels.depth.val" @close="showPanels.depth.val = false" 
+          :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
+          :segmentRegions="segmentRegions" :givenWidth="clientWidth" :givenMargins="childMargins"/>
         <!--
         <summaries v-if="showSummaries" v-on:close="showSummaries = false"
           v-bind:api="api" v-bind:region="region" v-bind:filters="activeFilters"/>
@@ -27,6 +30,7 @@
         <depth v-if="showDepth" v-on:close="showDepth = false" v-bind:api="api"
           v-bind:region="region" v-bind:dimensions="dimensions"
           v-bind:hoveredVariant="hoveredVariant"/>
+
         <genes v-if="showGenes && !gene_view" v-on:close="showGenes = false"
           v-on:click="genesClick" v-bind:api="api" v-bind:region="region"
           v-bind:dimensions="dimensions" v-bind:hoveredVariant="hoveredVariant"/>
@@ -84,6 +88,7 @@ import RegionInfo      from '@/components/RegionInfo.vue'
 import RegionSummaries from '@/components/RegionSummaries.vue'
 import FilterBar       from '@/components/FilterBar.vue'
 import ToggleList      from '@/components/ToggleList.vue'
+import SeqDepth        from '@/components/SeqDepth.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -92,7 +97,8 @@ export default {
     RegionInfo,
     RegionSummaries,
     FilterBar,
-    ToggleList
+    ToggleList,
+    SeqDepth
   },
   props: {
   },
@@ -173,6 +179,9 @@ export default {
   computed: {
     filterArray: function() {
       return(Object.values(this.filter).flat(1))
+    },
+    clientWidth: function() {
+      return(1000)
     }
   },
   methods: {
