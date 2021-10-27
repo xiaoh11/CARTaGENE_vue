@@ -51,7 +51,7 @@ export default {
       logo: logo,
       exampleLinks: {
         'PCSK9': 'gene?variant_type=snv&gene_name=PCSK9',
-        '11:5225464-5229395': 'region??variant_type=snv&chrom=11&start=5225464&stop=5229395',
+        '11:5225464-5229395': 'region?variant_type=snv&chrom=11&start=5225464&stop=5229395',
         '22-16389447-A-G': 'variant?variant_type=snv&variant_id=22-16389447-A-G',
         'rs34747326': 'variant?variant_type=snv&variant_id=rs34747326'
       }
