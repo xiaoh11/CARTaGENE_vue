@@ -13,12 +13,10 @@
     </div>
     <div class="row justify-content-center">
       <div class="col-12 col-sm-11 col-md-11">
-        <div id="bravo-plot"> 
-          <RegionDashboard/>
-          <!--
-            <bravoregion :pagination-size="100" :homepage="'{{ url_for('.home', _external = True) }}'" :api="'{{ url_for('.home', _external = True) }}'" :chrom="'{{ chrom }}'" :start="{{ start }}" :stop="{{ stop }}"></bravoregion>
-          -->
-        </div>
+        <RegionDashboard/>
+        <!--
+          <bravoregion :pagination-size="100" :homepage="'{{ url_for('.home', _external = True) }}'" :api="'{{ url_for('.home', _external = True) }}'" :chrom="'{{ chrom }}'" :start="{{ start }}" :stop="{{ stop }}"></bravoregion>
+        -->
       </div>
     </div>
   </div>
