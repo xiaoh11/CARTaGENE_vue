@@ -23,24 +23,28 @@
         <SeqDepth v-if="showPanels.depth.val" @close="showPanels.depth.val = false" 
           :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="clientWidth" :givenMargins="childMargins"/>
+        <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
+          :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
+          :segmentRegions="segmentRegions" :givenWidth="clientWidth" :givenMargins="childMargins"/>
         <!--
         <summaries v-if="showSummaries" v-on:close="showSummaries = false"
           v-bind:api="api" v-bind:region="region" v-bind:filters="activeFilters"/>
-        
         <depth v-if="showDepth" v-on:close="showDepth = false" v-bind:api="api"
           v-bind:region="region" v-bind:dimensions="dimensions"
           v-bind:hoveredVariant="hoveredVariant"/>
-
         <genes v-if="showGenes && !gene_view" v-on:close="showGenes = false"
-          v-on:click="genesClick" v-bind:api="api" v-bind:region="region"
-          v-bind:dimensions="dimensions" v-bind:hoveredVariant="hoveredVariant"/>
+          v-bind:region="region" v-bind:dimensions="dimensions"
+          v-bind:hoveredVariant="hoveredVariant"
+          v-on:click="genesClick" v-bind:api="api"/>
         <gene v-if="showGene && gene_view" v-on:close="showGene = false"
           v-bind:region="region" v-bind:dimensions="dimensions" 
           v-bind:hoveredVariant="hoveredVariant"/>
+
         <snv v-if="showSNV" v-on:close="showSNV = false" v-bind:api="api"
           v-bind:region="region" v-bind:dimensions="dimensions" 
           v-bind:filters="activeFilters" v-bind:visibleVariants="visibleVariants" 
           v-bind:hoveredVariant="hoveredVariant"/>
+
         <coordinates v-bind:region="region" v-bind:dimensions="dimensions"/>
         <snvfilter ref="filter"
           v-bind:suggestions="filterSuggestions"
@@ -89,6 +93,7 @@ import RegionSummaries from '@/components/RegionSummaries.vue'
 import FilterBar       from '@/components/FilterBar.vue'
 import ToggleList      from '@/components/ToggleList.vue'
 import SeqDepth        from '@/components/SeqDepth.vue'
+import GeneBars        from '@/components/GeneBars.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -98,7 +103,8 @@ export default {
     RegionSummaries,
     FilterBar,
     ToggleList,
-    SeqDepth
+    SeqDepth,
+    GeneBars
   },
   props: {
   },
