@@ -150,6 +150,40 @@ export default {
         });
       });
     },
+    handleBarMouseover: function(evt, gene) {
+      let rect = evt.target
+      d3.select(evt.target)
+        .style("fill", "#eeeeee")
+        .style("stroke", "black")
+        .style("stroke-width", "1px")
+        .style("cursor", "pointer")
+
+      // Calculate position of tooltip
+      let s = gene.start < this.start ? this.start : gene.start
+      let e = gene.stop > this.stop ? this.stop : gene.stop
+      let tooltip_x = this.x_scale(s + (e - s) / 2.0) + this.givenMargins.left
+      let tooltip_y = rect.getAttribute("y") - this.$el.querySelector("#scroll").scrollTop - this.givenMargins.top - 16
+
+      d3.select(this.$el.querySelector(".bravo-tooltip"))
+        .style("display", "block")
+        .style("left", tooltip_x + "px")
+        .style("top", tooltip_y + "px")
+
+      this.tooltipHtml = `<ul><li><i>${gene.gene_name}</i>(${gene.strand})</li>
+        <li>${gene.gene_id}</li>
+        <li style='color: #85144b'>${gene.gene_type}</li>
+        <li>${gene.chrom}:${gene.start.toLocaleString()}-${gene.stop.toLocaleString()}</li><ul>`
+    },
+    handleBarMouseout: function(evt) {
+      d3.select(this.$el.querySelector(".bravo-tooltip"))
+        .style("display", "none");
+      this.tooltipHtml = "";
+      d3.select(evt.target)
+        .style("fill", "white")
+        .style("stroke", "none")
+        .style("stroke-width", 0)
+        .style("cursor", "default");
+    },
     initializeSVG: function () {
       this.svg = d3.select(this.$el)
         .append("div")
@@ -205,36 +239,8 @@ export default {
         .append("text")
         .style("pointer-events", "none");
 
-      var self = this;
-      this.rects_box.on("mouseover", function(gene) {
-        d3.select(this)
-          .style("fill", "#eeeeee")
-          .style("stroke", "black")
-          .style("stroke-width", "1px")
-          .style("cursor", "pointer");
-        var s = gene.start < self.start ? self.start : gene.start;
-        var e = gene.stop > self.stop ? self.stop : gene.stop;
-        var x_mid = self.x_scale(s + (e - s) / 2.0) + self.givenMargins.left ;
-        var y_mid = this.getAttribute("y") - // get Y coordinate of the rectangle (its linear 1-to-1 mapping to pixel)
-              self.$el.querySelector("#scroll").scrollTop - // substruct scroll position of the parent div
-              self.givenMargins.top - // substruct drawing area margin
-              16;
-        d3.select(self.$el.querySelector(".bravo-tooltip"))
-          .style("display", "block")
-          .style("left", x_mid + "px")
-          .style("top", y_mid + "px");
-        self.tooltipHtml = `<ul><li><i>${gene.gene_name}</i> (${gene.strand})</li><li>${gene.gene_id}</li><li style='color: #85144b'>${gene.gene_type}</li><li>${gene.chrom}:${gene.start.toLocaleString()}-${gene.stop.toLocaleString()}</li><ul>`;
-      });
-      this.rects_box.on("mouseout", function() {
-        d3.select(self.$el.querySelector(".bravo-tooltip"))
-          .style("display", "none");
-        self.tooltipHtml = "";
-        d3.select(this)
-          .style("fill", "white")
-          .style("stroke", "none")
-          .style("stroke-width", 0)
-          .style("cursor", "default");
-      });
+      this.rects_box.on("mouseover", this.handleBarMouseover)
+      this.rects_box.on("mouseout", this.handleBarMouseout)
       this.rects_box.on("click", d => this.$emit("click", d));
     },
     draw: function () {
@@ -263,10 +269,10 @@ export default {
         .attr("width", function(d) { return d.x_stop - d.x_start; })
         .attr("y", function(d) { return d.y * 22 + 22 - 3 - 2; });
       this.rects_exons
-          .attr("clip-path", "url(#genes-clip)")
-          .attr("x", function(d) { return d.x_start; })
-          .attr("width", function(d) { return d.x_stop - d.x_start; })
-          .attr("y", function(d) { return d.y * 22 + 22 - 5 - 2; });
+        .attr("clip-path", "url(#genes-clip)")
+        .attr("x", function(d) { return d.x_start; })
+        .attr("width", function(d) { return d.x_stop - d.x_start; })
+        .attr("y", function(d) { return d.y * 22 + 22 - 5 - 2; });
       this.text_genes
         .attr("clip-path", "url(#genes-clip)")
         .attr("x", d => {
@@ -282,9 +288,9 @@ export default {
         .style("font-size", "11px")
         .html(function(d) {
           if (d.strand == '+') {
-            return d.gene_name + "<tspan style=\"font-style: normal;\"> &rarr;</tspan>"
+            return d.gene_name + " →"
           } else {
-            return "<tspan style=\"font-style: normal;\">&larr; </tspan>" + d.gene_name;
+            return "← " + d.gene_name;
           }
         });
       this.rects_box
