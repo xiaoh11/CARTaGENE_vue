@@ -17,15 +17,26 @@
         </div>
       </div>
       <div style="position: relative; min-height: 20px">
-        <FilterBar @filterChange='handleFilterChange' id='foo'/>
+        <FilterBar @filterChange='handleFilterChange'/>
         <RegionSummaries v-if="showPanels.summaries.val" :filterArray='filterArray'
           @close="showPanels.summaries.val = false"/>
         <SeqDepth v-if="showPanels.depth.val" @close="showPanels.depth.val = false" 
           :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
-          :segmentRegions="segmentRegions" :givenWidth="clientWidth" :givenMargins="childMargins"/>
+          :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
         <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
           :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
-          :segmentRegions="segmentRegions" :givenWidth="clientWidth" :givenMargins="childMargins"/>
+          :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
+        <SnvDepth v-if="showPanels.depth.val" @close="showPanels.depth.val = false" 
+          :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
+          :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
+          :filters="filterArray" :visibleVariants="visibleVariants"/>
+
+        <pre>
+          REGIONDASH DEBUG
+          childWidth: {{childWidth}}
+        </pre>
+
+
         <!--
         <summaries v-if="showSummaries" v-on:close="showSummaries = false"
           v-bind:api="api" v-bind:region="region" v-bind:filters="activeFilters"/>
@@ -94,6 +105,7 @@ import FilterBar       from '@/components/FilterBar.vue'
 import ToggleList      from '@/components/ToggleList.vue'
 import SeqDepth        from '@/components/SeqDepth.vue'
 import GeneBars        from '@/components/GeneBars.vue'
+import SnvDepth        from '@/components/SnvDepth.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -104,9 +116,8 @@ export default {
     FilterBar,
     ToggleList,
     SeqDepth,
-    GeneBars
-  },
-  props: {
+    GeneBars,
+    SnvDepth
   },
   inject: {
     chrom: {default: null},
@@ -115,23 +126,16 @@ export default {
   },
   data: function(){
     return {
+      panelsIcon: faWindowRestore,
+      columnsIcon: faColumns,
+      downloadIcon: faDownload,
+
       showPanels: {
         summaries: {title: "Summary", val: true},
         depth:     {title: "Avg. Depth", val: true},
         genes:     {title: "Genes", val: true},
         snv:       {title: "Variants Count", val: true},
       },
-      //showSummaries: true,
-      //showDepth: true,
-      //showGenes: true,
-      //showSNV: true,
-      //showMenuDropDown: false,
-      //showIntrons: true,
-
-      panelsIcon: faWindowRestore,
-      columnsIcon: faColumns,
-      downloadIcon: faDownload,
-
       showCols: {
         colVariantID:      { title: "Variant ID", val: true},
         colRsID:           { title: "rsID", val: true},
@@ -158,8 +162,15 @@ export default {
       showColumHomAlt: true,
       showColumnFrequency: true,
 
+      // keys are category of filter,
+      // values are array of mongo-like filters.
       filter: {},
       
+
+      //formerly dimensions.width
+      //  width provided to child components.
+      childWidth : 300,
+
       //formerly dimensions.margin
       // standard margins for child component calculations
       childMargins: {
@@ -168,27 +179,30 @@ export default {
         top:    12,
         bottom: 5
       },
-
       // which variant is selected by the user.
       hoveredVariant: {
         index: null,
         data: null,
         hovered: null
       },
-
+      // which variants are appearing in the variants table.
+      visibleVariants: {
+        start_index: null,
+        stop_index: null,
+        data: null
+      },
+      // bounds for child element displays in pixels
       //formerly region.segments.plot
       segmentBounds: [0, 300],
+      // genomic bounds for child elements in base pairs
       //formergly region.segments.region
-      segmentRegions:[this.start, this.stop],
+      segmentRegions: [this.start, this.stop],
     }
   },
   computed: {
     filterArray: function() {
       return(Object.values(this.filter).flat(1))
     },
-    clientWidth: function() {
-      return(1000)
-    }
   },
   methods: {
     togglePanelAttr: function(attrName) {
@@ -207,6 +221,7 @@ export default {
     },
     handleResize: function() {
       this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
+      this.childWidth = this.$el.clientWidth
     },
     handleInfoViewToggle: function(listGroup, varKey){
       this[listGroup][varKey].val = !this[listGroup][varKey].val
@@ -214,6 +229,7 @@ export default {
   },
   mounted: function() {
     this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
+    this.childWidth = this.$el.clientWidth
     window.addEventListener('resize', this.handleResize)
   },
   beforeUnmount: function() {
