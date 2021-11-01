@@ -412,10 +412,10 @@ export default {
   z-index: 9999;
   opacity: 1;
 }
-.bravo-tooltip >>> div {
+.bravo-tooltip :deep(div) {
   padding: 3px 3px 0px 3px;
 }
-.bravo-tooltip >>> ul  {
+.bravo-tooltip :deep(ul)  {
   list-style-type: none;
   margin: 0;
   padding: 0;
