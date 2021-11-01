@@ -14,6 +14,7 @@
   <div v-if="this.loaded && (this.variants == 0)" class="bravo-info-message">
     No variants
   </div>
+  <svg ref="depthSVG" :width="givenWidth" :height="svgHeight"></svg>
 </div>
 </template>
 
@@ -25,6 +26,9 @@ import * as d3 from "d3";
 
 export default {
   name: "SnvDepth",
+  components: {
+    FontAwesomeIcon,
+  },
   inject: {
     chrom: {default: '11'},
     start: {default: 200000},
@@ -77,9 +81,6 @@ export default {
       type: Object
     }
   },
-  components: {
-    FontAwesomeIcon,
-  },
   data: function() {
     return {
       api: process.env.VUE_APP_BRAVO_API_URL,
@@ -88,6 +89,11 @@ export default {
       failed: false,
       variants: 0,
       closeIcon: faTimes
+    }
+  },
+  computed: {
+    svgHeight: function() {
+      return(this.height + this.givenMargins.top + this.givenMargins.bottom)
     }
   },
   methods: {
@@ -144,11 +150,10 @@ export default {
       return d3.format('d')(value) + "x";
     },
     initializeSVG: function () {
-      this.svg = d3.select(this.$el)
-        .append("svg")
-          .style("display", "block")
-          .attr("width", this.givenWidth)
-          .attr("height", this.height + this.givenMargins.top + this.givenMargins.bottom);
+      this.svg = d3.select(this.$refs.depthSVG)
+        .style("display", "block")
+      //.attr("width", this.givenWidth)
+        .attr("height", this.height + this.givenMargins.top + this.givenMargins.bottom);
       this.drawing_clip = this.svg
         .append("clipPath")
           .attr("id", "snv-clip")
@@ -156,26 +161,22 @@ export default {
           .attr("x", 0)
           .attr("y", 0);
       this.drawing = this.svg.append("g");
-
       this.histogram_g = this.drawing.append("g")
         .attr("clip-path", "url(#snv-clip)");
       this.variant_pointers_g = this.drawing.append("g");
       this.y_axis_g = this.drawing.append("g")
         .style("font-size", "9px");
-
       this.drawing.append("text")
         .attr("transform", `translate(${-this.givenMargins.left + 11},${(this.height - 10)/2}) rotate(-90)`)
         .style("font-size", "11px")
         .style("text-anchor", "middle")
         .text("Variants Count");
-
       this.x_scale = d3.scaleLinear();
       this.y_axis = d3.axisLeft();
       this.y_scale = d3.scaleLinear();
     },
     draw: function () {
       this.drawing.selectAll("text").attr("opacity", 1);
-      this.svg.attr("width", this.givenWidth).attr("height", this.height + this.givenMargins.top + this.givenMargins.bottom);
       this.drawing.attr("transform", `translate(${this.givenMargins.left}, ${this.givenMargins.top})`);
       this.drawing_clip
         .attr("width", this.givenWidth - this.givenMargins.left - this.givenMargins.right)
@@ -250,6 +251,11 @@ export default {
     },
     visibleVariants: function() {
       this.drawVariants();
+    },
+    givenWidth: function() {
+      this.draw()
+      this.drawHistogram()
+      this.drawVariants()
     }
   },
 }
