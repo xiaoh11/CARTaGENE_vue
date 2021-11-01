@@ -14,7 +14,18 @@
   <div v-if="this.loaded && (this.variants == 0)" class="bravo-info-message">
     No variants
   </div>
-  <svg ref="depthSVG" :width="givenWidth" :height="svgHeight"></svg>
+  <svg ref="depthSVG" :width="givenWidth" :height="svgHeight" style="display: block">
+    <clipPath id="snv-clip">
+      <rect x="0" y="0" :width="svgClipWidth" :height="height"></rect>
+    </clipPath>
+    <g ref="drawing" :transform="svgDrawingTransform">
+      <g ref="histogram" clip-path="url(#snv-clip)"></g>
+      <g ref="variantPointers"></g>
+      <g ref="yAxisContainer" style="font-size: 9px"></g>
+      <text ref="yAxisTitle" :transform="svgYAxisTransform" 
+        style="font-size: 11px; text-anchor: middle;">Variants Count</text>
+    </g>
+  </svg>
 </div>
 </template>
 
@@ -94,11 +105,20 @@ export default {
   computed: {
     svgHeight: function() {
       return(this.height + this.givenMargins.top + this.givenMargins.bottom)
+    },
+    svgClipWidth: function() {
+      return(this.givenWidth - this.givenMargins.left - this.givenMargins.right)
+    },
+    svgDrawingTransform: function() {
+      return(`translate(${this.givenMargins.left}, ${this.givenMargins.top})`)
+    },
+    svgYAxisTransform: function() {
+      return(`translate(${-this.givenMargins.left + 11},${(this.height - 10)/2}) rotate(-90)`)
     }
+
   },
   methods: {
     load: function() {
-      console.log('depth load')
       if ((this.chrom == null) || (this.start == null) || (this.stop == null)) {
         return;
       }
@@ -109,7 +129,6 @@ export default {
       } else {
         url = `${this.api}/variants/region/snv/${this.chrom}-${this.start}-${this.stop}/histogram`;
       }
-      console.log('url')
 
       this.clearDrawing();
 
@@ -150,37 +169,19 @@ export default {
       return d3.format('d')(value) + "x";
     },
     initializeSVG: function () {
-      this.svg = d3.select(this.$refs.depthSVG)
-        .style("display", "block")
-      //.attr("width", this.givenWidth)
-        .attr("height", this.height + this.givenMargins.top + this.givenMargins.bottom);
-      this.drawing_clip = this.svg
-        .append("clipPath")
-          .attr("id", "snv-clip")
-        .append("rect")
-          .attr("x", 0)
-          .attr("y", 0);
-      this.drawing = this.svg.append("g");
-      this.histogram_g = this.drawing.append("g")
-        .attr("clip-path", "url(#snv-clip)");
-      this.variant_pointers_g = this.drawing.append("g");
-      this.y_axis_g = this.drawing.append("g")
-        .style("font-size", "9px");
-      this.drawing.append("text")
-        .attr("transform", `translate(${-this.givenMargins.left + 11},${(this.height - 10)/2}) rotate(-90)`)
-        .style("font-size", "11px")
-        .style("text-anchor", "middle")
-        .text("Variants Count");
+      this.drawing            = d3.select(this.$refs.drawing)
+      this.histogram_g        = d3.select(this.$refs.histogram)
+      this.variant_pointers_g = d3.select(this.$refs.variantPointers)
+      this.y_axis_g           = d3.select(this.$refs.yAxisContainer)
+
       this.x_scale = d3.scaleLinear();
-      this.y_axis = d3.axisLeft();
+      this.y_axis  = d3.axisLeft();
       this.y_scale = d3.scaleLinear();
     },
     draw: function () {
-      this.drawing.selectAll("text").attr("opacity", 1);
-      this.drawing.attr("transform", `translate(${this.givenMargins.left}, ${this.givenMargins.top})`);
-      this.drawing_clip
-        .attr("width", this.givenWidth - this.givenMargins.left - this.givenMargins.right)
-        .attr("height", this.height);
+      //Show y-axis title
+      d3.select(this.$refs.yAxisTitle).attr("opacity", 1)
+
       this.x_scale.range(this.segmentBounds).domain(this.segmentRegions);
 
       var max_count = d3.max(this.histogram_data, function(d) { return d.count; });
@@ -220,7 +221,8 @@ export default {
       this.y_axis_g.selectAll("*").remove();
       this.histogram_g.selectAll("rect").remove();
       this.variant_pointers_g.selectAll("path").remove();
-      this.drawing.selectAll("text").attr("opacity", 0);
+      // Hide axis title
+      d3.select(this.$refs.yAxisTitle).attr("opacity", 0)
     }
   },
   beforeCreate: function() {
@@ -230,7 +232,6 @@ export default {
     this.histogram_window_size = 0;
     this.height = 70;
     this.color = '#ffa37c';
-    this.svg = null;
     this.drawing = null;
     this.histogram_g = null;
     this.variant_pointers_g = null;
