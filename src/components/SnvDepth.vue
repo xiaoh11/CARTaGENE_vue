@@ -87,9 +87,6 @@ export default {
     },
     visibleVariants: {
       type: Object
-    },
-    hoveredVariant: {
-      type: Object
     }
   },
   data: function() {
@@ -248,15 +245,17 @@ export default {
   },
   watch: {
     filters: function() {
-      this.load();
+      this.load()
     },
     visibleVariants: function() {
-      this.drawVariants();
+      this.drawVariants()
     },
     givenWidth: function() {
-      this.draw()
-      this.drawHistogram()
-      this.drawVariants()
+      if ((!this.loading) && (!this.failed) && (this.histogram_data.length > 0)) {
+        this.draw()
+        this.drawHistogram()
+        this.drawVariants()
+      }
     }
   },
 }

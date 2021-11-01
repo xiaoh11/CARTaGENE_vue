@@ -48,7 +48,7 @@ export default {
         })
       }
     },
-    'hoveredVariant': {
+    hoveredVariant: {
       type: Object
     }
   },
@@ -222,6 +222,12 @@ export default {
     hoveredVariant: function() {
       if ((!this.loading) && (!this.failed) && (this.loaded_data_size > 0)) {
         this.highlight();
+      }
+    },
+    givenWidth: function() {
+      if ((!this.loading) && (!this.failed) && (this.loaded_data_size > 0)) {
+        this.draw()
+        this.highlight()
       }
     }
   }

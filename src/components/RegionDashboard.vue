@@ -27,7 +27,7 @@
           :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
         <SnvDepth v-if="showPanels.depth.val" @close="showPanels.depth.val = false" 
-          :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
+          :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
           :filters="filterArray" :visibleVariants="visibleVariants"/>
 
