@@ -36,7 +36,7 @@ import axios from "axios";
 import * as d3 from "d3";
 
 export default {
-  name: "SnvDepth",
+  name: "SnvCount",
   components: {
     FontAwesomeIcon,
   },
@@ -58,8 +58,7 @@ export default {
     },
     //formerly dimensions.width
     givenWidth: {
-      type: Number,
-      default: 300
+      type: Number
     },
     //formerly dimensions.margin
     givenMargins: {
@@ -115,10 +114,11 @@ export default {
 
   },
   methods: {
-    load: function() {
+    load: function(width) {
       if ((this.chrom == null) || (this.start == null) || (this.stop == null)) {
         return;
       }
+      if(width == null){ return }
 
       let url = ""
       if (this.gene_id != null) {
@@ -139,7 +139,7 @@ export default {
         .post(url, {
           filters: this.filters,
           introns: this.includeIntrons,
-          windows: this.givenWidth - this.givenMargins.left - this.givenMargins.right
+          windows: width - this.givenMargins.left - this.givenMargins.right
         })
         .then(response => {
           var payload = response.data;
@@ -241,17 +241,24 @@ export default {
   },
   mounted: function() {
     this.initializeSVG();
-    this.load();
+    this.load(this.$el.clientWidth);
+  },
+  beforeUpdate: function() {
+
   },
   watch: {
     filters: function() {
-      this.load()
+      this.load(this.givenWidth)
     },
     visibleVariants: function() {
       this.drawVariants()
     },
-    givenWidth: function() {
-      if ((!this.loading) && (!this.failed) && (this.histogram_data.length > 0)) {
+    givenWidth: function(newVal, oldVal) {
+      // only load data if resolution will increase (more display pixels)
+      if(newVal > oldVal){
+        this.load(newVal)
+      }
+      if((!this.loading) && (!this.failed) && (this.histogram_data.length > 0)) {
         this.draw()
         this.drawHistogram()
         this.drawVariants()

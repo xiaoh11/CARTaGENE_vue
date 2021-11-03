@@ -20,22 +20,18 @@
         <FilterBar @filterChange='handleFilterChange'/>
         <RegionSummaries v-if="showPanels.summaries.val" :filterArray='filterArray'
           @close="showPanels.summaries.val = false"/>
-        <SeqDepth v-if="showPanels.depth.val" @close="showPanels.depth.val = false" 
+        <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false" 
           :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
         <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
           :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
-        <SnvDepth v-if="showPanels.depth.val" @close="showPanels.depth.val = false" 
+        <SnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
           :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
           :filters="filterArray" :visibleVariants="visibleVariants"/>
-
-        <pre>
-          REGIONDASH DEBUG
-          childWidth: {{childWidth}}
-        </pre>
-
+        <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
+          :givenWidth="childWidth" :givenMargins="childMargins" />
 
         <!--
         <summaries v-if="showSummaries" v-on:close="showSummaries = false"
@@ -50,7 +46,6 @@
         <gene v-if="showGene && gene_view" v-on:close="showGene = false"
           v-bind:region="region" v-bind:dimensions="dimensions" 
           v-bind:hoveredVariant="hoveredVariant"/>
-
         <snv v-if="showSNV" v-on:close="showSNV = false" v-bind:api="api"
           v-bind:region="region" v-bind:dimensions="dimensions" 
           v-bind:filters="activeFilters" v-bind:visibleVariants="visibleVariants" 
@@ -105,7 +100,8 @@ import FilterBar       from '@/components/FilterBar.vue'
 import ToggleList      from '@/components/ToggleList.vue'
 import SeqDepth        from '@/components/SeqDepth.vue'
 import GeneBars        from '@/components/GeneBars.vue'
-import SnvDepth        from '@/components/SnvDepth.vue'
+import SnvCount        from '@/components/SnvCount.vue'
+import BpCoordBar      from '@/components/BpCoordBar.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -117,7 +113,8 @@ export default {
     ToggleList,
     SeqDepth,
     GeneBars,
-    SnvDepth
+    SnvCount,
+    BpCoordBar
   },
   inject: {
     chrom: {default: null},
@@ -132,9 +129,9 @@ export default {
 
       showPanels: {
         summaries: {title: "Summary", val: true},
-        depth:     {title: "Avg. Depth", val: true},
+        seqDepth:  {title: "Avg. Depth", val: true},
         genes:     {title: "Genes", val: true},
-        snv:       {title: "Variants Count", val: true},
+        snvCount:  {title: "Variants Count", val: true},
       },
       showCols: {
         colVariantID:      { title: "Variant ID", val: true},
@@ -169,7 +166,7 @@ export default {
 
       //formerly dimensions.width
       //  width provided to child components.
-      childWidth : 300,
+      childWidth: 300,
 
       //formerly dimensions.margin
       // standard margins for child component calculations

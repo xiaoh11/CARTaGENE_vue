@@ -344,6 +344,13 @@ export default {
           this.highlight();
         }
       }
+    },
+    givenWidth: function() {
+      if ((!this.loading) && (!this.failed)) {
+        if (this.genes.length > 0) {
+          this.draw()
+        }
+      }
     }
   }
 }
