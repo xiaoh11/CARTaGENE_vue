@@ -46,143 +46,143 @@
 </template>
 
 <script>
-  import clone from 'just-clone';
+import clone from 'just-clone';
 
-  export default {
-    name: "QualityFilterButton",
-    data: function() {
-      return {
-        // persisted form values. Loaded on show. Updated on save. 
-        pFilter: {
-          gPassQC: {
-            title: "All variants which pass QC",
-            allTrue: false,
-            members: {
-              PASS: { 
-                title: "PASS", 
-                val: false,
-                desc: "All filters passed"
-              }
-            }
-          },
-          gFailQC:{
-            title: "All variants which failed QC",
-            allTrue: false,
-            members: {
-              SVM: { 
-                title: "SVM", 
-                val: false,
-                desc: "Variant failed SVM filter"
-              },
-              DISC: { 
-                title: "DISC", 
-                val: false,
-                desc: "Mendelian or duplicate genotype discordance is high"
-              },
-              EXHET: { 
-                title: "EXHET", 
-                val: false,
-                desc: "Excess heterozygosity"
-              }
+export default {
+  name: "QualityFilterButton",
+  data: function() {
+    return {
+      // persisted form values. Loaded on show. Updated on save. 
+      pFilter: {
+        gPassQC: {
+          title: "All variants which pass QC",
+          allTrue: false,
+          members: {
+            PASS: { 
+              title: "PASS", 
+              val: false,
+              desc: "All filters passed"
             }
           }
         },
-        // ephemeral filter model the form edits directly, but need to be applied to persist.
-        eFilter: {},
-        filterVals: [{field: "filter", type: "=", value: "PASS"}],
-        showDropDown: false
-      }
-    },
-    emits: ['filterChange'],
-    created: function() {
-      // initial setup of ephemeral filters to ensure they're never empty.
-      this.eFilter = clone(this.pFilter)
-    },
-    computed: {
-      buttonClass() { 
-        if(this.filterVals.length > 0){ 
-          return('btn-primary')
-        }
-        else {
-          return('btn-outline-primary')
-        }
-      },
-      dropDownClass(){
-        if(this.showDropDown){
-          return("parent-menu-dropdown shadow")
-        }
-        else {
-          return("parent-menu-dropdown shadow show")
-        }
-      }
-    },
-    watch: {
-      // When showing the drop down, load the persistent filters.
-      showDropDown: function(val){
-        if(val){
-          this.eFilter = clone(this.pFilter)
-        }
-      }
-    },
-    methods: {
-      isEntireGroupTrue: function(filterGroup){
-        let verdict = Object.values(filterGroup.members)
-          .map(m => m.val)
-          .every(v => v)
-        return verdict
-      },
-      filterGroupToArray: function(filterGroup){
-        let arr = []
-        Object.entries(filterGroup.members).forEach( ([key, content]) => {
-          if(content.val === true){
-            arr.push({ field: 'filter', type: '=', value: key})
+        gFailQC:{
+          title: "All variants which failed QC",
+          allTrue: false,
+          members: {
+            SVM: { 
+              title: "SVM", 
+              val: false,
+              desc: "Variant failed SVM filter"
+            },
+            DISC: { 
+              title: "DISC", 
+              val: false,
+              desc: "Mendelian or duplicate genotype discordance is high"
+            },
+            EXHET: { 
+              title: "EXHET", 
+              val: false,
+              desc: "Excess heterozygosity"
+            }
           }
-        })
-        return(arr)
-      },
-      filterToArray: function(filter){
-        let arr = Object.values(filter)
-          .map(g => this.filterGroupToArray(g))
-          .flat()
-        return(arr)
-      },
-      emitFilterChange: function (){
-        this.$emit('filterChange', 'qualityFitler', this.filterToArray(this.pFilter))
-      },
-      applyFilters: function() {
-        if( JSON.stringify(this.pFilter) === JSON.stringify(this.eFilter)){
-          return
-        }
-        // Make ephemeral selection persistent
-        this.pFilter = clone(this.eFilter)
-
-        this.emitFilterChange()
-        this.showDropDown = false
-      },
-      setGroupVals: function(filterGroup, val){
-        for(let member of Object.values(filterGroup.members)){
-          member.val = val
         }
       },
-      clearEphemeralFilters: function() {
-        for(let group of Object.values(this.eFilter)){
-          group.allTrue = false
-          this.setGroupVals(group, false)
-        }
-      },
-      handleClickAway: function(){
-        this.showDropDown = false
-      },
-      handleGroupToggle: function(group){
-        // v-model fires after on click, so eventual value is opposite of observed here.
-        // set group to match eventual value
-        this.setGroupVals(group, group.allTrue)
-      },
-      handleMemberToggle: function(member, group){
-        group.allTrue = this.isEntireGroupTrue(group)
+      // ephemeral filter model the form edits directly, but need to be applied to persist.
+      eFilter: {},
+      filterVals: [{field: "filter", type: "=", value: "PASS"}],
+      showDropDown: false
+    }
+  },
+  emits: ['filterChange'],
+  created: function() {
+    // initial setup of ephemeral filters to ensure they're never empty.
+    this.eFilter = clone(this.pFilter)
+  },
+  computed: {
+    buttonClass() { 
+      if(this.filterVals.length > 0){ 
+        return('btn-primary')
+      }
+      else {
+        return('btn-outline-primary')
+      }
+    },
+    dropDownClass(){
+      if(this.showDropDown){
+        return("parent-menu-dropdown shadow")
+      }
+      else {
+        return("parent-menu-dropdown shadow show")
       }
     }
+  },
+  watch: {
+    // When showing the drop down, load the persistent filters.
+    showDropDown: function(val){
+      if(val){
+        this.eFilter = clone(this.pFilter)
+      }
+    }
+  },
+  methods: {
+    isEntireGroupTrue: function(filterGroup){
+      let verdict = Object.values(filterGroup.members)
+        .map(m => m.val)
+        .every(v => v)
+      return verdict
+    },
+    filterGroupToArray: function(filterGroup){
+      let arr = []
+      Object.entries(filterGroup.members).forEach( ([key, content]) => {
+        if(content.val === true){
+          arr.push({ field: 'filter', type: '=', value: key})
+        }
+      })
+      return(arr)
+    },
+    filterToArray: function(filter){
+      let arr = Object.values(filter)
+        .map(g => this.filterGroupToArray(g))
+        .flat()
+      return(arr)
+    },
+    emitFilterChange: function (){
+      this.$emit('filterChange', 'qualityFitler', this.filterToArray(this.pFilter))
+    },
+    applyFilters: function() {
+      if( JSON.stringify(this.pFilter) === JSON.stringify(this.eFilter)){
+        return
+      }
+      // Make ephemeral selection persistent
+      this.pFilter = clone(this.eFilter)
+
+      this.emitFilterChange()
+      this.showDropDown = false
+    },
+    setGroupVals: function(filterGroup, val){
+      for(let member of Object.values(filterGroup.members)){
+        member.val = val
+      }
+    },
+    clearEphemeralFilters: function() {
+      for(let group of Object.values(this.eFilter)){
+        group.allTrue = false
+        this.setGroupVals(group, false)
+      }
+    },
+    handleClickAway: function(){
+      this.showDropDown = false
+    },
+    handleGroupToggle: function(group){
+      // v-model fires after on click, so eventual value is opposite of observed here.
+      // set group to match eventual value
+      this.setGroupVals(group, group.allTrue)
+    },
+    handleMemberToggle: function(member, group){
+      group.allTrue = this.isEntireGroupTrue(group)
+    }
   }
+}
 </script>
 
 <style scoped>

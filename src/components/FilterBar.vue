@@ -5,6 +5,7 @@
         <div class="col-12" style="padding-left: 0px; padding-top: 2px; padding-bottom: 2px;">
           <QualityFilterButton v-bind="$attrs" givenCategory="quality"/>
           <BaseFilterButton v-bind="$attrs"/>
+          <DemoButton v-bind="$attrs" givenCategory="demo" title="Demo"/>
           <!--
           <AnnotationFilterButton/>
           <LOFTEEFilterButton/>
@@ -21,6 +22,8 @@
 <script>
 import QualityFilterButton from '@/components/filters/QualityFilterButton.vue'
 import BaseFilterButton from '@/components/filters/BaseFilterButton.vue'
+import DemoButton from '@/components/filters/DemoButton.vue'
+
 export default {
   name: "FilterBar",
   inheritAttrs: false,
@@ -32,7 +35,8 @@ export default {
   },
   components: {
     QualityFilterButton,
-    BaseFilterButton
+    BaseFilterButton,
+    DemoButton
   },
 }
 </script>
