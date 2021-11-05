@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './RegionPage.vue'
 import VueGtag from 'vue-gtag'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import '@/assets/bravo.css'
 import {clickOutside} from '@/CustomDirectives'
 
 const app = createApp(App);

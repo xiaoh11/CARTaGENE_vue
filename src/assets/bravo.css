@@ -1,0 +1,44 @@
+.parentMenu {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  display: inline-block;
+  font-size: 14px;
+}
+
+.parentMenu__button {
+  outline: none;
+  padding: 0px 7px 0px 7px;
+  margin: 1px 1px 1px 1px;
+  color: white;
+  background-color: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.parentMenu__button:hover {
+  background-color: #0062cc;
+  border-color: #0062cc;
+}
+
+.parentMenu__dropdown {
+  display: block;
+  position: absolute;
+  background-color: #eeeeee;
+  min-width: 140px;
+  overflow: auto;
+  box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
+  border: 1px solid #cbcacb;
+  z-index: 999;
+}
+
+.parentMenu__dropdown a {
+  display: block;
+  padding: 4px 2px;
+  color: black;
+  text-align: left;
+  text-decoration: none;
+}
+
+.parentMenu__dropdown a:hover {
+  background-color: #cccccc;
+}
