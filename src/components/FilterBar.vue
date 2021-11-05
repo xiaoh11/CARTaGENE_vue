@@ -3,7 +3,8 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12" style="padding-left: 0px; padding-top: 2px; padding-bottom: 2px;">
-          <QualityFilterButton v-bind="$attrs"/>
+          <QualityFilterButton v-bind="$attrs" givenCategory="quality"/>
+          <BaseFilterButton v-bind="$attrs"/>
           <!--
           <AnnotationFilterButton/>
           <LOFTEEFilterButton/>
@@ -19,6 +20,7 @@
 
 <script>
 import QualityFilterButton from '@/components/filters/QualityFilterButton.vue'
+import BaseFilterButton from '@/components/filters/BaseFilterButton.vue'
 export default {
   name: "FilterBar",
   inheritAttrs: false,
@@ -29,7 +31,8 @@ export default {
     }
   },
   components: {
-    QualityFilterButton
+    QualityFilterButton,
+    BaseFilterButton
   },
 }
 </script>
