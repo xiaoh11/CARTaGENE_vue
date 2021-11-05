@@ -17,7 +17,6 @@
         </div>
       </div>
       <div style="position: relative; min-height: 20px">
-        <FilterBar @filterChange='handleFilterChange'/>
         <RegionSummaries v-if="showPanels.summaries.val" :filterArray='filterArray'
           @close="showPanels.summaries.val = false"/>
         <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false" 
@@ -32,7 +31,7 @@
           :filters="filterArray" :visibleVariants="visibleVariants"/>
         <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
           :givenWidth="childWidth" :givenMargins="childMargins" />
-
+        <FilterBar @filterChange='handleFilterChange'/>
         <!--
         <summaries v-if="showSummaries" v-on:close="showSummaries = false"
           v-bind:api="api" v-bind:region="region" v-bind:filters="activeFilters"/>
@@ -50,12 +49,13 @@
           v-bind:region="region" v-bind:dimensions="dimensions" 
           v-bind:filters="activeFilters" v-bind:visibleVariants="visibleVariants" 
           v-bind:hoveredVariant="hoveredVariant"/>
-
         <coordinates v-bind:region="region" v-bind:dimensions="dimensions"/>
+
         <snvfilter ref="filter"
           v-bind:suggestions="filterSuggestions"
           v-bind:filters="activeFilters"
           v-on:filter="onFilterChange"/>
+
         <snvtable ref="snvtable"
           v-on:suggestions="onFilterSuggestionsChange"
           v-on:scroll="variantsScroll"

@@ -6,56 +6,33 @@
         </button>
         <div v-if="showDropDown" class="dropdown-menu shadow show">
           <form class="p-2">
-            <ul style="list-style-type: none; padding-left: 0;">
+
+            <template v-for="(group, groupKey) in eFilter" :key="groupKey">
               <li>
                 <div class="custom-control custom-checkbox">
-                  <input class="custom-control-input" type="checkbox" value="allPassQC" id="allPassedQC" v-model="eFilter.allPassQC">
-                  <label class="custom-control-label" for="allPassedQC">All variants which pass QC</label>
+                  <input class="custom-control-input" type="checkbox" :value="groupKey" 
+                    :id="groupKey" v-model="group.allTrue" @change="handleGroupToggle(group)">
+                  <label class="custom-control-label" :for="groupKey">{{group.title}}</label>
                 </div>
                 <ul style="list-style-type: none; padding-left: 1rem; padding-top: 0.2rem;">
+                <template v-for="(member, memberKey) in group.members" :key="memberKey">
                   <li>
                     <div class="custom-control custom-checkbox">
-                      <input class="custom-control-input" type="checkbox" value="PASS" id="PASS" v-model="eFilter.groupPassQC.PASS">
-                      <label class="custom-control-label" for="PASS">PASS</label>
-                      <small class="form-text text-muted">All filters passed</small>
+                      <input class="custom-control-input" type="checkbox" :value="memberKey" :id="memberKey" 
+                             v-model="member.val" @change="handleMemberToggle(member, group)">
+                      <label class="custom-control-label" :for="memberKey">{{member.title}}</label>
+                      <small class="form-text text-muted">{{member.desc}}</small>
                     </div>
                   </li>
+                </template>
                 </ul>
               </li>
-              <li>
-                <div class="custom-control custom-checkbox">
-                  <input class="custom-control-input" type="checkbox" value="" id="allFailedQC" v-model="eFilter.allFailQC">
-                  <label class="custom-control-label" for="allFailedQC">All variants which failed QC</label>
-                </div>
-                <ul style="list-style-type: none; padding-left: 1rem; padding-top: 0.2rem;">
-                  <li>
-                    <div class="custom-control custom-checkbox">
-                      <input class="custom-control-input" type="checkbox" value="SVM" id="SVM" v-model="eFilter.groupFailQC.SVM">
-                      <label class="custom-control-label" for="SVM">SVM</label>
-                      <small class="form-text text-muted">Variant failed SVM filter</small>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="custom-control custom-checkbox">
-                      <input class="custom-control-input" type="checkbox" value="DISC" id="DISC" v-model="eFilter.groupFailQC.DISC">
-                      <label class="custom-control-label" for="DISC">DISC</label>
-                      <small class="form-text text-muted">Mendelian or duplicate genotype discordance is high</small>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="custom-control custom-checkbox">
-                      <input class="custom-control-input" type="checkbox" value="EXHET" id="EXHET" v-model="eFilter.groupFailQC.EXHET">
-                      <label class="custom-control-label" for="EXHET">EXHET</label>
-                      <small class="form-text text-muted">Excess heterozygosity.</small>
-                    </div>
-                  </li>
-                </ul>
-              </li>
-            </ul>
+            </template>
+
             <hr/>
             <div class="form-row">
               <div class="col mr-auto">
-                <button type="button" class="btn btn-secondary btn-sm" v-on:click="clearFilters">Clear</button>
+                <button type="button" class="btn btn-secondary btn-sm" v-on:click="clearEphemeralFilters">Clear</button>
               </div>
               <div class="col mr-auto">
                 <button type="button" class="btn btn-primary btn-sm float-right" v-on:click="applyFilters">Apply</button>
@@ -77,15 +54,37 @@
       return {
         // persisted form values. Loaded on show. Updated on save. 
         pFilter: {
-          allPassQC: false,
-          groupPassQC: {
-            PASS: false
+          gPassQC: {
+            title: "All variants which pass QC",
+            allTrue: false,
+            members: {
+              PASS: { 
+                title: "PASS", 
+                val: false,
+                desc: "All filters passed"
+              }
+            }
           },
-          allFailQC: false,
-          groupFailQC:{
-            SVM: false,
-            DISC: false,
-            EXHET: false
+          gFailQC:{
+            title: "All variants which failed QC",
+            allTrue: false,
+            members: {
+              SVM: { 
+                title: "SVM", 
+                val: false,
+                desc: "Variant failed SVM filter"
+              },
+              DISC: { 
+                title: "DISC", 
+                val: false,
+                desc: "Mendelian or duplicate genotype discordance is high"
+              },
+              EXHET: { 
+                title: "EXHET", 
+                val: false,
+                desc: "Excess heterozygosity"
+              }
+            }
           }
         },
         // ephemeral filter model the form edits directly, but need to be applied to persist.
@@ -126,18 +125,25 @@
       }
     },
     methods: {
+      isEntireGroupTrue: function(filterGroup){
+        let verdict = Object.values(filterGroup.members)
+          .map(m => m.val)
+          .every(v => v)
+        return verdict
+      },
       filterGroupToArray: function(filterGroup){
         let arr = []
-        Object.entries(filterGroup).forEach( ([key, value]) => {
-          if(value === true){
+        Object.entries(filterGroup.members).forEach( ([key, content]) => {
+          if(content.val === true){
             arr.push({ field: 'filter', type: '=', value: key})
           }
         })
         return(arr)
       },
       filterToArray: function(filter){
-        let arr = [].concat(this.filterGroupToArray(filter.groupPassQC))
-          .concat(this.filterGroupToArray(filter.groupFailQC))
+        let arr = Object.values(filter)
+          .map(g => this.filterGroupToArray(g))
+          .flat()
         return(arr)
       },
       emitFilterChange: function (){
@@ -147,30 +153,33 @@
         if( JSON.stringify(this.pFilter) === JSON.stringify(this.eFilter)){
           return
         }
-        // Make selection persistent
+        // Make ephemeral selection persistent
         this.pFilter = clone(this.eFilter)
 
         this.emitFilterChange()
         this.showDropDown = false
       },
-      clearFilters: function() {
-        console.log('run clear')
-        // set all ephemeral filters to false
-        this.eFilter = {
-          allPassQC: false,
-          groupPassQC: {
-            PASS: false
-          },
-          allFailQC: false,
-          groupFailQC:{
-            SVM: false,
-            DISC: false,
-            EXHET: false
-          }
+      setGroupVals: function(filterGroup, val){
+        for(let member of Object.values(filterGroup.members)){
+          member.val = val
+        }
+      },
+      clearEphemeralFilters: function() {
+        for(let group of Object.values(this.eFilter)){
+          group.allTrue = false
+          this.setGroupVals(group, false)
         }
       },
       handleClickAway: function(){
         this.showDropDown = false
+      },
+      handleGroupToggle: function(group){
+        // v-model fires after on click, so eventual value is opposite of observed here.
+        // set group to match eventual value
+        this.setGroupVals(group, group.allTrue)
+      },
+      handleMemberToggle: function(member, group){
+        group.allTrue = this.isEntireGroupTrue(group)
       }
     }
   }
