@@ -88,10 +88,3 @@ describe('QualityFilterButton dropdown', () => {
     expect(wrapper.vm.showDropDown).to.equal(initialState)
   })
 })
-
-
-describe('FilterButton group handling', () => {
-  const wrapper = shallowMount(QualityFilterButton, {})
-
-})
-

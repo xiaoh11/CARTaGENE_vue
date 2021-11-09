@@ -1,7 +1,7 @@
 <template>
     <div class="parentMenu" v-click-outside="handleClickAway">
       <div style="display: inline-block;">
-        <button class="btn btn-sm dropdown-toggle" :class="usedClass" v-on:click="showDropDown = !showDropDown">
+        <button class="btn btn-sm dropdown-toggle" :class="activeClass" v-on:click="showDropDown = !showDropDown">
           {{compositeTitle}} 
         </button>
         <div v-if="showDropDown" class="dropdown-menu shadow show">
@@ -114,11 +114,23 @@ export default {
   },
   emits: ['filterChange'],
   created: function() {
-    // initial setup of ephemeral filters to ensure they're never empty.
+    //save hassle of specifying allTrue on groups and val of members
+    //  Default to false.
+    let groups = Object.values(this.pFilter)
+    for( let g of groups){
+      g.allTrue = (g.allTrue === undefined) ? false : g.allTrue
+      for( let m of Object.values(g.members)){
+        m.val = (m.val === undefined) ? false: m.val
+      }
+    }
+
+    //check if any groups are allTrue already.
+
+    //ensure ephemeral filters are never empty.
     this.eFilter = clone(this.pFilter)
   },
   computed: {
-    usedClass(){ 
+    activeClass() { 
       if(this.appliedFiltersCount > 0){ 
         return('btn-primary')
       }
@@ -126,14 +138,14 @@ export default {
         return('btn-outline-primary')
       }
     },
-    compositeTitle(){
+    compositeTitle() {
       if( this.appliedFiltersCount > 0 ) {
         return( this.title + ` (${this.appliedFiltersCount})`)
       } else {
         return( this.title )
       }
     },
-    appliedFiltersCount(){
+    appliedFiltersCount() {
       let vals = Object.values(this.pFilter)
         .map(g => Object.values(g.members))
         .flat()

@@ -7,8 +7,6 @@
           <AnnotationFilterButton v-bind="$attrs" givenCategory="annotation" title="Annotation"/>
           <LofteeFilterButton v-bind="$attrs" givenCategory="loftee" title="LOFTEE"/>
           <!--
-          <AnnotationFilterButton/>
-          <LOFTEEFilterButton/>
           <FrequencyFilterButton/>
           <CADDFilterButton/>
           <rsIdFilterButton/>

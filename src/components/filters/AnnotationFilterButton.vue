@@ -1,9 +1,9 @@
 <script>
-import BaseFilterButton from '@/components/filters/BaseFilterButton.vue'
+import BaseBooleanFilterButton from '@/components/filters/BaseBooleanFilterButton.vue'
 
 export default {
   name: "AnnotationFilterButton",
-  extends: BaseFilterButton,
+  extends: BaseBooleanFilterButton,
   data: function() {
     return ({
       pFilter: {
