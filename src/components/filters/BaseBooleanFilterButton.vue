@@ -103,37 +103,30 @@ export default {
       pFilter: {
         gColorFilter: {
           title: "Example Filter Group",
-          allTrue: false,
           members: {
             red: { 
               title: "Red", 
-              val: false,
               desc: "Is red."
             },
             green: { 
               title: "Green", 
-              val: false,
               desc: "Is green"
             }
           }
         },
         gQCFails:{
           title: "Quality Control Failures",
-          allTrue: false,
           members: {
             mainQC: { 
               title: "Main Quality Control", 
-              val: false,
               desc: "Failed primary quality control"
             },
             secondary: { 
               title: "Secondary", 
-              val: false,
               desc: "Failed Secondary quality control"
             },
             alice: { 
               title: "Project alICE", 
-              val: false,
               desc: "Failed QC for the fictional alICE project"
             }
           }
