@@ -88,6 +88,11 @@ describe('BaseBooleanFilterButton setup', () => {
     expect(groups.every( g => g.allTrue == false )).to.be.true
   })
 
+  it('defaults collapseable to false', () => {
+    let groups = Object.values(wrapper.vm.pFilter)
+    expect(groups.every( g => g.collapseable == false )).to.be.true
+  })
+
   it('defaults undefined member vals to false', () => {
     let groups = Object.values(wrapper.vm.pFilter)
     let allMembers = groups
@@ -161,7 +166,7 @@ describe('BaseBooleanFilterButton rendering', () => {
   })
 })
 
-describe('BaseBooleanFilterButton collapseable rendering', () => {
+describe('BaseBooleanFilterButton with collapseable groups', () => {
   let wrapper = {}
 
   // Remount so these tests can mutate DOM
@@ -173,10 +178,24 @@ describe('BaseBooleanFilterButton collapseable rendering', () => {
     })
   })
 
-  it.skip('renders collapsed section for collapsed groups.', async () => {
-    wrapper.find('button').trigger('click')
-    await nextTick()
-  
+  it('computes that there exists a collapseable group', () => {
+    expect(wrapper.vm.isCollapseFiltSetPresent).to.be.true
+  })
+
+  it('computes an object of collaseable groups only', () => {
+    const cfs = wrapper.vm.collapseFiltSet
+    const groups = Object.values( cfs )
+
+    expect(cfs).to.be.an('object')
+    expect(groups.length).to.equal(1)
+  })
+
+  it('computes an object of non-collaseable groups only', () => {
+    const fs = wrapper.vm.nonCollapseFiltSet
+    const groups = Object.values( fs )
+
+    expect(fs).to.be.an('object')
+    expect(groups.length).to.equal(2)
   })
 
 })
