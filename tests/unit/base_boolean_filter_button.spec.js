@@ -19,7 +19,7 @@ const generateMembers = function(n){
 }
 
 /* 
- * Fixtures to compose into pFilters for testing 
+ * Fixtures to compose into pFiltSets for testing 
 */
 // leave vals for default
 const filterGroupOne = {
@@ -57,6 +57,14 @@ const filterGroupTwo = {
   }
 }
 
+const filterGroupThree = {
+  title: "Default True Filter Group",
+  members: {
+    blue: { title: "Blue", desc: "Is Blue", val: true },
+    cyan: { title: "Cyan", desc: "Is Cyan", val: true }
+  }
+}
+
 // generate a large group of members to be hidden in a collapseable element
 const filterGroupHidden = {
   title: "Quality Control Failures",
@@ -65,8 +73,9 @@ const filterGroupHidden = {
 }
 
 const exFilter = {
-  gOne: filterGroupOne,
-  gTwo: filterGroupTwo
+  gOne:   filterGroupOne,
+  gTwo:   filterGroupTwo,
+  gThree: filterGroupThree
 }
 
 const exCollapseFilter = {
@@ -76,25 +85,25 @@ const exCollapseFilter = {
 }
 
 describe('BaseBooleanFilterButton setup', () => {
-  // Clone example filter so it can be mutated in tests.
   const wrapper = shallowMount(BaseBooleanFilterButton, {
     data() {
-      return {pFilter: clone(exFilter)}
+      return {pFiltSet: clone(exFilter)}
     }
   })
 
-  it('defaults allTrue to false', () => {
-    let groups = Object.values(wrapper.vm.pFilter)
-    expect(groups.every( g => g.allTrue == false )).to.be.true
+  it('sets allTrue according to group values', () => {
+    expect(wrapper.vm.pFiltSet.gOne.allTrue).to.be.false
+    expect(wrapper.vm.pFiltSet.gTwo.allTrue).to.be.false
+    expect(wrapper.vm.pFiltSet.gThree.allTrue).to.be.true
   })
 
   it('defaults collapseable to false', () => {
-    let groups = Object.values(wrapper.vm.pFilter)
+    let groups = Object.values(wrapper.vm.pFiltSet)
     expect(groups.every( g => g.collapseable == false )).to.be.true
   })
 
   it('defaults undefined member vals to false', () => {
-    let groups = Object.values(wrapper.vm.pFilter)
+    let groups = Object.values(wrapper.vm.pFiltSet)
     let allMembers = groups
       .map( g => g.members )
       .flatMap((m) => Object.values(m))
@@ -102,8 +111,8 @@ describe('BaseBooleanFilterButton setup', () => {
     expect(allMembers.every(m => m.val !== undefined)).to.be.true
   })
 
-  it('clones eFilter from pFilter when created', () => {
-    expect(wrapper.vm.eFilter).to.eql(wrapper.vm.pFilter)
+  it('clones eFiltSet from pFiltSet when created', () => {
+    expect(wrapper.vm.eFiltSet).to.eql(wrapper.vm.pFiltSet)
   })
 
 })
@@ -115,7 +124,7 @@ describe('BaseBooleanFilterButton rendering', () => {
   beforeEach(function(){
     wrapper = shallowMount(BaseBooleanFilterButton, {
       data() {
-        return {pFilter: clone(exFilter)}
+        return {pFiltSet: clone(exFilter)}
       }
     })
   })
@@ -131,31 +140,31 @@ describe('BaseBooleanFilterButton rendering', () => {
   })
 
 
-  it('clones eFilter from pFilter on dropdown', async () => {
-    wrapper.vm.eFilter.gOne.members.red.val = true
-    expect(wrapper.vm.eFilter).to.not.eql(wrapper.vm.pFilter)
+  it('clones eFiltSet from pFiltSet on dropdown', async () => {
+    wrapper.vm.eFiltSet.gOne.members.red.val = true
+    expect(wrapper.vm.eFiltSet).to.not.eql(wrapper.vm.pFiltSet)
 
     wrapper.find('button').trigger('click')
     await nextTick()
 
-    expect(wrapper.vm.eFilter).to.eql(wrapper.vm.pFilter)
+    expect(wrapper.vm.eFiltSet).to.eql(wrapper.vm.pFiltSet)
   })
 
-  it('renders groups from pFilter data', async () => {
+  it('renders groups from pFiltSet data', async () => {
     wrapper.find('button').trigger('click')
     await nextTick()
 
-    let numGroups = Object.values(wrapper.vm.pFilter).length
+    let numGroups = Object.values(wrapper.vm.pFiltSet).length
     let numGroupItems = wrapper.findAll('form > li').length
 
     expect(numGroupItems).to.equal(numGroups)
   })
 
-  it('renders members from pFilter data', async () => {
+  it('renders members from pFiltSet data', async () => {
     wrapper.find('button').trigger('click')
     await nextTick()
 
-    let groups = Object.values(wrapper.vm.pFilter)
+    let groups = Object.values(wrapper.vm.pFiltSet)
     let numAllMembers = groups
       .map( g => g.members )
       .flatMap((m) => Object.values(m))
@@ -173,7 +182,7 @@ describe('BaseBooleanFilterButton with collapseable groups', () => {
   beforeEach(function(){
     wrapper = shallowMount(BaseBooleanFilterButton, {
       data() {
-        return {pFilter: clone(exCollapseFilter)}
+        return {pFiltSet: clone(exCollapseFilter)}
       }
     })
   })

@@ -1,5 +1,5 @@
 <template>
-    <div class="parentMenu" v-click-outside="handleClickAway">
+    <div class="btn-group mr-1 mt-1" v-click-outside="handleClickAway">
       <div style="display: inline-block;">
         <button class="btn btn-sm dropdown-toggle" :class="activeClass" v-on:click="showDropDown = !showDropDown">
           {{compositeTitle}} 
@@ -100,7 +100,7 @@ export default {
   data: function() {
     return {
       // persisted form values. Loaded on show. Updated on save. 
-      pFilter: {
+      pFiltSet: {
         gColorFilter: {
           title: "Example Filter Group",
           members: {
@@ -133,7 +133,7 @@ export default {
         }
       },
       // ephemeral filter model the form edits directly
-      eFilter: {},
+      eFiltSet: {},
       filterVals: [{field: "filter", type: "=", value: "PASS"}],
       showDropDown: false,
       showHidden: false
@@ -141,20 +141,22 @@ export default {
   },
   emits: ['filterChange'],
   created: function() {
-    //Explicitly default val, allTrue, and collapseable to false.
-    let groups = Object.values(this.pFilter)
+    //Explicitly set defaults: val, allTrue, and collapseable
+    let groups = Object.values(this.pFiltSet)
     for( let g of groups){
-      g.allTrue = (g.allTrue === undefined) ? false : g.allTrue
+      //g.allTrue = (g.allTrue === undefined) ? false : g.allTrue
       g.collapseable = (g.collapseable === undefined) ? false : g.collapseable
       for( let m of Object.values(g.members)){
         m.val = (m.val === undefined) ? false: m.val
       }
+      //set allTrue based on member vals
+      g.allTrue = this.isEntireGroupTrue(g)
     }
 
-    //check if any groups are allTrue initially.
+    
 
     //ensure ephemeral filters are never empty.
-    this.eFilter = clone(this.pFilter)
+    this.eFiltSet = clone(this.pFiltSet)
   },
   computed: {
     activeClass() { 
@@ -173,7 +175,7 @@ export default {
       }
     },
     appliedFiltersCount() {
-      let vals = Object.values(this.pFilter)
+      let vals = Object.values(this.pFiltSet)
         .map(g => Object.values(g.members))
         .flat()
         .map(m => m.val)
@@ -183,16 +185,16 @@ export default {
     nonCollapseFiltSet() {
       return(
         Object.fromEntries(
-          Object.entries(this.eFilter).filter(e => e[1].collapseable === false))
+          Object.entries(this.eFiltSet).filter(e => e[1].collapseable === false))
       )
     },
     collapseFiltSet() {
       return( Object.fromEntries(
-        Object.entries(this.eFilter).filter(e => e[1].collapseable === true))
+        Object.entries(this.eFiltSet).filter(e => e[1].collapseable === true))
       )
     },
     isCollapseFiltSetPresent(){
-      return(Object.values(this.eFilter).some(g => g.collapseable === true))
+      return(Object.values(this.eFiltSet).some(g => g.collapseable === true))
     },
     showHideText(){
       return(this.showHidden ? "Show less" : "Show more")
@@ -202,7 +204,7 @@ export default {
     // When showing the drop down, load the persistent filters.
     showDropDown: function(val){
       if(val){
-        this.eFilter = clone(this.pFilter)
+        this.eFiltSet = clone(this.pFiltSet)
       }
     }
   },
@@ -229,16 +231,16 @@ export default {
       return(arr)
     },
     emitFilterChange: function (){
-      this.$emit('filterChange', this.givenCategory, this.filterToArray(this.pFilter))
+      this.$emit('filterChange', this.givenCategory, this.filterToArray(this.pFiltSet))
     },
     applyFilters: function() {
       this.showDropDown = false
 
       // If selection changed, make ephemeral selection persistent
-      if( JSON.stringify(this.pFilter) === JSON.stringify(this.eFilter)){
+      if( JSON.stringify(this.pFiltSet) === JSON.stringify(this.eFiltSet)){
         return
       }
-      this.pFilter = clone(this.eFilter)
+      this.pFiltSet = clone(this.eFiltSet)
       this.emitFilterChange()
     },
     setGroupVals: function(filterGroup, val){
@@ -247,7 +249,7 @@ export default {
       }
     },
     clearEphemeralFilters: function() {
-      for(let group of Object.values(this.eFilter)){
+      for(let group of Object.values(this.eFiltSet)){
         group.allTrue = false
         this.setGroupVals(group, false)
       }

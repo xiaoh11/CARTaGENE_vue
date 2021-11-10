@@ -6,7 +6,7 @@ export default {
   extends: BaseBooleanFilterButton,
   data: function() {
     return ({
-      pFilter: {
+      pFiltSet: {
         gPassQC: {
           title: "All variants which pass QC",
           allTrue: false,
