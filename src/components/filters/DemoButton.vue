@@ -6,7 +6,7 @@ export default {
   extends: BaseFilterButton,
   data: function() {
     return ({
-      pFilter: {
+      pFiltSet: {
         gColorFilter: {
           title: "Example Filter Group",
           allTrue: false,

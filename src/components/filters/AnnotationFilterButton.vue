@@ -6,7 +6,7 @@ export default {
   extends: BaseBooleanFilterButton,
   data: function() {
     return ({
-      pFilter: {
+      pFiltSet: {
         gSynVariants: {
           title: "All synonymous variants",
           members: {

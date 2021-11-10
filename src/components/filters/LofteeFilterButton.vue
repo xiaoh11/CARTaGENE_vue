@@ -6,7 +6,7 @@ export default {
   extends: BaseBooleanFilterButton,
   data: function() {
     return ({
-      pFilter: {
+      pFiltSet: {
         gLof: {
           title: "All putative Loss-of-Function (pLoF) variants",
           members: {

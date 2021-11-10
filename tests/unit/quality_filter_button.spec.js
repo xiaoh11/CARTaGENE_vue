@@ -58,7 +58,7 @@ describe('QualityFilterButton filter changes', () => {
     const wrapper = shallowMount(QualityFilterButton, {})
 
     wrapper.setData({
-      eFilter: exFilter
+      eFiltSet: exFilter
     })
 
     wrapper.vm.applyFilters()
@@ -68,7 +68,7 @@ describe('QualityFilterButton filter changes', () => {
   it('does NOT emit FilterChange when filter unchanged', () => {
     const wrapper = shallowMount(QualityFilterButton, {})
 
-    wrapper.setData({ eFilter: clone(wrapper.pFilter) })
+    wrapper.setData({ eFiltSet: clone(wrapper.pFiltSet) })
 
     wrapper.vm.applyFilters()
     expect(wrapper.emitted()).to.be.empty
