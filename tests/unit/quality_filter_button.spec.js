@@ -7,54 +7,65 @@ import clone from 'just-clone';
 import {clickOutside} from '@/CustomDirectives'
 config.global.directives = { 'click-outside': clickOutside }
 
-describe('QualityFilterButton.vue filter conversion methods', () => {
+// Example filter values with mix of true and false.
+const exFilter = {
+  gPassQC: {
+    allTrue: true,
+    members: { PASS: { val: true } }
+  },
+  gFailQC:{
+    allTrue: false,
+    members: { 
+      SVM:   { val: false}, 
+      DISC:  { val: true },
+      EXHET: { val: true}
+    }
+  }
+}
+
+describe('QualityFilterButton filter conversion methods', () => {
   const wrapper = shallowMount(QualityFilterButton, {})
 
   it('filterGroupToArray yields array of mongo like filters', () => {
-    const filterGroup = {FOO: true, BAR: false, BAZ: true, DUQ: true}
-    const expected = [
-      { field: 'filter', type: '=', value: 'FOO'},
-      { field: 'filter', type: '=', value: 'BAZ'},
-      { field: 'filter', type: '=', value: 'DUQ'}
+    const g1Expected = [ { field: 'filter', type: '=', value: 'PASS'} ]
+    const g2Expected = [ 
+      { field: 'filter', type: '=', value: 'DISC'},
+      { field: 'filter', type: '=', value: 'EXHET'},
     ]
-    const result = wrapper.vm.filterGroupToArray(filterGroup)
-    expect(result).to.eql(expected)
+
+    const g1Result = wrapper.vm.filterGroupToArray(exFilter.gPassQC)
+    const g2Result = wrapper.vm.filterGroupToArray(exFilter.gFailQC)
+
+    expect(g1Result).to.eql(g1Expected)
+    expect(g2Result).to.eql(g2Expected)
   })
 
   it('filterToArray parses both filter groups to single array', () => {
-    const filter = { groupPassQC: {FOO: true},
-                     groupFailQC: {BAR: false, BAZ: true, DUQ: true}
-    }
     const expected = [
-      { field: 'filter', type: '=', value: 'FOO'},
-      { field: 'filter', type: '=', value: 'BAZ'},
-      { field: 'filter', type: '=', value: 'DUQ'}
+      { field: 'filter', type: '=', value: 'PASS'},
+      { field: 'filter', type: '=', value: 'DISC'},
+      { field: 'filter', type: '=', value: 'EXHET'}
     ]
 
-    const result = wrapper.vm.filterToArray(filter)
+    const result = wrapper.vm.filterToArray(exFilter)
     expect(result).to.eql(expected)
   })
 })
 
-describe('QualityFilterButton.vue emit filter changes', () => {
+describe('QualityFilterButton filter changes', () => {
 
-  it('Apply emits FilterChange when filter changed', () => {
+  it('emits FilterChange when filter changed', () => {
     const wrapper = shallowMount(QualityFilterButton, {})
 
     wrapper.setData({
-      eFilter: {
-        allPassQC: false,
-        groupPassQC: { PASS: true },
-        allFailQC: false,
-        groupFailQC:{ SVM: false, DISC: false, EXHET: false }
-      }
+      eFilter: exFilter
     })
 
     wrapper.vm.applyFilters()
     expect(wrapper.emitted()).to.have.property('filterChange')
   })
 
-  it('Apply does NOT emit FilterChange when filter unchanged', () => {
+  it('does NOT emit FilterChange when filter unchanged', () => {
     const wrapper = shallowMount(QualityFilterButton, {})
 
     wrapper.setData({ eFilter: clone(wrapper.pFilter) })
@@ -64,8 +75,8 @@ describe('QualityFilterButton.vue emit filter changes', () => {
   })
 })
 
-describe('QualityFilterButton.vue UI behavior', () => {
-  it('clicking the button toggles showDropDown', () => {
+describe('QualityFilterButton dropdown', () => {
+  it('toggles showDropDown when button is clicked', () => {
     const wrapper = shallowMount(QualityFilterButton, {})
 
     const initialState = wrapper.vm.showDropDown
