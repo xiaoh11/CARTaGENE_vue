@@ -1,5 +1,5 @@
 <template>
-    <div class="parentMenu" v-click-outside="handleClickAway">
+    <div class="btn-group mr-1 mt-1" v-click-outside="handleClickAway">
       <div style="display: inline-block;">
         <button class="btn btn-sm dropdown-toggle" :class="activeClass" v-on:click="showDropDown = !showDropDown">
           {{compositeTitle}} 
@@ -141,17 +141,19 @@ export default {
   },
   emits: ['filterChange'],
   created: function() {
-    //Explicitly default val, allTrue, and collapseable to false.
+    //Explicitly set defaults: val, allTrue, and collapseable
     let groups = Object.values(this.pFiltSet)
     for( let g of groups){
-      g.allTrue = (g.allTrue === undefined) ? false : g.allTrue
+      //g.allTrue = (g.allTrue === undefined) ? false : g.allTrue
       g.collapseable = (g.collapseable === undefined) ? false : g.collapseable
       for( let m of Object.values(g.members)){
         m.val = (m.val === undefined) ? false: m.val
       }
+      //set allTrue based on member vals
+      g.allTrue = this.isEntireGroupTrue(g)
     }
 
-    //check if any groups are allTrue initially.
+    
 
     //ensure ephemeral filters are never empty.
     this.eFiltSet = clone(this.pFiltSet)

@@ -57,6 +57,14 @@ const filterGroupTwo = {
   }
 }
 
+const filterGroupThree = {
+  title: "Default True Filter Group",
+  members: {
+    blue: { title: "Blue", desc: "Is Blue", val: true },
+    cyan: { title: "Cyan", desc: "Is Cyan", val: true }
+  }
+}
+
 // generate a large group of members to be hidden in a collapseable element
 const filterGroupHidden = {
   title: "Quality Control Failures",
@@ -65,8 +73,9 @@ const filterGroupHidden = {
 }
 
 const exFilter = {
-  gOne: filterGroupOne,
-  gTwo: filterGroupTwo
+  gOne:   filterGroupOne,
+  gTwo:   filterGroupTwo,
+  gThree: filterGroupThree
 }
 
 const exCollapseFilter = {
@@ -76,16 +85,16 @@ const exCollapseFilter = {
 }
 
 describe('BaseBooleanFilterButton setup', () => {
-  // Clone example filter so it can be mutated in tests.
   const wrapper = shallowMount(BaseBooleanFilterButton, {
     data() {
       return {pFiltSet: clone(exFilter)}
     }
   })
 
-  it('defaults allTrue to false', () => {
-    let groups = Object.values(wrapper.vm.pFiltSet)
-    expect(groups.every( g => g.allTrue == false )).to.be.true
+  it('sets allTrue according to group values', () => {
+    expect(wrapper.vm.pFiltSet.gOne.allTrue).to.be.false
+    expect(wrapper.vm.pFiltSet.gTwo.allTrue).to.be.false
+    expect(wrapper.vm.pFiltSet.gThree.allTrue).to.be.true
   })
 
   it('defaults collapseable to false', () => {
