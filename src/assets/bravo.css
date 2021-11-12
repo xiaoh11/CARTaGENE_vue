@@ -1,3 +1,9 @@
+.annoModal__badge {
+  font-weight: bold;
+  -webkit-text-stroke-width: 0.15px;
+  -webkit-text-stroke-color: black;
+}
+
 .parentMenu {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   display: inline-block;

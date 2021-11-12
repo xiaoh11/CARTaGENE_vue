@@ -2,7 +2,9 @@ import { createApp } from 'vue'
 import App from './RegionPage.vue'
 import VueGtag from 'vue-gtag'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'tabulator-tables/dist/css/tabulator_bootstrap4.css';
 import '@/assets/bravo.css'
+import '@/assets/snv_consequences.css'
 import {clickOutside} from '@/CustomDirectives'
 
 const app = createApp(App);
