@@ -1,5 +1,6 @@
 module.exports = {
   publicPath: '/',
+
   pages: {
     home: {
       // entry js for the page
@@ -58,8 +59,12 @@ module.exports = {
       chunks: ['chunk-vendors', 'chunk-common', '404']
     },
   },
+
   outputDir: 'dist',
+
   devServer: {
     historyApiFallback: false
-  }
+  },
+
+  lintOnSave: false
 }
