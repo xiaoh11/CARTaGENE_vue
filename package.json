@@ -20,7 +20,7 @@
     "devbridge-autocomplete": "^1.4.11",
     "just-clone": "^3.2.1",
     "tabulator-tables": "^5.0.7",
-    "vue": "^3.0.0",
+    "vue": "^3.2.22",
     "vue-gtag": "^2.0.1"
   },
   "devDependencies": {
@@ -28,7 +28,7 @@
     "@vue/cli-plugin-eslint": "~4.5.14",
     "@vue/cli-plugin-unit-mocha": "~4.5.14",
     "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/compiler-sfc": "^3.2.22",
     "@vue/test-utils": "^2.0.0-0",
     "babel-eslint": "^10.1.0",
     "chai": "^4.1.2",
