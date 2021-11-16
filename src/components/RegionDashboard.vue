@@ -32,6 +32,7 @@
         <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
           :givenWidth="childWidth" :givenMargins="childMargins" />
         <FilterBar @filterChange='handleFilterChange'/>
+        <RegionSNVTable :filters="filterArray"/>
         <!--
         <summaries v-if="showSummaries" v-on:close="showSummaries = false"
           v-bind:api="api" v-bind:region="region" v-bind:filters="activeFilters"/>
@@ -102,6 +103,7 @@ import SeqDepth        from '@/components/SeqDepth.vue'
 import GeneBars        from '@/components/GeneBars.vue'
 import SnvCount        from '@/components/SnvCount.vue'
 import BpCoordBar      from '@/components/BpCoordBar.vue'
+import RegionSNVTable  from '@/components/tables/RegionSNVTable.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -114,7 +116,8 @@ export default {
     SeqDepth,
     GeneBars,
     SnvCount,
-    BpCoordBar
+    BpCoordBar,
+    RegionSNVTable
   },
   inject: {
     chrom: {default: null},

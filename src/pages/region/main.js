@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'tabulator-tables/dist/css/tabulator_bootstrap4.css';
 import '@/assets/bravo.css'
 import '@/assets/snv_consequences.css'
+import '@/assets/snv_tabulator_table.css'
 import {clickOutside} from '@/CustomDirectives'
 
 const app = createApp(App);
