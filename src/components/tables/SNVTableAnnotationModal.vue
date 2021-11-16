@@ -13,8 +13,9 @@
               <div id="accordion">
                 <div v-for="(c, index) in annotations" :key="c.consequence">
                   <span :class="badgeClass(c.consequence)">&#9632;</span>
+                  <pre> debug {{index}} </pre>
                   
-                  <!-- TODO: Compete content build from props.
+                  <!-- TODO: Compete content build from props
 
                   <a data-toggle="collapse" v-bind:href="'#collapse' + index">{{ $DOMAIN_DICTIONARY.consequence[c.consequence].text }}</a>
                   <div v-if="c.transcripts.length > 0" v-bind:id="'collapse' + index" v-bind:class="index == 0 ? 'collapse show' : 'collapse'" data-parent="#accordion">
@@ -59,7 +60,7 @@ export default {
     badge_class: function(consequenceKey) {
       return('badge badge-light ' + 'annoModal__badge--' + consequenceKey)
     }
-    
+  }
 }
 </script>
 

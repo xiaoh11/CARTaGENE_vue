@@ -8,7 +8,7 @@ import $ from "jquery";
 import "devbridge-autocomplete";
 
 export default {
-  name: 'autocomplete',
+  name: 'AutoComplete',
   props: ['width', 'autofocus'],
   emits: ['inputfocus', 'inputfocusout', 'dropdownopen', 'dropdownclose', 'suggestionSelect'],
   data: function() {

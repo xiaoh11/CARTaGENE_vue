@@ -17,7 +17,7 @@
     <div class="row justify-content-center">
       <div class="col-10 col-sm-8 col-md-6">
         <div id="search-box">
-          <bravosearch :autofocus="true"></bravosearch>
+          <BravoSearch :autofocus="true"></BravoSearch>
         </div>
       </div>
     </div>
@@ -35,11 +35,11 @@
 
 <script>
 import logo from "../assets/bravo_logo_beta.png"
-import bravosearch from '@/components/SearchBox.vue'
+import BravoSearch from '@/components/SearchBox.vue'
 
 export default {
   name: 'MainSearch',
-  components: { bravosearch },
+  components: { BravoSearch },
   props: { },
   inject: {
     'subtitle': {default: ''},
