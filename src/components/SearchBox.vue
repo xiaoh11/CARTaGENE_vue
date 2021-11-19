@@ -96,7 +96,9 @@ export default {
       return {endpoint: 'gene', variant_type: 'snv'}
     },
     resultTicketToHref: function(ticket) {
-      let href = ticket.endpoint
+      // Append .html extension until dev server mime-type issue is resolved.
+      let href = ticket.endpoint + '.html'
+      
       delete ticket.endpoint
 
       let paramContent = []
