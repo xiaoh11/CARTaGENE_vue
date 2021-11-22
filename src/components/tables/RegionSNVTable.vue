@@ -5,9 +5,9 @@ export default {
   name: "RegionSNVTable",
   extends: BaseSNVTable,
   computed: {
-    // should be overridden by extending component
+    // define url to get data appropriate for region snv table
     ajaxUrl() { 
-      return(`${this.api}/variants/region/snv/${this.chrom}-${this.start}-${this.end}`) 
+      return(`${this.api}/variants/region/snv/${this.chrom}-${this.start}-${this.stop}`) 
     }
   },
 }

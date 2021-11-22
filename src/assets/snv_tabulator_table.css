@@ -10,6 +10,10 @@
 }
 /* END. */
 
+.tabulator-col-title {
+  background: #eed
+}
+
 .cell-button {
   position: absolute;
   top: 0;
