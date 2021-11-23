@@ -6,59 +6,60 @@
         </button>
         <div v-if="showDropDown" class="dropdown-menu shadow show">
           <form class="p-2">
-
-            <!-- Non-Collapseable FiltSet Groups -->
-            <template v-for="(group, groupKey) in nonCollapseFiltSet" :key="groupKey">
-              <li>
-                <div class="custom-control custom-checkbox">
-                  <input class="custom-control-input" type="checkbox" :value="groupKey" 
-                    :id="groupKey" v-model="group.allTrue" @change="handleGroupToggle(group)">
-                  <label class="custom-control-label" :for="groupKey">{{group.title}}</label>
-                </div>
-                <ul style="list-style-type: none; padding-left: 1rem; padding-top: 0.2rem;">
-                <template v-for="(member, memberKey) in group.members" :key="memberKey">
-                  <li>
+            <div class="overflow-auto" style="min-width: 300px; max-height: 370px;">
+                <!-- Non-Collapseable FiltSet Groups -->
+                <template v-for="(group, groupKey) in nonCollapseFiltSet" :key="groupKey">
+                  <ul style="list-style-type: none; padding-left: 0;">
                     <div class="custom-control custom-checkbox">
-                      <input class="custom-control-input" type="checkbox" :value="memberKey" :id="memberKey" 
-                             v-model="member.val" @change="handleMemberToggle(member, group)">
-                      <label class="custom-control-label" :for="memberKey">{{member.title}}</label>
-                      <small class="form-text text-muted">{{member.desc}}</small>
+                      <input class="custom-control-input" type="checkbox" :value="groupKey" 
+                        :id="groupKey" v-model="group.allTrue" @change="handleGroupToggle(group)">
+                      <label class="custom-control-label" :for="groupKey">{{group.title}}</label>
                     </div>
-                  </li>
+                    <ul style="list-style-type: none; padding-left: 1rem; padding-top: 0.2rem;">
+                    <template v-for="(member, memberKey) in group.members" :key="memberKey">
+                      <li>
+                        <div class="custom-control custom-checkbox">
+                          <input class="custom-control-input" type="checkbox" :value="memberKey" :id="memberKey" 
+                                 v-model="member.val" @change="handleMemberToggle(member, group)">
+                          <label class="custom-control-label" :for="memberKey">{{member.title}}</label>
+                          <small class="form-text text-muted">{{member.desc}}</small>
+                        </div>
+                      </li>
+                    </template>
+                    </ul>
+                  </ul>
                 </template>
-                </ul>
-              </li>
-            </template>
 
-            <!-- Collapseable FiltSet Groups -->
-            <div v-if="isCollapseFiltSetPresent">
-              <button type="button" class="btn btn-link btn-sm" button v-on:click="showHidden = !showHidden">
-                <span>{{showHideText}}</span>
-              </button>
+                <!-- Collapseable FiltSet Groups -->
+                <div v-if="isCollapseFiltSetPresent">
+                  <button type="button" class="btn btn-link btn-sm" button v-on:click="showHidden = !showHidden">
+                    <span>{{showHideText}}</span>
+                  </button>
 
-              <template v-for="(group, groupKey) in collapseFiltSet" :key="groupKey">
-              <div v-if="showHidden">
-                <li>
-                  <div class="custom-control custom-checkbox">
-                    <input class="custom-control-input" type="checkbox" :value="groupKey" 
-                      :id="groupKey" v-model="group.allTrue" @change="handleGroupToggle(group)">
-                    <label class="custom-control-label" :for="groupKey">{{group.title}}</label>
-                  </div>
-                  <ul style="list-style-type: none; padding-left: 1rem; padding-top: 0.2rem;">
-                  <template v-for="(member, memberKey) in group.members" :key="memberKey">
+                  <template v-for="(group, groupKey) in collapseFiltSet" :key="groupKey">
+                  <div v-if="showHidden">
                     <li>
                       <div class="custom-control custom-checkbox">
-                        <input class="custom-control-input" type="checkbox" :value="memberKey" :id="memberKey" 
-                               v-model="member.val" @change="handleMemberToggle(member, group)">
-                        <label class="custom-control-label" :for="memberKey">{{member.title}}</label>
-                        <small class="form-text text-muted">{{member.desc}}</small>
+                        <input class="custom-control-input" type="checkbox" :value="groupKey" 
+                          :id="groupKey" v-model="group.allTrue" @change="handleGroupToggle(group)">
+                        <label class="custom-control-label" :for="groupKey">{{group.title}}</label>
                       </div>
+                      <ul style="list-style-type: none; padding-left: 1rem; padding-top: 0.2rem;">
+                      <template v-for="(member, memberKey) in group.members" :key="memberKey">
+                        <li>
+                          <div class="custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" :value="memberKey" :id="memberKey" 
+                                   v-model="member.val" @change="handleMemberToggle(member, group)">
+                            <label class="custom-control-label" :for="memberKey">{{member.title}}</label>
+                            <small class="form-text text-muted">{{member.desc}}</small>
+                          </div>
+                        </li>
+                      </template>
+                      </ul>
                     </li>
+                  </div>
                   </template>
-                  </ul>
-                </li>
-              </div>
-              </template>
+                </div>
             </div>
 
             <!-- Apply & Cancel buttons -->
