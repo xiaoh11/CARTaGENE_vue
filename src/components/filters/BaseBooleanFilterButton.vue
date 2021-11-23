@@ -1,5 +1,5 @@
 <template>
-    <div class="btn-group mr-1 mt-1" v-click-outside="handleClickAway">
+    <div class="btn-group mr-1 mt-1 position-static" v-click-outside="handleClickAway">
       <div style="display: inline-block;">
         <button class="btn btn-sm dropdown-toggle" :class="activeClass" v-on:click="showDropDown = !showDropDown">
           {{compositeTitle}} 
@@ -153,9 +153,6 @@ export default {
       //set allTrue based on member vals
       g.allTrue = this.isEntireGroupTrue(g)
     }
-
-    
-
     //ensure ephemeral filters are never empty.
     this.eFiltSet = clone(this.pFiltSet)
   },
