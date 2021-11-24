@@ -165,7 +165,7 @@ export default {
       this.$emit("hover", row.getPosition(), row.getData(), false);
       this.hoveredRowPosition = null;
     },
-    formatCaddValue: function(cell, params, onrendered) {
+    formatCaddValue: function(cell) {
       return(cell.getValue() === null ? "" : cell.getValue().toFixed(2))
     },
     tblColumnDefs: function(){
