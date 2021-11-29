@@ -1,0 +1,332 @@
+<template>
+<div class="child-component" v-on:click-annotations="showAnnotationsModal">
+
+  <div v-if="loading" class="d-flex align-items-center statusMessage statusMessage--zTop">
+    <div class="spinner-border spinner-border-sm text-primary ml-auto" role="status" aria-hidden="true"></div>
+    <strong>&nbsp;Loading...</strong>
+  </div>
+  <div v-if="loaded && empty" class="statusMessage statusMessage--zTop">
+    No variants
+  </div>
+  <div v-if="failed" class="statusMessage statusMessage--zTop">
+    Error while loading variants
+  </div>
+  <!-- table managed by Tabulator -->
+  <div ref="snvtable" class="table-sm">
+  </div>
+
+</div>
+</template>
+
+<script>
+import {TabulatorFull as Tabulator} from "tabulator-tables"
+
+export default {
+  name: "BaseSNVTable",
+  inject: {
+    chrom: {default: 0},
+    start: {default: 0},
+    stop: {default: 1},
+  },
+  props: {
+    showCols: {
+      type: Object,
+      default: function(){
+        return({
+          colVariantID:   { title: "Variant ID", val: true},
+          colRsID:        { title: "rsID", val: true},
+          colConsequence: { title: "Consequence", val: true},
+          colAnnotation:  { title: "Annotation", val: true},
+          colLOFTEE:      { title: "LOFTEE", val: true},
+          colQuality:     { title: "Quality", val: true},
+          colCADD:        { title: "CADD", val: true},
+          colNAlleles:    { title: "N Alleles", val: false},
+          colHet:         { title: "Het", val: true},
+          colHomAlt:      { title: "Hom Alt", val: true},
+          colFrequency:   { title: "Frequency (%)", val: true}
+        })
+      }
+    },
+    filters: {
+      type: Array,
+      default: function() { return [] }
+    }
+  },
+  data: function() {
+    return {
+      api: process.env.VUE_APP_BRAVO_API_URL,
+      loading: false,
+      loaded:  false,
+      empty:   true,
+      failed:  false,
+      selectedVariantId: "",
+      selectedVariantAnnotations: [],
+      tabulator: null,
+      hoveredRowPosition: null,
+      paginationSize: 100,
+    }
+  },
+  computed: {
+    // should be overridden by extending component
+    ajaxUrl() { return(this.api) }
+  },
+  watch: {
+    filters: function() {
+      this.tabulator.setFilter(this.filters);
+    }
+  },
+  methods:{
+    getVisibleVariants: function() {
+      let scrollDivHeight = this.tabulator.rowManager.height;
+      let scrollDivPosition = this.tabulator.rowManager.scrollTop;
+      let lastVisibleRowIndex = this.tabulator.rowManager.vDomBottom;
+      let visibleRowsData = []
+      while (lastVisibleRowIndex > 0) {
+        const rowElement = this.tabulator.rowManager.displayRows[0][lastVisibleRowIndex].element;
+        if (rowElement.offsetTop < scrollDivPosition + scrollDivHeight) {
+          break;
+        }
+        lastVisibleRowIndex--;
+      }
+      let firstVisibleRowIndex = lastVisibleRowIndex;
+      while (firstVisibleRowIndex > 0) {
+        const rowElement = this.tabulator.rowManager.displayRows[0][firstVisibleRowIndex].element;
+        if (rowElement.offsetTop < scrollDivPosition) {
+          break;
+        }
+        firstVisibleRowIndex--;
+      }
+      if (this.tabulator.rowManager.displayRows[0].length > 0) {
+        for (var i = firstVisibleRowIndex; i <= lastVisibleRowIndex; ++i) {
+          visibleRowsData.push(this.tabulator.rowManager.displayRows[0][i].data);
+        }
+      }
+      return { 
+        firstRowIdx: firstVisibleRowIndex, 
+        lastRowIdx:  lastVisibleRowIndex, 
+        rowsData: visibleRowsData }
+    },
+
+    scrolled: function() {
+      if (this.tabulator.getData().length > 0) {
+        let visVars = this.getVisibleVariants();
+        this.$emit("scroll", visVars.firstRowIdx, visVars.lastRowIdx, visVars.rowsData);
+      }
+    },
+
+    hover: function(variant, hovered) {
+      this.tabulator.getRows().forEach(r => { // clean up all elements (just in case)
+        r.getElement().classList.remove("hover");
+      });
+      if (hovered) {
+        this.tabulator.getRowFromPosition(variant).getElement().classList.add("hover");
+      }
+    },
+    //fomerly ajaxError callback
+    tblAjaxError: function() {
+        this.loading = false;
+        this.loaded = false;
+        this.failed = true;
+    },
+    //fomerly dataLoaded callback
+    tblDataLoaded: function(data){
+      console.log('dataLoaded')
+      console.log(data)
+      this.empty = data.length == 0;
+    },
+    //formerly renderComplete callback
+    tblRenderComplete: function(){
+      let visVars = this.getVisibleVariants();
+
+      // make sure that row is hovered after re-rendering on mobile touch screen
+      if (this.hoveredRowPosition != null) { 
+        var row = this.tabulator.getRowFromPosition(this.hoveredRowPosition);
+        row.getElement().classList.add('row-hovered');
+      }
+      this.$emit("scroll", visVars.firstRowIdx, visVars.lastRowIdx, visVars.rowsData);
+    },
+    //formerly enterMouseEnter callback
+    tblRowMouseEnter: function(e, row) {
+      // row was hovered from before and mouseleave was never called
+      if ((this.hoveredRowPosition != null) && (this.hoveredRowPosition != row.getPosition())) { 
+        var hoveredRow = this.tabulator.getRowFromPosition(this.hoveredRowPosition);
+        hoveredRow.getElement().classList.remove('row-hovered');
+        this.$emit("hover", hoveredRow.getPosition(), hoveredRow.getData(), false);
+        this.hoveredRowPosition = null;
+      }
+
+      this.hoveredRowPosition = row.getPosition();
+      row.getElement().classList.add('row-hovered');
+      this.$emit("hover", row.getPosition(), row.getData(), true);
+    },
+    //formerly rowMouseLeave callback
+    tblRowMouseLeave: function(e, row) {
+      row.getElement().classList.remove('row-hovered');
+      this.$emit("hover", row.getPosition(), row.getData(), false);
+      this.hoveredRowPosition = null;
+    },
+    formatCaddValue: function(cell) {
+      return(cell.getValue() === null ? "" : cell.getValue().toFixed(2))
+    },
+    tblColumnDefs: function(){
+      return([
+        {
+          title: "Variant Id <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' title='chrom-position-ref-alt'>?</a>",
+          titleDownload: "Variant Id",
+          width: 130,
+          field: "variant_id",
+          visible: this.showCols.colVariantID,
+          formatter: (cell) => { return `<a href='${this.api}/variant/snv/${cell.getValue()}'>${cell.getValue()}</a>`; }
+        },
+        {
+          title: "rsId",
+          titleDownload: "rsId",
+          width: 100,
+          field: "rsids",
+          visible: this.showCols.colRsID,
+          formatter: (cell) => {
+            var html = "";
+            cell.getValue().forEach(v => {
+              html += `<a href='${this.api}/variant/snv/${v}'>${v}</a>`;
+            });
+            return html;
+          },
+          accessorDownload: (value) => {
+            if (value != null) {
+              return value.join(';');
+            } else {
+              return "";
+            }
+          }
+        },
+        {
+          title: "Quality",
+          titleDownload: "Quality",
+          field: "filter",
+          width: 78,
+          hozAlign: "left",
+          visible: this.showCols.colQuality,
+          formatter: (cell, params, onrendered) => {
+            var html = "";
+            cell.getValue().forEach( v => {
+              var badge_type = v == "PASS" ? "success" : "danger";
+              html += `<span class="badge badge-${badge_type}" style="margin-right:1px">${v}</span>`;
+            });
+            return html;
+          },
+          accessorDownload: (value) => {
+            if (value != null) {
+              return value.join(';');
+            } else {
+              return "";
+            }
+          }
+        },
+        {
+          title: "CADD <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Variant deleteriousness score (PHRED-like scaled) computed with Combined Annoation Dependent Depletion (CADD) tool.'>?</a>",
+          titleDownload: "CADD",
+          field: "cadd_phred",
+          width: 80,
+          hozAlign: "left",
+          visible: this.showCols.colCADD,
+          formatter: this.formatCaddValue
+        },
+        {
+          title: "N Alleles",
+          titleDownload: "N Alleles",
+          field: "allele_num",
+          width: 88,
+          hozAlign: "left",
+          visible: this.showCols.colNAlleles,
+          formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
+        },
+        {
+          title: "Het <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Number of heterozygotes.'>?</a>",
+          titleDownload: "Het",
+          field: "het_count",
+          width: 80,
+          hozAlign: "left",
+          visible: this.showCols.colHet,
+          formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
+        },
+        {
+          title: "Hom <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Number of homozygotes for alternate allele.'>?</a>",
+          titleDownload: "Hom",
+          field: "hom_count",
+          width: 90,
+          hozAlign: "left",
+          visible: this.showCols.colHomAlt,
+          formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
+        },
+        {
+          title: "Frequencey %",
+          titleDownload: "Frequencey %",
+          field: "allele_freq",
+          width: 125,
+          hozAlign: "left",
+          visible: this.showColumnFrequency,
+          formatter: (cell, params, onrendered) => `${(cell.getValue() * 100).toPrecision(3)}%`,
+        },
+      ])
+    }
+
+
+  },
+  mounted: function() {
+    this.tabulator = new Tabulator(this.$refs.snvtable, {
+      placeholder: null,
+      ajaxURL: this.ajaxUrl,
+      dataLoader: false,
+      dataLoaderLoading: "",
+      dataLoaderError: "",
+      ajaxConfig: {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json; charset=utf-8",
+        },
+      },
+      ajaxContentType: "json",
+      sortMode: "remote",
+      filterMode: "remote",
+      progressiveLoad: "scroll",
+      ajaxRequesting: () => {
+        this.failed = false;
+        this.loaded = false;
+        this.loading = true;
+        return true;
+      },
+      ajaxURLGenerator: (url, config, params) => {
+        if (params.page == 1) { // when 1st page is requested "next" must be null
+          params.next = null;
+          params.introns = 0;
+        }
+        return url;
+      },
+      ajaxResponse: (url, params, response) => {
+        response.last_page = Math.ceil(response.total / response.limit);
+        params.next = response.next;
+        this.failed = false;
+        this.loading = false;
+        this.loaded = true;
+        return response;
+      },
+      paginationSize: this.paginationSize,
+      height: "600px",
+      layout: "fitColumns",
+      columns: this.tblColumnDefs(),
+      initialSort: [ { column: "variant_id", dir: "asc" } ],
+      initialFilter: this.filters
+    })
+    // register event handlers for the table
+    this.tabulator.on("ajaxError", this.tblAjaxError)
+    this.tabulator.on("renderComplete", this.tblRenderComplete)
+    this.tabulator.on("rowMouseEnter", this.tblRowMouseEnter)
+    this.tabulator.on("rowMouseLeave", this.tblRowMouseLeave)
+    this.tabulator.on("dataProcessed", this.tblDataLoaded)
+    // debugging
+    this.tabulator.on("scrollVertical", function(top){
+      console.log(`top: ${top}, page: ${this.getPage()}, pageMax: ${this.getPageMax()}`)
+    })
+  }
+}
+</script>

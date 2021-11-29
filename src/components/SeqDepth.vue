@@ -3,12 +3,12 @@
   <button class="close-button" v-on:click="$emit('close')">
     <font-awesome-icon style="background-color:transparent;" :icon="closeIcon"></font-awesome-icon>
   </button>
-  <div v-if="loading" class="d-flex align-items-center bravo-message">
+  <div v-if="loading" class="d-flex align-items-center statusMessage">
     <div class="spinner-border spinner-border-sm text-primary ml-auto" role="status" aria-hidden="true"></div>
     <strong>&nbsp;Loading...</strong>
   </div>
-  <div v-if="failed" class="bravo-message">Error while loading coverage data</div>
-  <div v-if="loaded && (loaded_data_size == 0)" class="bravo-message">No coverage data for this region</div>
+  <div v-if="failed" class="statusMessage">Error while loading coverage data</div>
+  <div v-if="loaded && (loaded_data_size == 0)" class="statusMessage">No coverage data for this region</div>
 </div>
 </template>
 
@@ -257,17 +257,5 @@ export default {
 .close-button:hover {
   background-color: #0062cc;
   border-color: #0062cc;
-}
-.bravo-message {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translateX(-50%) translateY(-50%);
-  transform: translateX(-50%) translateY(-50%);
-  border: 1px solid gray;
-  padding: 5px;
-  background-color: white;
-  opacity: 1.0;
-  border-radius: 5%;
 }
 </style>

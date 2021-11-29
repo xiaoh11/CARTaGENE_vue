@@ -5,10 +5,11 @@
     <form id="form" class="search-box" @submit.prevent="doSearch()" @mouseover="isHovered = true" @mouseout="isHovered = false" :class="{ 'search-box-dropdown-open': isDropdownOpen }">
 
        <!-- v-once should make jQuery plugin to ignore any updates -->
-      <autocomplete ref="autocomplete" v-bind:autofocus="autofocus" 
+      <AutoComplete ref="autocomplete" v-bind:autofocus="autofocus" 
         v-on:inputfocus="isActive = true" v-on:inputfocusout="isActive = false"
         v-on:dropdownopen="openDropdown(true)" v-on:dropdownclose="openDropdown(false)" 
-        v-bind:width = "width" v-on:suggestionSelect="doSuggest"></autocomplete>
+        v-bind:width = "width" v-on:suggestionSelect="doSuggest">
+      </AutoComplete>
 
       <button class="search-box-button" type="submit">
         <font-awesome-icon :icon="searchIcon"></font-awesome-icon>
@@ -20,13 +21,13 @@
 <script>
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import autocomplete from '@/components/Autocomplete.vue';
+import AutoComplete from '@/components/Autocomplete.vue';
 
 export default {
-  name: 'bravosearch',
+  name: 'BravoSearch',
   components: {
     FontAwesomeIcon,
-    autocomplete
+    AutoComplete
   },
   props: {
     autofocus: {
@@ -95,7 +96,9 @@ export default {
       return {endpoint: 'gene', variant_type: 'snv'}
     },
     resultTicketToHref: function(ticket) {
-      let href = ticket.endpoint
+      // Append .html extension until dev server mime-type issue is resolved.
+      let href = ticket.endpoint + '.html'
+      
       delete ticket.endpoint
 
       let paramContent = []

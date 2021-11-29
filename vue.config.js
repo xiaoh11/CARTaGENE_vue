@@ -25,28 +25,28 @@ module.exports = {
     region: {
       entry: 'src/pages/region/main.js',
       template: 'src/pages/region/region.html',
-      filename: 'region',
+      //filename: 'region',
       title: 'Bravo:Region',
       chunks: ['chunk-vendors', 'chunk-common', 'region']
     },
     gene: {
       entry: 'src/pages/gene/main.js',
       template: 'src/pages/gene/gene.html',
-      filename: 'gene',
+      //filename: 'gene',
       title: 'Bravo:Gene',
       chunks: ['chunk-vendors', 'chunk-common', 'gene']
     },
     terms: {
       entry: 'src/pages/terms/main.js',
       template: 'src/pages/terms/terms.html',
-      filename: 'terms',
+      //filename: 'terms',
       title: 'Bravo:Terms',
       chunks: ['chunk-vendors', 'chunk-common', 'terms']
     },
     about: {
       entry: 'src/pages/about/main.js',
       template: 'src/pages/about/terms.html',
-      filename: 'about',
+      filename: 'about.html',
       title: 'Bravo:About',
       chunks: ['chunk-vendors', 'chunk-common', 'about']
     },
@@ -58,8 +58,12 @@ module.exports = {
       chunks: ['chunk-vendors', 'chunk-common', '404']
     },
   },
+
   outputDir: 'dist',
+
   devServer: {
     historyApiFallback: false
-  }
+  },
+
+  lintOnSave: false
 }

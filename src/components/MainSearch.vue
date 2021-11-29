@@ -17,7 +17,7 @@
     <div class="row justify-content-center">
       <div class="col-10 col-sm-8 col-md-6">
         <div id="search-box">
-          <bravosearch :autofocus="true"></bravosearch>
+          <BravoSearch :autofocus="true"></BravoSearch>
         </div>
       </div>
     </div>
@@ -35,11 +35,11 @@
 
 <script>
 import logo from "../assets/bravo_logo_beta.png"
-import bravosearch from '@/components/SearchBox.vue'
+import BravoSearch from '@/components/SearchBox.vue'
 
 export default {
   name: 'MainSearch',
-  components: { bravosearch },
+  components: { BravoSearch },
   props: { },
   inject: {
     'subtitle': {default: ''},
@@ -50,10 +50,10 @@ export default {
       publicPath: process.env.BASE_URL,
       logo: logo,
       exampleLinks: {
-        'PCSK9': 'gene?variant_type=snv&gene_name=PCSK9',
-        '11:5225464-5229395': 'region?variant_type=snv&chrom=11&start=5225464&stop=5229395',
-        '22-16389447-A-G': 'variant?variant_type=snv&variant_id=22-16389447-A-G',
-        'rs34747326': 'variant?variant_type=snv&variant_id=rs34747326'
+        'PCSK9': 'gene.html?variant_type=snv&gene_name=PCSK9',
+        '11:5225000-5229000': 'region.html?variant_type=snv&chrom=11&start=5225000&stop=5229000',
+        '22-16389447-A-G': 'variant.html?variant_type=snv&variant_id=22-16389447-A-G',
+        'rs34747326': 'variant.html?variant_type=snv&variant_id=rs34747326'
       }
     }
   }

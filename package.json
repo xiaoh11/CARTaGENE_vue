@@ -6,35 +6,41 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "dbg": "webpack -h"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/vue-fontawesome": "^3.0.0-4",
+    "@vue/cli": "^5.0.0-rc.0",
     "axios": "^0.23.0",
     "bootstrap": "^4.6.0",
     "core-js": "^3.6.5",
     "d3": "^7.1.1",
     "devbridge-autocomplete": "^1.4.11",
     "just-clone": "^3.2.1",
-    "vue": "^3.0.0",
+    "tabulator-tables": "^5.0.7",
+    "vue": "^3.2.22",
     "vue-gtag": "^2.0.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.14",
-    "@vue/cli-plugin-eslint": "~4.5.14",
-    "@vue/cli-plugin-unit-mocha": "~4.5.14",
-    "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0",
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.0-rc.0",
+    "@vue/cli-plugin-eslint": "~5.0.0-rc.0",
+    "@vue/cli-plugin-unit-mocha": "~5.0.0-rc.0",
+    "@vue/cli-service": "~5.0.0-rc.0",
+    "@vue/compiler-sfc": "^3.2.22",
     "@vue/test-utils": "^2.0.0-0",
     "babel-eslint": "^10.1.0",
-    "chai": "^4.1.2",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.0.0",
+    "chai": "^4.2.0",
+    "eslint": "^7.20.0",
+    "eslint-plugin-vue": "^8.0.3",
     "vue-loader": "^15.9.8",
-    "vue-template-compiler": "^2.6.14"
+    "vue-template-compiler": "^2.6.14",
+    "webpack-cli": "^4.9.1"
   },
   "eslintConfig": {
     "root": true,
@@ -46,10 +52,37 @@
       "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@babel/eslint-parser"
     },
     "rules": {},
     "overrides": [
+      {
+        "files": [
+          "**/__tests__/*.{j,t}s?(x)",
+          "**/tests/unit/**/*.spec.{j,t}s?(x)"
+        ],
+        "env": {
+          "mocha": true
+        }
+      },
+      {
+        "files": [
+          "**/__tests__/*.{j,t}s?(x)",
+          "**/tests/unit/**/*.spec.{j,t}s?(x)"
+        ],
+        "env": {
+          "mocha": true
+        }
+      },
+      {
+        "files": [
+          "**/__tests__/*.{j,t}s?(x)",
+          "**/tests/unit/**/*.spec.{j,t}s?(x)"
+        ],
+        "env": {
+          "mocha": true
+        }
+      },
       {
         "files": [
           "**/__tests__/*.{j,t}s?(x)",

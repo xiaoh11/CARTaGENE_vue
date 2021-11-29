@@ -1,3 +1,26 @@
+.annoModal__badge {
+  font-weight: bold;
+  -webkit-text-stroke-width: 0.15px;
+  -webkit-text-stroke-color: black;
+}
+
+.statusMessage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+  border: 1px solid gray;
+  padding: 5px;
+  background-color: white;
+  opacity: 1.0;
+  border-radius: 5%;
+}
+
+.statusMessage--zTop {
+  z-index: 9999;
+}
+
 .parentMenu {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   display: inline-block;
