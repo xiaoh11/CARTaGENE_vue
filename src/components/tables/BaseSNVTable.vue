@@ -176,7 +176,7 @@ export default {
           width: 130,
           field: "variant_id",
           visible: this.showCols.colVariantID,
-          formatter: (cell) => { return `<a href='${this.api}/variant/snv/${cell.getValue()}'>${cell.getValue()}</a>`; }
+          formatter: (cell) => { return `<a href='variant.html?id=${cell.getValue()}'>${cell.getValue()}</a>`; }
         },
         {
           title: "rsId",
@@ -187,7 +187,7 @@ export default {
           formatter: (cell) => {
             var html = "";
             cell.getValue().forEach(v => {
-              html += `<a href='${this.api}/variant/snv/${v}'>${v}</a>`;
+              html += `<a href='variant.html?id=${v}'>${v}</a>`;
             });
             return html;
           },
