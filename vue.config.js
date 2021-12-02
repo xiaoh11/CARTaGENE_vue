@@ -18,7 +18,7 @@ module.exports = {
     variant: {
       entry: 'src/pages/variant/main.js',
       template: 'src/pages/variant/variant.html',
-      filename: 'variant',
+      //filename: 'variant',
       title: 'Bravo:Variant',
       chunks: ['chunk-vendors', 'chunk-common', 'variant']
     },
