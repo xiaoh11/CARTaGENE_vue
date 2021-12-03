@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     badge_class: function(consequenceKey) {
-      return('badge badge-light ' + 'annoModal__badge--' + consequenceKey)
+      return('badge badge-light ' + 'badge--' + consequenceKey)
     }
   }
 }
