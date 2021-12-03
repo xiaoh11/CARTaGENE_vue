@@ -16,25 +16,31 @@
 
           <div class="col-12 col-md-6 mt-3">
             <VariantCounts :variant="this.variant"/>
-            <!--
-            <counts v-bind:variant="this.variant" v-bind:n_samples="this.totalSamples"/>
-            -->
           </div>
         </div>
 
-        <!--
-        <div v-if="'pub_freq' in this.variant" class="row">
+        <div class="row">
           <div v-for="ds in this.variant.pub_freq" class="col-12 col-md-6 mt-3">
-            <frequency v-bind:ds="ds"/>
+            <VariantFrequency :ds="ds"/>
           </div>
         </div>
 
         <div class="row">
           <div class="col-12 mt-3">
+            <pre>Consequences Placeholder</pre>
+            <!--
             <consequences v-bind:homepage="this.homepage" v-bind:variant="this.variant"/>
+            -->
           </div>
         </div>
 
+        <!-- debug -->
+<pre>
+DEBUG DATA BLOCK
+pub_freq: {{variant.pub_freq}}
+</pre>
+
+        <!--
         <div class="row">
           <div class="col-md-4 mt-3">
             <depth v-bind:variant="this.variant"/>
@@ -65,13 +71,15 @@ import axios from "axios"
 import NavBar from '@/components/NavBar.vue'
 import VariantBasicInfo from '@/components/VariantBasicInfo'
 import VariantCounts from '@/components/VariantCounts'
+import VariantFrequency from '@/components/VariantFrequency'
 
 export default {
   name: 'App',
   components: {
     NavBar,
     VariantBasicInfo,
-    VariantCounts
+    VariantCounts,
+    VariantFrequency
   },
   data: function() {
     return {
