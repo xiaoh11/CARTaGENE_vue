@@ -27,7 +27,7 @@
 
         <div class="row">
           <div class="col-12 mt-3">
-            <pre>Consequences Placeholder</pre>
+            <VariantConsequences :variant="this.variant"/>
             <!--
             <consequences v-bind:homepage="this.homepage" v-bind:variant="this.variant"/>
             -->
@@ -72,6 +72,7 @@ import NavBar from '@/components/NavBar.vue'
 import VariantBasicInfo from '@/components/VariantBasicInfo'
 import VariantCounts from '@/components/VariantCounts'
 import VariantFrequency from '@/components/VariantFrequency'
+import VariantConsequences from '@/components/VariantConsequences'
 
 export default {
   name: 'App',
@@ -79,7 +80,8 @@ export default {
     NavBar,
     VariantBasicInfo,
     VariantCounts,
-    VariantFrequency
+    VariantFrequency,
+    VariantConsequences
   },
   data: function() {
     return {
