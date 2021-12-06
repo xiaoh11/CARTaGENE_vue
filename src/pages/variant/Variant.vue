@@ -40,25 +40,22 @@
 
         <div class="row">
           <div class="col-12 mt-3">
-            <pre> Metrics Placeholder </pre>
-        <!--
-            <metrics v-bind:variant="this.variant" v-bind:api="this.api"/>
-        -->
+            <VariantMetrics :variant="this.variant"/>
           </div>
         </div>
 
-        <!--
         <div class="row">
           <div class="col-12 mt-3">
+            <pre>Reads Placeholder</pre>
+        <!--
             <reads v-bind:variant="this.variant" v-bind:api="this.api"/>
+        -->
           </div>
         </div>
-        -->
 
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -69,6 +66,7 @@ import VariantCounts from '@/components/VariantCounts'
 import VariantFrequency from '@/components/VariantFrequency'
 import VariantConsequences from '@/components/VariantConsequences'
 import VariantDepth from '@/components/VariantDepth'
+import VariantMetrics from '@/components/VariantMetrics'
 
 export default {
   name: 'App',
@@ -78,7 +76,8 @@ export default {
     VariantCounts,
     VariantFrequency,
     VariantConsequences,
-    VariantDepth
+    VariantDepth,
+    VariantMetrics
   },
   data: function() {
     return {
