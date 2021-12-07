@@ -1,26 +1,131 @@
 <template>
-  <img alt="Vue logo" src="../../assets/logo.png">
-  <HelloWorld msg="Variant App"/>
+  <NavBar style="margin-left: 5px;"/>
+
+  <div id="variantviz">
+    <div v-if="this.ready">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <h1>{{ this.variant.variant_id }}</h1>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-6 mt-3">
+            <VariantBasicInfo :variant="this.variant"/>
+          </div>
+
+          <div class="col-12 col-md-6 mt-3">
+            <VariantCounts :variant="this.variant"/>
+          </div>
+        </div>
+
+        <div class="row">
+          <div v-for="ds in this.variant.pub_freq" class="col-12 col-md-6 mt-3">
+            <VariantFrequency :ds="ds"/>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 mt-3">
+            <VariantConsequences :variant="this.variant"/>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-4 mt-3">
+            <VariantDepth :variant="this.variant"/>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 mt-3">
+            <VariantMetrics :variant="this.variant"/>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 mt-3">
+            <pre>Reads Placeholder</pre>
+            <Reads :variant="this.variant"/>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from '../../components/HelloWorld.vue'
+import axios from "axios"
+import NavBar from '@/components/NavBar.vue'
+import VariantBasicInfo from '@/components/VariantBasicInfo'
+import VariantCounts from '@/components/VariantCounts'
+import VariantFrequency from '@/components/VariantFrequency'
+import VariantConsequences from '@/components/VariantConsequences'
+import VariantDepth from '@/components/VariantDepth'
+import VariantMetrics from '@/components/VariantMetrics'
+import Reads from '@/components/Reads'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    NavBar,
+    VariantBasicInfo,
+    VariantCounts,
+    VariantFrequency,
+    VariantConsequences,
+    VariantDepth,
+    VariantMetrics,
+    Reads
+  },
+  data: function() {
+    return {
+      api: process.env.VUE_APP_BRAVO_API_URL,
+      variantId: null,
+      ready: false,
+      variant: {},
+    }
+  },
+  methods : {
+    load: function() {
+      axios
+        .get(`${this.api}/variant/api/snv/${this.variantId}`)
+        .then( response => {
+          let payload = response.data;
+          let datasets = [];
+
+          this.variant = payload.data[0];
+          this.ready = true;
+
+          // provide default pub_freq
+          ('pub_freq' in this.variant) || (this.variant['pub_freq'] = [])
+
+          // provide default 1000G data set
+          if( !this.variant.pub_freq.some((x) => x.ds == '1000G')){
+            this.variant.pub_freq.push({ds: '1000G'})
+          }
+
+          // provide default gnomAD data set
+          if( !this.variant.pub_freq.some((x) => x.ds == 'gnomAD r2.1')){
+            this.variant.pub_freq.push({ds: 'gnomAD r2.1'})
+          }
+        })
+        .catch( error => {
+          this.variant = {}
+          console.log('variant data loading failed.');
+        });
+    }
+  },
+  created: function() {
+    let urlParams = new URLSearchParams(window.location.search)
+    this.variantId = urlParams.get('id')
+  },
+  mounted: function() {
+    this.load();
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
