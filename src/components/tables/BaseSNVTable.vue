@@ -33,17 +33,17 @@ export default {
       type: Object,
       default: function(){
         return({
-          colVariantID:   { title: "Variant ID", val: true},
-          colRsID:        { title: "rsID", val: true},
-          colConsequence: { title: "Consequence", val: true},
-          colAnnotation:  { title: "Annotation", val: true},
-          colLOFTEE:      { title: "LOFTEE", val: true},
-          colQuality:     { title: "Quality", val: true},
-          colCADD:        { title: "CADD", val: true},
-          colNAlleles:    { title: "N Alleles", val: false},
-          colHet:         { title: "Het", val: true},
-          colHomAlt:      { title: "Hom Alt", val: true},
-          colFrequency:   { title: "Frequency (%)", val: true}
+          variantID:   {val: true},
+          rsID:        {val: true},
+          consequence: {val: true},
+          annotation:  {val: true},
+          LOFTEE:      {val: true},
+          quality:     {val: true},
+          CADD:        {val: true},
+          nAlleles:    {val: false},
+          het:         {val: true},
+          homAlt:      {val: true},
+          frequency:   {val: true}
         })
       }
     },
@@ -130,8 +130,6 @@ export default {
     },
     //fomerly dataLoaded callback
     tblDataLoaded: function(data){
-      console.log('dataLoaded')
-      console.log(data)
       this.empty = data.length == 0;
     },
     //formerly renderComplete callback
@@ -180,7 +178,7 @@ export default {
           titleDownload: "Variant Id",
           width: 130,
           field: "variant_id",
-          visible: this.showCols.colVariantID,
+          visible: this.showCols.variantID,
           formatter: (cell) => { return `<a href='variant.html?id=${cell.getValue()}'>${cell.getValue()}</a>`; }
         },
         {
@@ -188,7 +186,7 @@ export default {
           titleDownload: "rsId",
           width: 100,
           field: "rsids",
-          visible: this.showCols.colRsID,
+          visible: this.showCols.rsID.val,
           formatter: (cell) => {
             var html = "";
             cell.getValue().forEach(v => {
@@ -210,7 +208,7 @@ export default {
           field: "filter",
           width: 78,
           hozAlign: "left",
-          visible: this.showCols.colQuality,
+          visible: this.showCols.quality.val,
           formatter: (cell, params, onrendered) => {
             var html = "";
             cell.getValue().forEach( v => {
@@ -233,7 +231,7 @@ export default {
           field: "cadd_phred",
           width: 80,
           hozAlign: "left",
-          visible: this.showCols.colCADD,
+          visible: this.showCols.CADD.val,
           formatter: this.formatCaddValue
         },
         {
@@ -242,7 +240,7 @@ export default {
           field: "allele_num",
           width: 88,
           hozAlign: "left",
-          visible: this.showCols.colNAlleles,
+          visible: this.showCols.nAlleles.val,
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
@@ -251,7 +249,7 @@ export default {
           field: "het_count",
           width: 80,
           hozAlign: "left",
-          visible: this.showCols.colHet,
+          visible: this.showCols.het.val,
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
@@ -260,7 +258,7 @@ export default {
           field: "hom_count",
           width: 90,
           hozAlign: "left",
-          visible: this.showCols.colHomAlt,
+          visible: this.showCols.homAlt.val,
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
@@ -269,7 +267,7 @@ export default {
           field: "allele_freq",
           width: 125,
           hozAlign: "left",
-          visible: this.showColumnFrequency,
+          visible: this.showCols.frequency.val,
           formatter: (cell, params, onrendered) => `${(cell.getValue() * 100).toPrecision(3)}%`,
         },
       ])
@@ -301,7 +299,8 @@ export default {
         return true;
       },
       ajaxURLGenerator: (url, config, params) => {
-        if (params.page == 1) { // when 1st page is requested "next" must be null
+        // when 1st page is requested "next" must be null
+        if (params.page == 1) {
           params.next = null;
           params.introns = 0;
         }
@@ -328,10 +327,6 @@ export default {
     this.tabulator.on("rowMouseEnter", this.tblRowMouseEnter)
     this.tabulator.on("rowMouseLeave", this.tblRowMouseLeave)
     this.tabulator.on("dataProcessed", this.tblDataLoaded)
-    // debugging
-    this.tabulator.on("scrollVertical", function(top){
-      console.log(`top: ${top}, page: ${this.getPage()}, pageMax: ${this.getPageMax()}`)
-    })
   }
 }
 </script>
