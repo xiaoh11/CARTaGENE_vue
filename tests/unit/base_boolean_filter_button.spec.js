@@ -155,7 +155,7 @@ describe('BaseBooleanFilterButton rendering', () => {
     await nextTick()
 
     let numGroups = Object.values(wrapper.vm.pFiltSet).length
-    let numGroupItems = wrapper.findAll('form > li').length
+    let numGroupItems = wrapper.findAll('form ul > .custom-checkbox').length
 
     expect(numGroupItems).to.equal(numGroups)
   })
@@ -170,7 +170,7 @@ describe('BaseBooleanFilterButton rendering', () => {
       .flatMap((m) => Object.values(m))
       .length
 
-    let numAllListItems = wrapper.findAll('form li li').length
+    let numAllListItems = wrapper.findAll('form li').length
     expect(numAllListItems).to.equal(numAllMembers)
   })
 })

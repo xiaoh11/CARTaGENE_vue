@@ -83,14 +83,14 @@ describe('SearchBox.vue query routing', () => {
     const ticket = {endpoint: 'foo'}
     const href_result = wrapper.vm.resultTicketToHref(ticket)
 
-    expect(href_result).to.equal('foo')
+    expect(href_result).to.equal('foo.html')
   })
 
   it('URL encodes and appends other ticket properties ', () => {
     const ticket = {endpoint: 'foo', geneName: 'duq', }
     const href_result = wrapper.vm.resultTicketToHref(ticket)
 
-    expect(href_result).to.contain('foo?')
+    expect(href_result).to.contain('foo.html?')
     expect(href_result).to.contain('geneName=duq')
   })
 })
