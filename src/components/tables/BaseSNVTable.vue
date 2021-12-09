@@ -168,7 +168,12 @@ export default {
     formatCaddValue: function(cell) {
       return(cell.getValue() === null ? "" : cell.getValue().toFixed(2))
     },
+    // function to override to customize column defs. 
     tblColumnDefs: function(){
+      return this.baseColumnDefs()
+    },
+    // common column defs. 
+    baseColumnDefs: function(){
       return([
         {
           title: "Variant Id <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' title='chrom-position-ref-alt'>?</a>",
