@@ -19,7 +19,8 @@
 </template>
 
 <script>
-import {TabulatorFull as Tabulator} from "tabulator-tables"
+//import {TabulatorFull as Tabulator} from "tabulator-tables"
+import Tabulator from 'tabulator-tables'
 
 export default {
   name: "BaseSNVTable",
@@ -279,9 +280,6 @@ export default {
     this.tabulator = new Tabulator(this.$refs.snvtable, {
       placeholder: null,
       ajaxURL: this.ajaxUrl,
-      dataLoader: false,
-      dataLoaderLoading: "",
-      dataLoaderError: "",
       ajaxConfig: {
         method: "POST",
         headers: {
@@ -289,9 +287,6 @@ export default {
         },
       },
       ajaxContentType: "json",
-      sortMode: "remote",
-      filterMode: "remote",
-      progressiveLoad: "scroll",
       ajaxRequesting: () => {
         this.failed = false;
         this.loaded = false;
@@ -299,6 +294,8 @@ export default {
         return true;
       },
       ajaxURLGenerator: (url, config, params) => {
+        console.log("ajaxUrl")
+        console.log(params)
         // when 1st page is requested "next" must be null
         if (params.page == 1) {
           params.next = null;
@@ -319,14 +316,36 @@ export default {
       layout: "fitColumns",
       columns: this.tblColumnDefs(),
       initialSort: [ { column: "variant_id", dir: "asc" } ],
-      initialFilter: this.filters
+      initialFilter: this.filters,
+
+      // tabulator-table 5.0 options
+      //sortMode: "remote",
+      //filterMode: "remote",
+      //dataLoader: false,
+      //dataLoaderLoading: "",
+      //dataLoaderError: "",
+      //progressiveLoad: "scroll",
+
+      // tabulator-table 4.9 options
+      ajaxProgressiveLoad: "scroll",
+      ajaxLoaderError: "",
+      ajaxLoaderLoading: "",
+      ajaxLoader:    false,
+      ajaxSorting:   true,
+      ajaxFiltering: true,
+      ajaxError:      this.tblAjaxError,
+      dataLoaded:     this.tblDataLoaded,
+      renderComplete: this.tblRenderComplete,
+      rowMouseEnter:  this.tblRowMouseEnter,
+      rowMouseLeave:  this.tblRowMouseLeave
     })
-    // register event handlers for the table
-    this.tabulator.on("ajaxError", this.tblAjaxError)
-    this.tabulator.on("renderComplete", this.tblRenderComplete)
-    this.tabulator.on("rowMouseEnter", this.tblRowMouseEnter)
-    this.tabulator.on("rowMouseLeave", this.tblRowMouseLeave)
-    this.tabulator.on("dataProcessed", this.tblDataLoaded)
+    // register event handlers tabulator 5.0
+    //this.tabulator.on("ajaxError", this.tblAjaxError)
+    //this.tabulator.on("dataProcessed", this.tblDataLoaded)
+    //this.tabulator.on("renderComplete", this.tblRenderComplete)
+    //this.tabulator.on("rowMouseEnter", this.tblRowMouseEnter)
+    //this.tabulator.on("rowMouseLeave", this.tblRowMouseLeave)
+
   }
 }
 </script>
