@@ -6,6 +6,10 @@ export default {
   extends: BaseBooleanFilterButton,
   data: function() {
     return ({
+      // Override default fieldVal
+      fieldVal: "annotation.lof",
+
+      // Define filter groups and members
       pFiltSet: {
         gLof: {
           title: "All putative Loss-of-Function (pLoF) variants",

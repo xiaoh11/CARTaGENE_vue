@@ -8,6 +8,10 @@ export default {
   extends: BaseBooleanFilterButton,
   data: function() {
     return ({
+      // Override default fieldVal
+      fieldVal: "annotation.consequence",
+
+      // Define filter groups and members
       pFiltSet: {
         gSynVariants: {
           title: "All synonymous variants",

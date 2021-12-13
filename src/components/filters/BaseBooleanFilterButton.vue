@@ -133,6 +133,8 @@ export default {
           }
         }
       },
+      // default filter field value
+      fieldVal: "default",
       // ephemeral filter model the form edits directly
       eFiltSet: {},
       filterVals: [{field: "filter", type: "=", value: "PASS"}],
@@ -217,7 +219,7 @@ export default {
       let arr = []
       Object.entries(filterGroup.members).forEach( ([key, content]) => {
         if(content.val === true){
-          arr.push({ field: 'filter', type: '=', value: key})
+          arr.push({ field: this.fieldVal, type: '=', value: key})
         }
       })
       return(arr)
