@@ -47,9 +47,10 @@
 
 <script>
 
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faWindowRestore, faDownload, faColumns } 
-  from '@fortawesome/free-solid-svg-icons';
+  from '@fortawesome/free-solid-svg-icons'
+import clone from 'just-clone'
 import RegionInfo      from '@/components/RegionInfo.vue'
 import RegionSummaries from '@/components/RegionSummaries.vue'
 import FilterBar       from '@/components/FilterBar.vue'
@@ -160,6 +161,14 @@ export default {
       return boolVar ? 'display: inline;' : 'display: inline; visibility: hidden;'
     },
     handleFilterChange: function(filterCategory, filtArr){
+      // Handle API's region specific names for annotation and loftee
+      if(filterCategory === 'annotation'){
+        filtArr.forEach( e => e.field = 'annotation.region.consequence')
+      }
+      if(filterCategory === 'loftee'){
+        filtArr.forEach( e => e.field = 'annotation.region.lof')
+      }
+
       this.filter[filterCategory] = filtArr
     },
     handleResize: function() {
