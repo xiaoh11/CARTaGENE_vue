@@ -33,51 +33,6 @@
           :givenWidth="childWidth" :givenMargins="childMargins" />
         <FilterBar @filterChange='handleFilterChange'/>
         <RegionSNVTable :filters="filterArray"/>
-        <!--
-        <summaries v-if="showSummaries" v-on:close="showSummaries = false"
-          v-bind:api="api" v-bind:region="region" v-bind:filters="activeFilters"/>
-        <depth v-if="showDepth" v-on:close="showDepth = false" v-bind:api="api"
-          v-bind:region="region" v-bind:dimensions="dimensions"
-          v-bind:hoveredVariant="hoveredVariant"/>
-        <genes v-if="showGenes && !gene_view" v-on:close="showGenes = false"
-          v-bind:region="region" v-bind:dimensions="dimensions"
-          v-bind:hoveredVariant="hoveredVariant"
-          v-on:click="genesClick" v-bind:api="api"/>
-        <gene v-if="showGene && gene_view" v-on:close="showGene = false"
-          v-bind:region="region" v-bind:dimensions="dimensions" 
-          v-bind:hoveredVariant="hoveredVariant"/>
-        <snv v-if="showSNV" v-on:close="showSNV = false" v-bind:api="api"
-          v-bind:region="region" v-bind:dimensions="dimensions" 
-          v-bind:filters="activeFilters" v-bind:visibleVariants="visibleVariants" 
-          v-bind:hoveredVariant="hoveredVariant"/>
-        <coordinates v-bind:region="region" v-bind:dimensions="dimensions"/>
-
-        <snvfilter ref="filter"
-          v-bind:suggestions="filterSuggestions"
-          v-bind:filters="activeFilters"
-          v-on:filter="onFilterChange"/>
-
-        <snvtable ref="snvtable"
-          v-on:suggestions="onFilterSuggestionsChange"
-          v-on:scroll="variantsScroll"
-          v-on:hover="variantHover"
-          v-bind:region="region"
-          v-bind:api="api"
-          v-bind:filters="activeFilters"
-          v-bind:paginationSize="paginationSize"
-          v-bind:download="download"
-          v-bind:showColumnVariantID="showColumnVariantID"
-          v-bind:showColumnRsID="showColumnRsID"
-          v-bind:showColumnConsequence="showColumnConsequence"
-          v-bind:showColumnAnnotation="showColumnAnnotation"
-          v-bind:showColumnLOFTEE="showColumnLOFTEE"
-          v-bind:showColumnQuality="showColumnQuality"
-          v-bind:showColumnCADD="showColumnCADD"
-          v-bind:showColumnNAlleles="showColumnNAlleles"
-          v-bind:showColumnHet="showColumnHet"
-          v-bind:showColumHomAlt="showColumHomAlt"
-          v-bind:showColumnFrequency="showColumnFrequency"/>
-        -->
       </div>
       <pre>
         DEBUG
@@ -150,22 +105,10 @@ export default {
         frequency:      { title: "Frequency (%)", val: true}
       },
       showTableMenuDropDown: false,
-      showColumnVariantID: true,
-      showColumnRsID: true,
-      showColumnConsequence: true,
-      showColumnAnnotation: true,
-      showColumnLOFTEE: true,
-      showColumnQuality: true,
-      showColumnCADD: true,
-      showColumnNAlleles: false,
-      showColumnHet: true,
-      showColumHomAlt: true,
-      showColumnFrequency: true,
 
       // keys are category of filter,
       // values are array of mongo-like filters.
       filter: {},
-      
 
       //formerly dimensions.width
       //  width provided to child components.
