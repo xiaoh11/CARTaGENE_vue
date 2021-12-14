@@ -87,7 +87,7 @@
 import clone from 'just-clone';
 
 export default {
-  name: "BaseFilterButton",
+  name: "BaseBooleanFilterButton",
   props: {
     title: {
       type: String,

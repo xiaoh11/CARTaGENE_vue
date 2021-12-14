@@ -1,25 +1,20 @@
 <script>
-import BaseFilterButton from '@/components/filters/BaseFilterButton.vue'
+import BaseBooleanFilterButton from '@/components/filters/BaseBooleanFilterButton.vue'
 
 export default {
   name: "DemoButton",
-  extends: BaseFilterButton,
+  extends: BaseBooleanFilterButton,
   data: function() {
     return ({
       pFiltSet: {
-        gColorFilter: {
-          title: "Example Filter Group",
+        gPassQC: {
+          title: "All variants which pass QC",
           allTrue: false,
           members: {
-            blue: { 
-              title: "Blue", 
+            foo: {
+              title: "Foo",
               val: false,
-              desc: "Is blue."
-            },
-            pink: { 
-              title: "pink", 
-              val: false,
-              desc: "Is pink"
+              desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
             }
           }
         },
