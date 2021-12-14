@@ -135,6 +135,7 @@ export default {
     },
     //formerly renderComplete callback
     tblRenderComplete: function(){
+      if(this.tabulator == null){ return }
       let visVars = this.getVisibleVariants();
 
       // make sure that row is hovered after re-rendering on mobile touch screen
