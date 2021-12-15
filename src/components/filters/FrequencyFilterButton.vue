@@ -1,0 +1,26 @@
+<script>
+import BaseMinMaxFilterButton from '@/components/filters/BaseMinMaxFilterButton.vue'
+
+export default {
+  name: "FrequencyFilterButton",
+  extends: BaseMinMaxFilterButton,
+  methods: {
+    // override to convert percent min/max vals to decimal.
+    emitFilterChange: function (){
+      let filterArr = []
+      console.log('MinVal: ' + this.pMinVal)
+      if( this.pMinVal > 0){
+        filterArr.push(
+          {field: this.fieldVal, type: ">", value: this.pMinVal / 100}
+        )
+      }
+      if( this.pMaxVal < 0){
+        filterArr.push(
+          {field: this.fieldVal, type: "<", value: this.pMaxVal / 100}
+        )
+      }
+      this.$emit('filterChange', this.givenCategory, filterArr)
+    },
+  }
+}
+</script>
