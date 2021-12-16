@@ -11,7 +11,7 @@
 
         <!-- don't show download button on mobile devices i.e. devices with very small screens -->
         <div class="d-none d-sm-inline" style="display: inline-block;"> 
-          <button type="button" class="parent-menu-button" v-on:click="download++">CSV
+          <button type="button" class="parent-menu-button" v-on:click="doDownload++">CSV
             <font-awesome-icon style="background-color: transparent; display: inline-block; vertical-align: middle" :icon="downloadIcon"></font-awesome-icon>
           </button>
         </div>
@@ -32,7 +32,7 @@
         <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
           :givenWidth="childWidth" :givenMargins="childMargins" />
         <FilterBar @filterChange='handleFilterChange'/>
-        <RegionSNVTable :filters="filterArray"/>
+        <RegionSNVTable :filters="filterArray" :doDownload="doDownload"/>
       </div>
       <pre>
         DEBUG
@@ -85,6 +85,7 @@ export default {
       panelsIcon: faWindowRestore,
       columnsIcon: faColumns,
       downloadIcon: faDownload,
+      doDownload: 0,
 
       showPanels: {
         summaries: {title: "Summary", val: true},

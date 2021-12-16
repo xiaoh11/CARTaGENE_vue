@@ -6,6 +6,12 @@ import snvConsequences from '@/domainModel/snvConsequences'
 export default {
   name: "RegionSNVTable",
   extends: BaseSNVTable,
+  data: function(){
+    return {
+      // chrom, start, stop are injected from ancestor component
+      downloadFileName: `variants_${this.chrom}-${this.start}-${this.stop}.csv`
+    }
+  },
   computed: {
     // define url to get data appropriate for region snv table
     ajaxUrl() { 
@@ -93,6 +99,7 @@ export default {
         }
       }
 
+      // Insert region specific columns into base columns
       let baseCols = this.baseColumnDefs()
       baseCols.splice(2, 0, consequenceCol, annoCol, lofteeCol)
 

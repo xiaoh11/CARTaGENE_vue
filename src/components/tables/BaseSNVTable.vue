@@ -51,7 +51,11 @@ export default {
     filters: {
       type: Array,
       default: function() { return [] }
-    }
+    },
+    doDownload: {
+      type: Number,
+      default: 0
+    },
   },
   data: function() {
     return {
@@ -65,6 +69,7 @@ export default {
       tabulator: null,
       hoveredRowPosition: null,
       paginationSize: 100,
+      downloadFileName: "variants.csv"
     }
   },
   computed: {
@@ -74,6 +79,10 @@ export default {
   watch: {
     filters: function() {
       this.tabulator.setFilter(this.filters);
+    },
+    doDownload: function() {
+      if(this.tabulator == null){ return }
+      this.tabulator.download('csv', this.downloadFileName)
     }
   },
   methods:{
