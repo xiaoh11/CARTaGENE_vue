@@ -6,6 +6,10 @@ export default {
   extends: BaseBooleanFilterButton,
   data: function() {
     return ({
+      // Override default fieldVal
+      fieldVal: "filter",
+
+      // Define filter groups and members
       pFiltSet: {
         gPassQC: {
           title: "All variants which pass QC",

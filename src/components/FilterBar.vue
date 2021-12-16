@@ -6,9 +6,9 @@
           <QualityFilterButton v-bind="$attrs" givenCategory="quality" title="Quality"/>
           <AnnotationFilterButton v-bind="$attrs" givenCategory="annotation" title="Annotation"/>
           <LofteeFilterButton v-bind="$attrs" givenCategory="loftee" title="LOFTEE"/>
+          <FrequencyFilterButton v-bind="$attrs" givenCategory="frequency" title="Frequencey" fieldVal="allele_freq"/>
+          <BaseMinMaxFilterButton v-bind="$attrs" givenCategory="cadd" title="CADD" fieldVal="cadd_phred"/>
           <!--
-          <FrequencyFilterButton/>
-          <CADDFilterButton/>
           <rsIdFilterButton/>
           -->
         </div>
@@ -21,6 +21,8 @@
 import QualityFilterButton from '@/components/filters/QualityFilterButton.vue'
 import AnnotationFilterButton from '@/components/filters/AnnotationFilterButton.vue'
 import LofteeFilterButton from '@/components/filters/LofteeFilterButton.vue'
+import BaseMinMaxFilterButton from '@/components/filters/BaseMinMaxFilterButton.vue'
+import FrequencyFilterButton from '@/components/filters/FrequencyFilterButton.vue'
 
 export default {
   name: "FilterBar",
@@ -34,7 +36,9 @@ export default {
   components: {
     QualityFilterButton,
     AnnotationFilterButton,
-    LofteeFilterButton
+    LofteeFilterButton,
+    BaseMinMaxFilterButton,
+    FrequencyFilterButton
   },
 }
 </script>

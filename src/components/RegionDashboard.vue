@@ -11,7 +11,7 @@
 
         <!-- don't show download button on mobile devices i.e. devices with very small screens -->
         <div class="d-none d-sm-inline" style="display: inline-block;"> 
-          <button type="button" class="parent-menu-button" v-on:click="download++">CSV
+          <button type="button" class="parent-menu-button" v-on:click="doDownload++">CSV
             <font-awesome-icon style="background-color: transparent; display: inline-block; vertical-align: middle" :icon="downloadIcon"></font-awesome-icon>
           </button>
         </div>
@@ -32,52 +32,7 @@
         <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
           :givenWidth="childWidth" :givenMargins="childMargins" />
         <FilterBar @filterChange='handleFilterChange'/>
-        <RegionSNVTable :filters="filterArray"/>
-        <!--
-        <summaries v-if="showSummaries" v-on:close="showSummaries = false"
-          v-bind:api="api" v-bind:region="region" v-bind:filters="activeFilters"/>
-        <depth v-if="showDepth" v-on:close="showDepth = false" v-bind:api="api"
-          v-bind:region="region" v-bind:dimensions="dimensions"
-          v-bind:hoveredVariant="hoveredVariant"/>
-        <genes v-if="showGenes && !gene_view" v-on:close="showGenes = false"
-          v-bind:region="region" v-bind:dimensions="dimensions"
-          v-bind:hoveredVariant="hoveredVariant"
-          v-on:click="genesClick" v-bind:api="api"/>
-        <gene v-if="showGene && gene_view" v-on:close="showGene = false"
-          v-bind:region="region" v-bind:dimensions="dimensions" 
-          v-bind:hoveredVariant="hoveredVariant"/>
-        <snv v-if="showSNV" v-on:close="showSNV = false" v-bind:api="api"
-          v-bind:region="region" v-bind:dimensions="dimensions" 
-          v-bind:filters="activeFilters" v-bind:visibleVariants="visibleVariants" 
-          v-bind:hoveredVariant="hoveredVariant"/>
-        <coordinates v-bind:region="region" v-bind:dimensions="dimensions"/>
-
-        <snvfilter ref="filter"
-          v-bind:suggestions="filterSuggestions"
-          v-bind:filters="activeFilters"
-          v-on:filter="onFilterChange"/>
-
-        <snvtable ref="snvtable"
-          v-on:suggestions="onFilterSuggestionsChange"
-          v-on:scroll="variantsScroll"
-          v-on:hover="variantHover"
-          v-bind:region="region"
-          v-bind:api="api"
-          v-bind:filters="activeFilters"
-          v-bind:paginationSize="paginationSize"
-          v-bind:download="download"
-          v-bind:showColumnVariantID="showColumnVariantID"
-          v-bind:showColumnRsID="showColumnRsID"
-          v-bind:showColumnConsequence="showColumnConsequence"
-          v-bind:showColumnAnnotation="showColumnAnnotation"
-          v-bind:showColumnLOFTEE="showColumnLOFTEE"
-          v-bind:showColumnQuality="showColumnQuality"
-          v-bind:showColumnCADD="showColumnCADD"
-          v-bind:showColumnNAlleles="showColumnNAlleles"
-          v-bind:showColumnHet="showColumnHet"
-          v-bind:showColumHomAlt="showColumHomAlt"
-          v-bind:showColumnFrequency="showColumnFrequency"/>
-        -->
+        <RegionSNVTable :filters="filterArray" :doDownload="doDownload"/>
       </div>
       <pre>
         DEBUG
@@ -92,9 +47,10 @@
 
 <script>
 
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faWindowRestore, faDownload, faColumns } 
-  from '@fortawesome/free-solid-svg-icons';
+  from '@fortawesome/free-solid-svg-icons'
+import clone from 'just-clone'
 import RegionInfo      from '@/components/RegionInfo.vue'
 import RegionSummaries from '@/components/RegionSummaries.vue'
 import FilterBar       from '@/components/FilterBar.vue'
@@ -129,6 +85,7 @@ export default {
       panelsIcon: faWindowRestore,
       columnsIcon: faColumns,
       downloadIcon: faDownload,
+      doDownload: 0,
 
       showPanels: {
         summaries: {title: "Summary", val: true},
@@ -137,35 +94,23 @@ export default {
         snvCount:  {title: "Variants Count", val: true},
       },
       showCols: {
-        colVariantID:      { title: "Variant ID", val: true},
-        colRsID:           { title: "rsID", val: true},
-        colConsequence:    { title: "Consequence", val: true},
-        colAnnotation:     { title: "Annotation", val: true},
-        colLOFTEE:         { title: "LOFTEE", val: true},
-        colQuality:        { title: "Quality", val: true},
-        colCADD:           { title: "CADD", val: true},
-        colNAlleles:       { title: "N Alleles", val: false},
-        colHet:            { title: "Het", val: true},
-        colHomAlt:         { title: "Hom Alt", val: true},
-        colFrequency:      { title: "Frequency (%)", val: true}
+        variantID:      { title: "Variant ID", val: true},
+        rsID:           { title: "rsID", val: true},
+        consequence:    { title: "Consequence", val: true},
+        annotation:     { title: "Annotation", val: true},
+        LOFTEE:         { title: "LOFTEE", val: true},
+        quality:        { title: "Quality", val: true},
+        CADD:           { title: "CADD", val: true},
+        nAlleles:       { title: "N Alleles", val: false},
+        het:            { title: "Het", val: true},
+        homAlt:         { title: "Hom Alt", val: true},
+        frequency:      { title: "Frequency (%)", val: true}
       },
       showTableMenuDropDown: false,
-      showColumnVariantID: true,
-      showColumnRsID: true,
-      showColumnConsequence: true,
-      showColumnAnnotation: true,
-      showColumnLOFTEE: true,
-      showColumnQuality: true,
-      showColumnCADD: true,
-      showColumnNAlleles: false,
-      showColumnHet: true,
-      showColumHomAlt: true,
-      showColumnFrequency: true,
 
       // keys are category of filter,
       // values are array of mongo-like filters.
       filter: {},
-      
 
       //formerly dimensions.width
       //  width provided to child components.
@@ -217,6 +162,14 @@ export default {
       return boolVar ? 'display: inline;' : 'display: inline; visibility: hidden;'
     },
     handleFilterChange: function(filterCategory, filtArr){
+      // Handle API's region specific names for annotation and loftee
+      if(filterCategory === 'annotation'){
+        filtArr.forEach( e => e.field = 'annotation.region.consequence')
+      }
+      if(filterCategory === 'loftee'){
+        filtArr.forEach( e => e.field = 'annotation.region.lof')
+      }
+
       this.filter[filterCategory] = filtArr
     },
     handleResize: function() {

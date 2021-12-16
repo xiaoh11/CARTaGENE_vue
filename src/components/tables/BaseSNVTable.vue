@@ -19,7 +19,8 @@
 </template>
 
 <script>
-import {TabulatorFull as Tabulator} from "tabulator-tables"
+//import {TabulatorFull as Tabulator} from "tabulator-tables"
+import Tabulator from 'tabulator-tables'
 
 export default {
   name: "BaseSNVTable",
@@ -33,24 +34,28 @@ export default {
       type: Object,
       default: function(){
         return({
-          colVariantID:   { title: "Variant ID", val: true},
-          colRsID:        { title: "rsID", val: true},
-          colConsequence: { title: "Consequence", val: true},
-          colAnnotation:  { title: "Annotation", val: true},
-          colLOFTEE:      { title: "LOFTEE", val: true},
-          colQuality:     { title: "Quality", val: true},
-          colCADD:        { title: "CADD", val: true},
-          colNAlleles:    { title: "N Alleles", val: false},
-          colHet:         { title: "Het", val: true},
-          colHomAlt:      { title: "Hom Alt", val: true},
-          colFrequency:   { title: "Frequency (%)", val: true}
+          variantID:   {val: true},
+          rsID:        {val: true},
+          consequence: {val: true},
+          annotation:  {val: true},
+          LOFTEE:      {val: true},
+          quality:     {val: true},
+          CADD:        {val: true},
+          nAlleles:    {val: false},
+          het:         {val: true},
+          homAlt:      {val: true},
+          frequency:   {val: true}
         })
       }
     },
     filters: {
       type: Array,
       default: function() { return [] }
-    }
+    },
+    doDownload: {
+      type: Number,
+      default: 0
+    },
   },
   data: function() {
     return {
@@ -64,6 +69,7 @@ export default {
       tabulator: null,
       hoveredRowPosition: null,
       paginationSize: 100,
+      downloadFileName: "variants.csv"
     }
   },
   computed: {
@@ -73,6 +79,10 @@ export default {
   watch: {
     filters: function() {
       this.tabulator.setFilter(this.filters);
+    },
+    doDownload: function() {
+      if(this.tabulator == null){ return }
+      this.tabulator.download('csv', this.downloadFileName)
     }
   },
   methods:{
@@ -130,12 +140,11 @@ export default {
     },
     //fomerly dataLoaded callback
     tblDataLoaded: function(data){
-      console.log('dataLoaded')
-      console.log(data)
       this.empty = data.length == 0;
     },
     //formerly renderComplete callback
     tblRenderComplete: function(){
+      if(this.tabulator == null){ return }
       let visVars = this.getVisibleVariants();
 
       // make sure that row is hovered after re-rendering on mobile touch screen
@@ -168,14 +177,19 @@ export default {
     formatCaddValue: function(cell) {
       return(cell.getValue() === null ? "" : cell.getValue().toFixed(2))
     },
+    // function to override to customize column defs. 
     tblColumnDefs: function(){
+      return this.baseColumnDefs()
+    },
+    // common column defs. 
+    baseColumnDefs: function(){
       return([
         {
           title: "Variant Id <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' title='chrom-position-ref-alt'>?</a>",
           titleDownload: "Variant Id",
           width: 130,
           field: "variant_id",
-          visible: this.showCols.colVariantID,
+          visible: this.showCols.variantID,
           formatter: (cell) => { return `<a href='variant.html?id=${cell.getValue()}'>${cell.getValue()}</a>`; }
         },
         {
@@ -183,7 +197,7 @@ export default {
           titleDownload: "rsId",
           width: 100,
           field: "rsids",
-          visible: this.showCols.colRsID,
+          visible: this.showCols.rsID.val,
           formatter: (cell) => {
             var html = "";
             cell.getValue().forEach(v => {
@@ -205,7 +219,7 @@ export default {
           field: "filter",
           width: 78,
           hozAlign: "left",
-          visible: this.showCols.colQuality,
+          visible: this.showCols.quality.val,
           formatter: (cell, params, onrendered) => {
             var html = "";
             cell.getValue().forEach( v => {
@@ -228,7 +242,7 @@ export default {
           field: "cadd_phred",
           width: 80,
           hozAlign: "left",
-          visible: this.showCols.colCADD,
+          visible: this.showCols.CADD.val,
           formatter: this.formatCaddValue
         },
         {
@@ -237,7 +251,7 @@ export default {
           field: "allele_num",
           width: 88,
           hozAlign: "left",
-          visible: this.showCols.colNAlleles,
+          visible: this.showCols.nAlleles.val,
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
@@ -246,7 +260,7 @@ export default {
           field: "het_count",
           width: 80,
           hozAlign: "left",
-          visible: this.showCols.colHet,
+          visible: this.showCols.het.val,
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
@@ -255,7 +269,7 @@ export default {
           field: "hom_count",
           width: 90,
           hozAlign: "left",
-          visible: this.showCols.colHomAlt,
+          visible: this.showCols.homAlt.val,
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
@@ -264,7 +278,7 @@ export default {
           field: "allele_freq",
           width: 125,
           hozAlign: "left",
-          visible: this.showColumnFrequency,
+          visible: this.showCols.frequency.val,
           formatter: (cell, params, onrendered) => `${(cell.getValue() * 100).toPrecision(3)}%`,
         },
       ])
@@ -276,9 +290,6 @@ export default {
     this.tabulator = new Tabulator(this.$refs.snvtable, {
       placeholder: null,
       ajaxURL: this.ajaxUrl,
-      dataLoader: false,
-      dataLoaderLoading: "",
-      dataLoaderError: "",
       ajaxConfig: {
         method: "POST",
         headers: {
@@ -286,9 +297,6 @@ export default {
         },
       },
       ajaxContentType: "json",
-      sortMode: "remote",
-      filterMode: "remote",
-      progressiveLoad: "scroll",
       ajaxRequesting: () => {
         this.failed = false;
         this.loaded = false;
@@ -296,7 +304,10 @@ export default {
         return true;
       },
       ajaxURLGenerator: (url, config, params) => {
-        if (params.page == 1) { // when 1st page is requested "next" must be null
+        console.log("ajaxUrl")
+        console.log(params)
+        // when 1st page is requested "next" must be null
+        if (params.page == 1) {
           params.next = null;
           params.introns = 0;
         }
@@ -315,18 +326,36 @@ export default {
       layout: "fitColumns",
       columns: this.tblColumnDefs(),
       initialSort: [ { column: "variant_id", dir: "asc" } ],
-      initialFilter: this.filters
+      initialFilter: this.filters,
+
+      // tabulator-table 5.0 options
+      //sortMode: "remote",
+      //filterMode: "remote",
+      //dataLoader: false,
+      //dataLoaderLoading: "",
+      //dataLoaderError: "",
+      //progressiveLoad: "scroll",
+
+      // tabulator-table 4.9 options
+      ajaxProgressiveLoad: "scroll",
+      ajaxLoaderError: "",
+      ajaxLoaderLoading: "",
+      ajaxLoader:    false,
+      ajaxSorting:   true,
+      ajaxFiltering: true,
+      ajaxError:      this.tblAjaxError,
+      dataLoaded:     this.tblDataLoaded,
+      renderComplete: this.tblRenderComplete,
+      rowMouseEnter:  this.tblRowMouseEnter,
+      rowMouseLeave:  this.tblRowMouseLeave
     })
-    // register event handlers for the table
-    this.tabulator.on("ajaxError", this.tblAjaxError)
-    this.tabulator.on("renderComplete", this.tblRenderComplete)
-    this.tabulator.on("rowMouseEnter", this.tblRowMouseEnter)
-    this.tabulator.on("rowMouseLeave", this.tblRowMouseLeave)
-    this.tabulator.on("dataProcessed", this.tblDataLoaded)
-    // debugging
-    this.tabulator.on("scrollVertical", function(top){
-      console.log(`top: ${top}, page: ${this.getPage()}, pageMax: ${this.getPageMax()}`)
-    })
+    // register event handlers tabulator 5.0
+    //this.tabulator.on("ajaxError", this.tblAjaxError)
+    //this.tabulator.on("dataProcessed", this.tblDataLoaded)
+    //this.tabulator.on("renderComplete", this.tblRenderComplete)
+    //this.tabulator.on("rowMouseEnter", this.tblRowMouseEnter)
+    //this.tabulator.on("rowMouseLeave", this.tblRowMouseLeave)
+
   }
 }
 </script>
