@@ -5,7 +5,7 @@
     <GeneInfo/>
     -->
     <div id="bravoviz">
-      <div class="parent-menu">
+      <div class="parentMenu">
         <ToggleList list-title="Panels" list-group="showPanels" :list-vars="showPanels"
           @varToggled="handleInfoViewToggle" :icon="panelsIcon"/>
         <ToggleList list-title="Columns" list-group="showCols" :list-vars="showCols"
