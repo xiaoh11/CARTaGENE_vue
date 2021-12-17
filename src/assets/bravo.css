@@ -72,3 +72,37 @@
 .parentMenu__dropdown a:hover {
   background-color: #cccccc;
 }
+
+
+/* BEM-ify extracted classes
+ * https://github.com/statgen/bravo_vue/issues/10 */
+.bravo-tab {
+   display: flex;
+   flex-direction: row;
+}
+
+.bravo-tab-item {
+   padding-left: 15px;
+   padding-right: 15px;
+}
+
+.bravo-tab-item a {
+   color: black;
+   text-decoration: none;
+}
+
+.bravo-tab-item-unselected a {
+   color: #757575;
+}
+
+.bravo-tab-item-unselected a:hover {
+   color: black;
+}
+
+.bravo-tab-item-selected a {
+   color: #0b66fe;
+}
+
+.bravo-tab-item-selected {
+   border-bottom: 3px solid #0b66fe;
+}
