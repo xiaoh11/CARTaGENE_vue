@@ -32,7 +32,7 @@ export default {
   provide: function() {
     let urlParams = new URLSearchParams(window.location.search)
     return {
-      gene: urlParams.get('id')
+      geneId: urlParams.get('id')
     }
   }
 }

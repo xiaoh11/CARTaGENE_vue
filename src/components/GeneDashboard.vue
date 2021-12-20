@@ -40,11 +40,12 @@
       </div>
       <pre>
         DEBUG
-        gene: {{gene}}
-        chrom: tbd
-        start: tbd
-        stop: tbd
+        gene: {{geneId}}
+        chrom: {{chrom}}
+        start: {{start}}
+        stop: {{stop}}
         filterArray: {{filterArray}}
+        geneData: {{geneData}}
       </pre>
     </div>
   </div>
@@ -56,6 +57,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faWindowRestore, faDownload, faColumns } 
   from '@fortawesome/free-solid-svg-icons'
 import clone from 'just-clone'
+import axios from 'axios'
 //import RegionInfo      from '@/components/RegionInfo.vue'
 //import RegionSummaries from '@/components/RegionSummaries.vue'
 import FilterBar       from '@/components/FilterBar.vue'
@@ -81,10 +83,18 @@ export default {
     //RegionSNVTable
   },
   inject: {
-    gene: {default: null}
+    geneId: {default: null}
+  },
+  provide: function() {
+    return {
+      chrom: this.chrom,
+      start: this.start,
+      stop: this.stop,
+    }
   },
   data: function(){
     return {
+      api: process.env.VUE_APP_BRAVO_API_URL,
       panelsIcon: faWindowRestore,
       columnsIcon: faColumns,
       downloadIcon: faDownload,
@@ -112,6 +122,35 @@ export default {
       // keys are category of filter,
       // values are array of mongo-like filters.
       filter: {},
+      // Payload data from loadGenes
+      geneData: {},
+      // Data provided to child components.
+      chrom: null,
+      start: null,
+      stop: null,
+
+      // introns may not be needed as it's assumed for genes
+      introns: false,
+      segments: {},
+
+      //formerly dimensions.width
+      //  width provided to child components.
+      childWidth: 300,
+
+      //formerly dimensions.margin
+      // standard margins for child component calculations
+      childMargins: {
+        left:   40,
+        right:  15,
+        top:    12,
+        bottom: 5
+      },
+      // bounds for child element displays in pixels
+      //formerly region.segments.plot
+      segmentBounds: [0, 300],
+      // genomic bounds for child elements in base pairs
+      //formergly region.segments.region
+      segmentRegions: [this.start, this.stop],
     }
   },
   computed: {
@@ -123,6 +162,62 @@ export default {
     handleInfoViewToggle: function(listGroup, varKey){
       this[listGroup][varKey].val = !this[listGroup][varKey].val
     },
+    unwindGeneExons: function (gene) {
+      gene.exons = [];
+      gene.cds = [];
+      gene.coding_regions = [];
+      gene.features.sort((a, b) => a.start - b.start);
+      gene.features.forEach(d => {
+        if (d.feature_type == 'exon') {
+          d.transcript_type = gene.transcripts.find(t => t.transcript_id == d.transcript_id).transcript_type;
+          gene.exons.push(d);
+        } else if (d.feature_type == 'CDS'){
+          d.transcript_type = gene.transcripts.find(t => t.transcript_id == d.transcript_id).transcript_type;
+          gene.cds.push(d);
+        }
+      });
+      gene.exons.forEach(d => {
+        if (gene.coding_regions.length == 0) {
+          gene.coding_regions.push([d.start, d.stop]);
+        } else {
+          var last = gene.coding_regions[gene.coding_regions.length - 1];
+          if (last[1] >= d.start) {
+            if (last[1] < d.stop) {
+              last[1] = d.stop;
+            }
+          } else {
+            gene.coding_regions.push([d.start, d.stop]);
+          }
+        }
+      });
+    },
+    loadGene: function() {
+      axios
+        .get(`${this.api}/genes/api/${this.geneId}`)
+        .then( response => {
+          let payload = response.data
+          console.log("loadGene payload")
+          console.log(payload)
+
+          if (payload.data.length > 0) {
+            payload.data.forEach(d => {
+              if ((d.gene_name === this.geneId) || (d.gene_id === this.geneId)) {
+                this.unwindGeneExons(d);
+
+                this.chrom = d.chrom
+                this.start = d.start
+                this.stop = d.stop
+                this.geneData = d
+                this.introns = true
+              }
+            })
+          }
+        })
+    },
+  },
+  mounted: function() {
+    this.loadGene()
+
   }
 }
 </script>
