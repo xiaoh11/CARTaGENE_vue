@@ -1,9 +1,6 @@
 <template>
   <div id="bravo-plot"> 
-    <p>GeneDashboard</p>
-    <!--
-    <GeneInfo/>
-    -->
+    <GeneInfo :geneData="geneData"/>
     <div id="bravoviz">
       <div class="parentMenu">
         <ToggleList list-title="Panels" list-group="showPanels" :list-vars="showPanels"
@@ -53,12 +50,14 @@
 
 <script>
 
+import { computed } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faWindowRestore, faDownload, faColumns } 
   from '@fortawesome/free-solid-svg-icons'
 import clone from 'just-clone'
 import axios from 'axios'
-//import RegionInfo      from '@/components/RegionInfo.vue'
+
+import GeneInfo from '@/components/GeneInfo.vue'
 //import RegionSummaries from '@/components/RegionSummaries.vue'
 import FilterBar       from '@/components/FilterBar.vue'
 import ToggleList      from '@/components/ToggleList.vue'
@@ -72,6 +71,7 @@ export default {
   name: 'GeneDashboard',
   components: {
     FontAwesomeIcon,
+    GeneInfo,
     //RegionInfo,
     //RegionSummaries,
     FilterBar,
@@ -87,9 +87,10 @@ export default {
   },
   provide: function() {
     return {
-      chrom: this.chrom,
-      start: this.start,
-      stop: this.stop,
+      // Wrap provided vals to make them reactive.
+      chrom: computed( () => this.chrom),
+      start: computed( () => this.start ),
+      stop: computed( () => this.stop),
     }
   },
   data: function(){
@@ -124,19 +125,18 @@ export default {
       filter: {},
       // Payload data from loadGenes
       geneData: {},
-      // Data provided to child components.
-      chrom: null,
-      start: null,
-      stop: null,
+      // Source of provides to child components.
+      start: 0,
+      stop: 1,
+      chrom: 0,
 
       // introns may not be needed as it's assumed for genes
       introns: false,
       segments: {},
 
       //formerly dimensions.width
-      //  width provided to child components.
+      //  width passed to child components.
       childWidth: 300,
-
       //formerly dimensions.margin
       // standard margins for child component calculations
       childMargins: {

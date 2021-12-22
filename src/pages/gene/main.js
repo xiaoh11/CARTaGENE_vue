@@ -23,4 +23,7 @@ if(process.env.GA_ID){
 
 app.directive('click-outside', clickOutside)
 
+// Temporary config for refs in provide/inject.
+app.config.unwrapInjectedRef = true
+
 app.mount('#app')
