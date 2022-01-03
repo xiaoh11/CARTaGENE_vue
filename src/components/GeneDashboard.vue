@@ -16,9 +16,9 @@
         </div>
       </div>
       <div style="position: relative; min-height: 20px">
-        <!--
-        <geneSummaries v-if="showPanels.summaries.val" :filterArray='filterArray'
+        <GeneSummary v-if="showPanels.summaries.val" :filterArray='filterArray'
           @close="showPanels.summaries.val = false"/>
+        <!--
         <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false" 
           :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
@@ -35,6 +35,7 @@
         <GeneSNVTable :filters="filterArray" :doDownload="doDownload"/>
         -->
       </div>
+      <!--
       <pre>
         DEBUG
         gene: {{geneId}}
@@ -44,6 +45,7 @@
         filterArray: {{filterArray}}
         geneData: {{geneData}}
       </pre>
+      -->
     </div>
   </div>
 </template>
@@ -59,6 +61,7 @@ import axios from 'axios'
 
 import GeneInfo from '@/components/infoblock/GeneInfo.vue'
 //import RegionSummaries from '@/components/RegionSummaries.vue'
+import GeneSummary from '@/components/summary/GeneSummary.vue'
 import FilterBar       from '@/components/FilterBar.vue'
 import ToggleList      from '@/components/ToggleList.vue'
 import SeqDepth        from '@/components/SeqDepth.vue'
@@ -73,7 +76,7 @@ export default {
     FontAwesomeIcon,
     GeneInfo,
     //RegionInfo,
-    //RegionSummaries,
+    GeneSummary,
     FilterBar,
     ToggleList,
     SeqDepth,
@@ -89,8 +92,9 @@ export default {
     return {
       // Wrap provided vals to make them reactive.
       chrom: computed( () => this.chrom),
-      start: computed( () => this.start ),
+      start: computed( () => this.start),
       stop: computed( () => this.stop),
+      ensemblId: computed( () => this.ensemblId),
     }
   },
   data: function(){
@@ -129,6 +133,7 @@ export default {
       start: 0,
       stop: 1,
       chrom: 0,
+      ensemblId: "",
 
       // introns may not be needed as it's assumed for genes
       introns: false,
@@ -180,7 +185,7 @@ export default {
         if (gene.coding_regions.length == 0) {
           gene.coding_regions.push([d.start, d.stop]);
         } else {
-          var last = gene.coding_regions[gene.coding_regions.length - 1];
+          let last = gene.coding_regions[gene.coding_regions.length - 1];
           if (last[1] >= d.start) {
             if (last[1] < d.stop) {
               last[1] = d.stop;
@@ -202,8 +207,11 @@ export default {
           if (payload.data.length > 0) {
             payload.data.forEach(d => {
               if ((d.gene_name === this.geneId) || (d.gene_id === this.geneId)) {
+                // modify data in place
                 this.unwindGeneExons(d);
 
+                // set component data
+                this.ensemblId = d.gene_id
                 this.chrom = d.chrom
                 this.start = d.start
                 this.stop = d.stop
