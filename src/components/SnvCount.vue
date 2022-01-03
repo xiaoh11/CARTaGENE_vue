@@ -267,39 +267,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.child-component {
-  position: relative;
-  /* border: 1px solid black; */
-  min-height: 50px;
-  margin-top: 5px;
-}
-.close-button {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  padding: 0px 4px 0px 4px;
-  color: white;
-  font-size: 12px;
-  outline: none;
-  background-color: #007bff;
-  border: 1px solid #007bff;
-  border-radius: 2px;
-  box-shadow: none;
-}
-.close-button:hover {
-  background-color: #0062cc;
-  border-color: #0062cc;
-}
-.bravo-info-message {
-  position: absolute;
-  top: 0%;
-  left: 50%;
-  font-size: 11px;
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
-  background-color: white;
-  opacity: 0.8;
-}
-</style>
