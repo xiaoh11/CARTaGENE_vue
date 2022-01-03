@@ -1,5 +1,5 @@
 <script>
-import BaseMinMaxFilterButton from '@/components/filters/BaseMinMaxFilterButton.vue'
+import BaseMinMaxFilterButton from '@/components/filter/BaseMinMaxFilterButton.vue'
 
 export default {
   name: "FrequencyFilterButton",

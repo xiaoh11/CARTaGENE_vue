@@ -1,5 +1,5 @@
 <script>
-import BaseBooleanFilterButton from '@/components/filters/BaseBooleanFilterButton.vue'
+import BaseBooleanFilterButton from '@/components/filter/BaseBooleanFilterButton.vue'
 
 export default {
   name: "DemoButton",

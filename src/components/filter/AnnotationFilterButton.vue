@@ -1,6 +1,6 @@
 <script>
 import { pick } from 'lodash'
-import BaseBooleanFilterButton from '@/components/filters/BaseBooleanFilterButton.vue'
+import BaseBooleanFilterButton from '@/components/filter/BaseBooleanFilterButton.vue'
 import snvConsequences from '@/domainModel/snvConsequences'
 
 export default {

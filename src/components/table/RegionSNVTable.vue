@@ -1,5 +1,5 @@
 <script>
-import BaseSNVTable from '@/components/tables/BaseSNVTable.vue'
+import BaseSNVTable from '@/components/table/BaseSNVTable.vue'
 import lofCategories from '@/domainModel/lofCategories'
 import snvConsequences from '@/domainModel/snvConsequences'
 

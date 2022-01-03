@@ -51,15 +51,15 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faWindowRestore, faDownload, faColumns } 
   from '@fortawesome/free-solid-svg-icons'
 import clone from 'just-clone'
-import RegionInfo      from '@/components/RegionInfo.vue'
-import RegionSummaries from '@/components/RegionSummaries.vue'
+import RegionInfo      from '@/components/infoblock/RegionInfo.vue'
+import RegionSummaries from '@/components/summary/RegionSummaries.vue'
 import FilterBar       from '@/components/FilterBar.vue'
 import ToggleList      from '@/components/ToggleList.vue'
 import SeqDepth        from '@/components/SeqDepth.vue'
 import GeneBars        from '@/components/GeneBars.vue'
 import SnvCount        from '@/components/SnvCount.vue'
 import BpCoordBar      from '@/components/BpCoordBar.vue'
-import RegionSNVTable  from '@/components/tables/RegionSNVTable.vue'
+import RegionSNVTable  from '@/components/table/RegionSNVTable.vue'
 
 export default {
   name: 'RegionDashboard',

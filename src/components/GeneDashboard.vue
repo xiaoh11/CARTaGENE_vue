@@ -57,7 +57,7 @@ import { faWindowRestore, faDownload, faColumns }
 import clone from 'just-clone'
 import axios from 'axios'
 
-import GeneInfo from '@/components/GeneInfo.vue'
+import GeneInfo from '@/components/infoblock/GeneInfo.vue'
 //import RegionSummaries from '@/components/RegionSummaries.vue'
 import FilterBar       from '@/components/FilterBar.vue'
 import ToggleList      from '@/components/ToggleList.vue'

@@ -3,7 +3,7 @@ import { config, shallowMount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import clone from 'just-clone';
 import {clickOutside} from '@/CustomDirectives'
-import BaseBooleanFilterButton from '@/components/filters/BaseBooleanFilterButton.vue'
+import BaseBooleanFilterButton from '@/components/filter/BaseBooleanFilterButton.vue'
 
 // Filter buttons rely on custom Vue directive to do show/hide.
 config.global.directives = { 'click-outside': clickOutside }
