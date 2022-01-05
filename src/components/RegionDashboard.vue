@@ -25,7 +25,7 @@
         <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
           :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
-        <SnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
+        <RegionSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
           :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
           :filters="filterArray" :visibleVariants="visibleVariants"/>
@@ -34,13 +34,6 @@
         <FilterBar @filterChange='handleFilterChange'/>
         <RegionSNVTable :filters="filterArray" :doDownload="doDownload"/>
       </div>
-      <pre>
-        DEBUG
-        chrom: {{chrom}}
-        start: {{start}}
-        stop: {{stop}}
-        filterArray: {{filterArray}}
-      </pre>
     </div>
   </div>
 </template>
@@ -57,7 +50,7 @@ import FilterBar       from '@/components/FilterBar.vue'
 import ToggleList      from '@/components/ToggleList.vue'
 import SeqDepth        from '@/components/SeqDepth.vue'
 import GeneBars        from '@/components/GeneBars.vue'
-import SnvCount        from '@/components/SnvCount.vue'
+import RegionSnvCount  from '@/components/histogram/RegionSnvCount.vue'
 import BpCoordBar      from '@/components/BpCoordBar.vue'
 import RegionSNVTable  from '@/components/table/RegionSNVTable.vue'
 
@@ -71,7 +64,7 @@ export default {
     ToggleList,
     SeqDepth,
     GeneBars,
-    SnvCount,
+    RegionSnvCount,
     BpCoordBar,
     RegionSNVTable
   },

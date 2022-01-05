@@ -10,6 +10,7 @@ export default {
     stop:  {default: 201000},
   },
   computed: {
-    url() { return `${this.api}/variants/gene/snv/${this.ensemblId}/histogram` }
+    url() { return `${this.api}/variants/region/snv/${this.chrom}-${this.start}-${this.stop}/histogram` }
   }
+}
 </script>
