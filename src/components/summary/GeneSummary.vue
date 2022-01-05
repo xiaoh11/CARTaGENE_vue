@@ -173,10 +173,8 @@ export default {
       }
     },
   },
-  watch: {
-    ensemblId: function() {
-      this.load()
-    }
+  mounted: function() {
+    this.load()
   }
 }
 </script>

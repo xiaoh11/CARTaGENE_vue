@@ -1,6 +1,6 @@
 <template>
   <div id="bravo-plot"> 
-    <GeneInfo :geneData="geneData"/>
+    <GeneInfo v-if="positionResolved" :geneData="geneData"/>
     <div id="bravoviz">
       <div class="parentMenu">
         <ToggleList list-title="Panels" list-group="showPanels" :list-vars="showPanels"
@@ -15,10 +15,9 @@
           </button>
         </div>
       </div>
-      <div style="position: relative; min-height: 20px">
+      <div v-if="positionResolved" style="position: relative; min-height: 20px">
         <GeneSummary v-if="showPanels.summaries.val" :filterArray='filterArray'
           @close="showPanels.summaries.val = false"/>
-        <!--
         <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false" 
           :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
@@ -33,7 +32,6 @@
           :givenWidth="childWidth" :givenMargins="childMargins" />
         <FilterBar @filterChange='handleFilterChange'/>
         <GeneSNVTable :filters="filterArray" :doDownload="doDownload"/>
-        -->
       </div>
       <!--
       <pre>
@@ -68,14 +66,13 @@ import SeqDepth        from '@/components/SeqDepth.vue'
 import GeneBars        from '@/components/GeneBars.vue'
 import SnvCount        from '@/components/SnvCount.vue'
 import BpCoordBar      from '@/components/BpCoordBar.vue'
-//import RegionSNVTable  from '@/components/tables/RegionSNVTable.vue'
+import GeneSNVTable  from '@/components/table/GeneSNVTable.vue'
 
 export default {
   name: 'GeneDashboard',
   components: {
     FontAwesomeIcon,
     GeneInfo,
-    //RegionInfo,
     GeneSummary,
     FilterBar,
     ToggleList,
@@ -83,7 +80,7 @@ export default {
     GeneBars,
     SnvCount,
     BpCoordBar,
-    //RegionSNVTable
+    GeneSNVTable
   },
   inject: {
     geneId: {default: null}
@@ -130,9 +127,9 @@ export default {
       // Payload data from loadGenes
       geneData: {},
       // Source of provides to child components.
-      start: 0,
-      stop: 1,
-      chrom: 0,
+      start: null,
+      stop: null,
+      chrom: null,
       ensemblId: "",
 
       // introns may not be needed as it's assumed for genes
@@ -153,19 +150,62 @@ export default {
       // bounds for child element displays in pixels
       //formerly region.segments.plot
       segmentBounds: [0, 300],
-      // genomic bounds for child elements in base pairs
-      //formergly region.segments.region
-      segmentRegions: [this.start, this.stop],
+
+      // which variant is selected by the user.
+      hoveredVariant: {
+        index: null,
+        data: null,
+        hovered: null
+      },
+      // which variants are appearing in the variants table.
+      visibleVariants: {
+        start_index: null,
+        stop_index: null,
+        data: null
+      },
     }
   },
   computed: {
     filterArray: function() {
       return(Object.values(this.filter).flat(1))
     },
+    positionResolved: function() {
+      return( this.chrom && this.start && this.stop )
+    },
+    segmentRegions: function() {
+      // genomic bounds for child elements in base pairs
+      return [this.start, this.stop]
+    }
   },
   methods:{
     handleInfoViewToggle: function(listGroup, varKey){
       this[listGroup][varKey].val = !this[listGroup][varKey].val
+    },
+    togglePanelAttr: function(attrName) {
+      this[attrName] = !this[attrName]
+      this.showMenuDropDown = !this.showMenuDropDown
+    },
+    toggleColAttr: function(attrName) {
+      this[attrName] = !this[attrName]
+      this.showTableMenuDropDown = !this.showTableMenuDropDown
+    },
+    onOffStyle: function(boolVar){
+      return boolVar ? 'display: inline;' : 'display: inline; visibility: hidden;'
+    },
+    handleFilterChange: function(filterCategory, filtArr){
+      // Handle API's gene specific names for annotation and loftee
+      if(filterCategory === 'annotation'){
+        filtArr.forEach( e => e.field = 'annotation.gene.consequence')
+      }
+      if(filterCategory === 'loftee'){
+        filtArr.forEach( e => e.field = 'annotation.gene.lof')
+      }
+
+      this.filter[filterCategory] = filtArr
+    },
+    handleResize: function() {
+      this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
+      this.childWidth = this.$el.clientWidth
     },
     unwindGeneExons: function (gene) {
       gene.exons = [];
@@ -226,6 +266,12 @@ export default {
   mounted: function() {
     this.loadGene()
 
+    this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
+    this.childWidth = this.$el.clientWidth
+    window.addEventListener('resize', this.handleResize)
+  },
+  beforeUnmount: function() {
+    window.removeEventListener('resize', this.handleResize)
   }
 }
 </script>
