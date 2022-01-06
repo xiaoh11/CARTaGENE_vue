@@ -41,9 +41,20 @@ export default {
     FontAwesomeIcon,
   },
   inject: {
-    chrom: {default: '11'},
-    start: {default: 200000},
-    stop:  {default: 201000}
+    // Needs override by extending component.
+    // Either the chromosome position or geneId should be injected.
+  },
+  emits: ['close'],
+  data: function() {
+    return {
+      api: process.env.VUE_APP_BRAVO_API_URL,
+      dataState: "loading",
+      variants: 0,
+      closeIcon: faTimes,
+
+      // Needs override by extending component.
+      //url: `${this.api}/path/to/endpoint`
+    }
   },
   props: {
     //formerly region.segments.plot
@@ -72,10 +83,6 @@ export default {
         })
       }
     },
-    gene_id: {
-      type: String,
-      default: null
-    },
     filters: {
       type: Array,
       default: function(){return []}
@@ -88,17 +95,12 @@ export default {
       type: Object
     }
   },
-  data: function() {
-    return {
-      api: process.env.VUE_APP_BRAVO_API_URL,
-      loading: false,
-      loaded: false,
-      failed: false,
-      variants: 0,
-      closeIcon: faTimes
-    }
-  },
   computed: {
+    // Override computed url in extending component.
+    url() { return "needs/to/defined/in/extending/component" },
+    loading() { return this.dataState === "loading" },
+    failed()  { return this.dataState === "failed"  },
+    loaded()  { return this.dataState === "loaded"  },
     svgHeight: function() {
       return(this.height + this.givenMargins.top + this.givenMargins.bottom)
     },
@@ -115,28 +117,15 @@ export default {
   },
   methods: {
     load: function(width) {
-      if ((this.chrom == null) || (this.start == null) || (this.stop == null)) {
-        return;
-      }
       if(width == null){ return }
 
-      let url = ""
-      if (this.gene_id != null) {
-        url = `${this.api}/variants/gene/snv/${this.gene_id}/histogram`;
-      } else {
-        url = `${this.api}/variants/region/snv/${this.chrom}-${this.start}-${this.stop}/histogram`;
-      }
-
       this.clearDrawing();
-
-      this.failed = false;
-      this.loaded = false;
-      this.loading = true;
+      this.dataState = "loading"
 
       var timestamp = Date.now();
       this.timestamp = timestamp;
       axios
-        .post(url, {
+        .post(this.url, {
           filters: this.filters,
           introns: this.includeIntrons,
           windows: width - this.givenMargins.left - this.givenMargins.right
@@ -151,15 +140,14 @@ export default {
             this.drawHistogram();
             this.drawVariants();
           }
-          this.loaded = true;
+          this.dataState = "loaded";
         })
         .catch(error => {
           console.log('Snv depth loading error: ' + error)
-          this.loaded = false;
-          this.failed = true;
+          this.dataState = "failed"
         })
         .finally(() => {
-          this.loading = false;
+          this.dataState = "loaded";
         });
     },
     format_y_ticks: function(value) {
@@ -237,14 +225,9 @@ export default {
     this.y_scale = null;
     this.y_axis_g = null;
   },
-  created: function() {
-  },
   mounted: function() {
     this.initializeSVG();
-    this.load(this.$el.clientWidth);
-  },
-  beforeUpdate: function() {
-
+    this.load(this.givenWidth);
   },
   watch: {
     filters: function() {
@@ -258,7 +241,7 @@ export default {
       if(newVal > oldVal){
         this.load(newVal)
       }
-      if((!this.loading) && (!this.failed) && (this.histogram_data.length > 0)) {
+      if(this.loaded && (this.histogram_data.length > 0)) {
         this.draw()
         this.drawHistogram()
         this.drawVariants()
@@ -267,39 +250,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.child-component {
-  position: relative;
-  /* border: 1px solid black; */
-  min-height: 50px;
-  margin-top: 5px;
-}
-.close-button {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  padding: 0px 4px 0px 4px;
-  color: white;
-  font-size: 12px;
-  outline: none;
-  background-color: #007bff;
-  border: 1px solid #007bff;
-  border-radius: 2px;
-  box-shadow: none;
-}
-.close-button:hover {
-  background-color: #0062cc;
-  border-color: #0062cc;
-}
-.bravo-info-message {
-  position: absolute;
-  top: 0%;
-  left: 50%;
-  font-size: 11px;
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
-  background-color: white;
-  opacity: 0.8;
-}
-</style>

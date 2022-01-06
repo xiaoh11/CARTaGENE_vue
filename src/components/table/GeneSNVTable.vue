@@ -1,21 +1,25 @@
 <script>
-import BaseSNVTable from '@/components/tables/BaseSNVTable.vue'
+import BaseSNVTable from '@/components/table/BaseSNVTable.vue'
 import lofCategories from '@/domainModel/lofCategories'
 import snvConsequences from '@/domainModel/snvConsequences'
 
 export default {
-  name: "RegionSNVTable",
+  name: "GeneSNVTable",
   extends: BaseSNVTable,
+  inject: {
+    geneId: {default: ''},
+    ensemblId: {default: ''}
+  },
   data: function(){
     return {
-      // chrom, start, stop are injected from ancestor component
-      downloadFileName: `variants_${this.chrom}-${this.start}-${this.stop}.csv`
+      // geneId injected from ancestor component
+      downloadFileName: `variants_${this.geneId}.csv`
     }
   },
   computed: {
     // define url to get data appropriate for region snv table
     ajaxUrl() { 
-      return(`${this.api}/variants/region/snv/${this.chrom}-${this.start}-${this.stop}`) 
+      return(`${this.api}/variants/gene/snv/${this.ensemblId}`) 
     }
   },
   methods: {
@@ -24,7 +28,7 @@ export default {
       let consequenceCol =  {
         title: "Consequence <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).'>?</a>",
         titleDownload: "Consequence",
-        field: `annotation.region.hgvs`,
+        field: `annotation.gene.hgvs`,
         hozAlign: "left",
         headerSort: false,
         minWidth: 120,
@@ -48,7 +52,7 @@ export default {
       let annoCol =  {
         title: "Annotation <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).'>?</a>",
         titleDownload: "Annotation",
-        field: 'annotation.region.consequence',
+        field: 'annotation.gene.consequence',
         hozAlign: "left",
         minWidth: 120,
         visible: this.showCols.annotation,
@@ -75,7 +79,7 @@ export default {
       let lofteeCol = {
         title: "LOFTEE <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Variant was predicted to be Loss-of-Function by LOFTEE.'>?</a>",
         titleDownload: "LOFTEE",
-        field: "annotation.region.lof",
+        field: "annotation.gene.lof",
         hozAlign: "left",
         minWidth: 95,
         visible: this.showCols.LOFTEE.val,

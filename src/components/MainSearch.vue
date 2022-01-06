@@ -50,7 +50,7 @@ export default {
       publicPath: process.env.BASE_URL,
       logo: logo,
       exampleLinks: {
-        'PCSK9': 'gene.html?variant_type=snv&gene_name=PCSK9',
+        'HBB': 'gene.html?id=HBB',
         '11:5225000-5229000': 'region.html?variant_type=snv&chrom=11&start=5225000&stop=5229000',
         '22-16389447-A-G': 'variant.html?variant_type=snv&variant_id=22-16389447-A-G',
         'rs34747326': 'variant.html?variant_type=snv&variant_id=rs34747326'

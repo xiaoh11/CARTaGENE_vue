@@ -233,29 +233,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.child-component {
-  position: relative;
-  min-height: 50px;
-  margin-top: 5px;
-}
-.close-button {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  padding: 0px 4px 0px 4px;
-  color: white;
-  font-size: 12px;
-  outline: none;
-  background-color: #007bff;
-  border: 1px solid #007bff;
-  border-radius: 2px;
-  box-shadow: none;
-
-}
-.close-button:hover {
-  background-color: #0062cc;
-  border-color: #0062cc;
-}
-</style>

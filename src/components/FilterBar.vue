@@ -18,11 +18,11 @@
 </template>
 
 <script>
-import QualityFilterButton from '@/components/filters/QualityFilterButton.vue'
-import AnnotationFilterButton from '@/components/filters/AnnotationFilterButton.vue'
-import LofteeFilterButton from '@/components/filters/LofteeFilterButton.vue'
-import BaseMinMaxFilterButton from '@/components/filters/BaseMinMaxFilterButton.vue'
-import FrequencyFilterButton from '@/components/filters/FrequencyFilterButton.vue'
+import QualityFilterButton from '@/components/filter/QualityFilterButton.vue'
+import AnnotationFilterButton from '@/components/filter/AnnotationFilterButton.vue'
+import LofteeFilterButton from '@/components/filter/LofteeFilterButton.vue'
+import BaseMinMaxFilterButton from '@/components/filter/BaseMinMaxFilterButton.vue'
+import FrequencyFilterButton from '@/components/filter/FrequencyFilterButton.vue'
 
 export default {
   name: "FilterBar",

@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { config, shallowMount } from '@vue/test-utils'
-import QualityFilterButton from '@/components/filters/QualityFilterButton.vue'
+import QualityFilterButton from '@/components/filter/QualityFilterButton.vue'
 import clone from 'just-clone';
 
 // Filter buttons rely on custom Vue directive to do show/hide.
