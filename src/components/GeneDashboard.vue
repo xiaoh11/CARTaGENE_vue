@@ -21,9 +21,17 @@
         <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false" 
           :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
+
+        <TranscriptBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
+          :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
+          :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
+          :geneData="geneData"/>
+        <!--
         <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
           :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
+        -->
+
         <GeneSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
           :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
@@ -33,17 +41,6 @@
         <FilterBar @filterChange='handleFilterChange'/>
         <GeneSNVTable :filters="filterArray" :doDownload="doDownload"/>
       </div>
-      <!--
-      <pre>
-        DEBUG
-        gene: {{geneId}}
-        chrom: {{chrom}}
-        start: {{start}}
-        stop: {{stop}}
-        filterArray: {{filterArray}}
-        geneData: {{geneData}}
-      </pre>
-      -->
     </div>
   </div>
 </template>
@@ -58,15 +55,14 @@ import clone from 'just-clone'
 import axios from 'axios'
 
 import GeneInfo from '@/components/infoblock/GeneInfo.vue'
-//import RegionSummaries from '@/components/RegionSummaries.vue'
-import GeneSummary  from '@/components/summary/GeneSummary.vue'
-import FilterBar    from '@/components/FilterBar.vue'
-import ToggleList   from '@/components/ToggleList.vue'
-import SeqDepth     from '@/components/SeqDepth.vue'
-import GeneBars     from '@/components/GeneBars.vue'
-import GeneSnvCount from '@/components/histogram/GeneSnvCount.vue'
-import BpCoordBar   from '@/components/BpCoordBar.vue'
-import GeneSNVTable from '@/components/table/GeneSNVTable.vue'
+import GeneSummary    from '@/components/summary/GeneSummary.vue'
+import FilterBar      from '@/components/FilterBar.vue'
+import ToggleList     from '@/components/ToggleList.vue'
+import SeqDepth       from '@/components/SeqDepth.vue'
+import TranscriptBars from '@/components/TranscriptBars.vue'
+import GeneSnvCount   from '@/components/histogram/GeneSnvCount.vue'
+import BpCoordBar     from '@/components/BpCoordBar.vue'
+import GeneSNVTable   from '@/components/table/GeneSNVTable.vue'
 
 export default {
   name: 'GeneDashboard',
@@ -77,7 +73,7 @@ export default {
     FilterBar,
     ToggleList,
     SeqDepth,
-    GeneBars,
+    TranscriptBars,
     GeneSnvCount,
     BpCoordBar,
     GeneSNVTable
