@@ -1,6 +1,8 @@
 <template>
-  <input class="search-box-input" name="value" type="text" autocomplete="off" 
-    placeholder="Search for gene or region" v-bind:autofocus="autofocus"/>
+  <input ref="acInput" class="search-box-input" name="value" type="text" autocomplete="off" 
+    placeholder="Search for gene or region" v-bind:autofocus="autofocus"
+    @focus="$emit('inputfocus')" @focusout="$emit('inputfocusout')"
+  />
 </template>
 
 <script>
@@ -17,19 +19,8 @@ export default {
       searchapi: process.env.VUE_APP_BRAVO_API_URL + '/search'
     };
   },
-  methods: {
-    isEmpty: function() {
-      return (this.$el.value.trim() == "");
-    }
-  },
   mounted: function() {
     var self = this;
-    $(this.$el).focus(function() {
-      self.$emit('inputfocus');
-    });
-    $(this.$el).focusout(function() {
-      self.$emit('inputfocusout');
-    });
     $(this.$el).autocomplete({
       serviceUrl: process.env.VUE_APP_BRAVO_API_URL + '/autocomplete',
       dataType: "json",
