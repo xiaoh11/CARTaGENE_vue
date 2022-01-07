@@ -24,7 +24,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import AutoComplete from '@/components/Autocomplete.vue';
 
 export default {
-  name: 'BravoSearch',
+  name: 'SearchBox',
   components: {
     FontAwesomeIcon,
     AutoComplete
@@ -102,7 +102,7 @@ export default {
       delete ticket.endpoint
 
       let paramContent = []
-      for(var p in ticket){
+      for(let p in ticket){
         if(Object.prototype.hasOwnProperty.call(ticket,p)){
           paramContent.push(
             encodeURIComponent(p) + "=" + encodeURIComponent(ticket[p]) 

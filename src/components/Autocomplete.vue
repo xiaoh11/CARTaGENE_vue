@@ -1,10 +1,10 @@
 <template>
-  <input class="search-box-input" name="value" type="text" autocomplete="off" placeholder="Search for gene or region" v-bind:autofocus="autofocus"/>
+  <input class="search-box-input" name="value" type="text" autocomplete="off" 
+    placeholder="Search for gene or region" v-bind:autofocus="autofocus"/>
 </template>
 
 <script>
 import $ from "jquery";
-// import _ from "devbridge-autocomplete";
 import "devbridge-autocomplete";
 
 export default {
