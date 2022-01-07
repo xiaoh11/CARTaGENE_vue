@@ -36,31 +36,26 @@ describe('SearchBox.vue query parsing.', () => {
 
   it('tickets a dbSNP reference query with endpoint: variant', () => {
     const rsid_result = wrapper.vm.queryToResultTicket('rs12345678')
-    expect(rsid_result.variant_type).to.equal('snv')
     expect(rsid_result.endpoint).to.equal('variant')
   })
 
   it('tickets a range query with endpoint: region', () => {
     const range_result = wrapper.vm.queryToResultTicket('chr11:10,500,100-10,503,000')
-    expect(range_result.variant_type).to.equal('snv')
     expect(range_result.endpoint).to.equal('region')
   })
 
   it('tickets a vcf variant query with endpoint: variant', () => {
     const range_result = wrapper.vm.queryToResultTicket('chr11:10,500,100-10,503,000-A-T')
-    expect(range_result.variant_type).to.equal('snv')
     expect(range_result.endpoint).to.equal('variant')
   })
 
   it('tickets a vcf variant query with endpoint: variant', () => {
     const range_result = wrapper.vm.queryToResultTicket('chr11:10,500,100-10,503,000-A-T')
-    expect(range_result.variant_type).to.equal('snv')
     expect(range_result.endpoint).to.equal('variant')
   })
 
   it('defaults to ticket query with endpoint: gene', () => {
     const range_result = wrapper.vm.queryToResultTicket('HBBP1')
-    expect(range_result.variant_type).to.equal('snv')
     expect(range_result.endpoint).to.equal('gene')
   })
 })
