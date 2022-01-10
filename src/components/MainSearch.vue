@@ -51,9 +51,9 @@ export default {
       logo: logo,
       exampleLinks: {
         'HBB': 'gene.html?id=HBB',
-        '11:5225000-5229000': 'region.html?variant_type=snv&chrom=11&start=5225000&stop=5229000',
-        '22-16389447-A-G': 'variant.html?variant_type=snv&variant_id=22-16389447-A-G',
-        'rs34747326': 'variant.html?variant_type=snv&variant_id=rs34747326'
+        '11:5225000-5229000': 'region.html?chrom=11&start=5225000&stop=5229000',
+        '22-16389447-A-G': 'variant.html?id=22-16389447-A-G',
+        'rs34747326': 'variant.html?id=rs34747326'
       }
     }
   }
