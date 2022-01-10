@@ -282,3 +282,22 @@
     column-count: 3;
   }
 }
+
+.search-box-input {
+   flex-grow: 1;
+   min-width: 16px;
+   margin-left: 8px;
+   font-size: 16px;
+   border: none;
+   outline: none;
+}
+
+.search-box-input:focus {
+   border: none;
+   box-shadow: none;
+   outline: none;
+}
+
+.bo-small-logo {
+  border-radius: 10px;
+}

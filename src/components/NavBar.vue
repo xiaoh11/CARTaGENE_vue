@@ -8,7 +8,7 @@
       </button> 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item"><a class="nav-link btn-sm" v-bind:href="publicPath + 'about'">About</a></li>
+          <li class="nav-item"><a class="nav-link btn-sm" href="/about.html">About</a></li>
         </ul>
       </div>
     </nav>
@@ -28,10 +28,3 @@ export default {
   },
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-  .bo-small-logo {
-    border-radius: 10px;
-  }
-</style>

@@ -68,8 +68,6 @@ export default {
     this.ready = true;
   },
   beforeUnmount: function() {
-    $(this.$el).off("focus");
-    $(this.$el).off("focusout");
     $(this.$el).autocomplete().hide();
     $(this.$el).autocomplete().dispose();
     this.ready = false;
@@ -77,27 +75,9 @@ export default {
   watch: {
     width: function() {
       if (this.ready) {
-        $(this.$el).autocomplete().setOptions({
-          width: this.width
-        });
+        $(this.$el).autocomplete().setOptions({ width: this.width });
       }
     }
   }
 }
 </script>
-
-<style scoped>
-.search-box-input {
-   flex-grow: 1;
-   min-width: 16px;
-   margin-left: 8px;
-   font-size: 16px;
-   border: none;
-   outline: none;
-}
-.search-box-input:focus {
-   border: none;
-   box-shadow: none;
-   outline: none;
-}
-</style>
