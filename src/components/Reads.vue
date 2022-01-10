@@ -76,8 +76,6 @@ export default {
       }
     },
     sequence: function(heterozygous, sample_no, event) {
-      console.log('sequence')
-      console.log(igv.browser)
       const name = `${heterozygous ? "Heterozygous" : "Homozygous"} individual #${sample_no}`;
       if (event.target.classList.contains('active')) {
         event.target.classList.remove('active')
@@ -127,7 +125,6 @@ export default {
         }
         this.loading = false;
         this.$nextTick(function () {
-          console.log('igv created')
           this.options.locus = `${this.variant.chrom}:${this.variant.pos - 100}-${this.variant.pos + 99}`;
           let self = this;
           igv.createBrowser(this.$refs.igv, this.options).then(function(browser) {

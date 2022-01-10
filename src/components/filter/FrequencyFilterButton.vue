@@ -8,7 +8,6 @@ export default {
     // override to convert percent min/max vals to decimal.
     emitFilterChange: function (){
       let filterArr = []
-      console.log('MinVal: ' + this.pMinVal)
       if( this.pMinVal > 0){
         filterArr.push(
           {field: this.fieldVal, type: ">", value: this.pMinVal / 100}

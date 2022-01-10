@@ -101,9 +101,6 @@ export default {
     resultTicketToHref: function(ticket) {
       // Append .html extension until dev server mime-type issue is resolved.
       let href = ticket.endpoint + '.html'
-
-      console.log("In ticket ticket\n" + ticket)
-      
       delete ticket.endpoint
 
       let paramContent = []

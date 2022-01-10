@@ -304,8 +304,6 @@ export default {
         return true;
       },
       ajaxURLGenerator: (url, config, params) => {
-        console.log("ajaxUrl")
-        console.log(params)
         // when 1st page is requested "next" must be null
         if (params.page == 1) {
           params.next = null;

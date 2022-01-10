@@ -237,9 +237,6 @@ export default {
         .get(`${this.api}/genes/api/${this.geneId}`)
         .then( response => {
           let payload = response.data
-          console.log("loadGene payload")
-          console.log(payload)
-
           if (payload.data.length > 0) {
             payload.data.forEach(d => {
               if ((d.gene_name === this.geneId) || (d.gene_id === this.geneId)) {
