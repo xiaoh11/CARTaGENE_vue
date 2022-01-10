@@ -24,7 +24,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import AutoComplete from '@/components/Autocomplete.vue';
 
 export default {
-  name: 'BravoSearch',
+  name: 'SearchBox',
   components: {
     FontAwesomeIcon,
     AutoComplete
@@ -48,61 +48,63 @@ export default {
   methods: {
     queryToResultTicket: function(query) {
       // pre-process query string
-      const p_query = query.replace(/,/g, '').trim();
+      const pQuery = query.replace(/,/g, '').trim();
 
       // check for empty or null query
-      if(!p_query){
+      if(!pQuery){
         return {endpoint: 'notfound'};
       }
 
       // check query for DbSNP format 
-      const patt_rsid = /^rs(\d+)$/i;
-      if(patt_rsid.test(p_query)){
+      const pattRsid = /^rs(\d+)$/i;
+      if(pattRsid.test(pQuery)){
         return {
-          variant_type: 'snv',
-          endpoint: 'variant'
+          endpoint: 'variant',
+          rsId: pQuery
         }
       }
 
       // check query for region format
       //pattern parts:      chromsome-------------          start---          end-----
-      const patt_region = /^(?:CHR)?(\d+|X|Y|M|MT)\s*[-:]\s*([\d,]+)\s*[-:]\s*([\d,]+)$/i;
-      const region_matches = p_query.match(patt_region);
-      if(region_matches){
+      const pattRegion = /^(?:CHR)?(\d+|X|Y|M|MT)\s*[-:]\s*([\d,]+)\s*[-:]\s*([\d,]+)$/i;
+      const regionMatches = pQuery.match(pattRegion);
+      if(regionMatches){
         return {
-          variant_type: 'snv',
           endpoint: 'region',
-          chrom: region_matches[1],
-          start: region_matches[2],
-          stop: region_matches[3]
+          chrom: regionMatches[1],
+          start: regionMatches[2],
+          stop: regionMatches[3]
         }
       }
 
       // check query for VCF style variant format 
       //pattern parts:           chromsome-------------          start---          end-----          ref------          alt-----
-      const vcf_variant_patt = /^(?:CHR)?(\d+|X|Y|M|MT)\s*[-:]\s*([\d,]+)\s*[-:]\s*([\d,]+)\s*[-:]\s*([ATCG]+)\s*[-:]\s*([ATCG]+)$/i; 
-      const vcf_variant_matches = p_query.match(vcf_variant_patt);
-      if(vcf_variant_matches){
+      const vcfVariantPatt = /^(?:CHR)?(\d+|X|Y|M|MT)\s*[-:]\s*([\d,]+)\s*[-:]\s*([\d,]+)\s*[-:]\s*([ATCG]+)\s*[-:]\s*([ATCG]+)$/i; 
+      const vcfVariantMatches = pQuery.match(vcfVariantPatt);
+      if(vcfVariantMatches){
         return { 
-          variant_type: 'snv',
           endpoint: 'variant',
-          chrom: vcf_variant_matches[1],
-          start: vcf_variant_matches[2],
-          stop: vcf_variant_matches[3],
-          ref: vcf_variant_matches[4],
-          alt: vcf_variant_matches[5]
+          chrom: vcfVariantMatches[1],
+          start: vcfVariantMatches[2],
+          stop: vcfVariantMatches[3],
+          ref: vcfVariantMatches[4],
+          alt: vcfVariantMatches[5]
         }
       }
-      return {endpoint: 'gene', variant_type: 'snv'}
+
+      // Default to gene endpoint.
+      return {
+        endpoint: 'gene', 
+        id: pQuery
+      }
     },
     resultTicketToHref: function(ticket) {
       // Append .html extension until dev server mime-type issue is resolved.
       let href = ticket.endpoint + '.html'
-      
       delete ticket.endpoint
 
       let paramContent = []
-      for(var p in ticket){
+      for(let p in ticket){
         if(Object.prototype.hasOwnProperty.call(ticket,p)){
           paramContent.push(
             encodeURIComponent(p) + "=" + encodeURIComponent(ticket[p]) 
@@ -116,32 +118,41 @@ export default {
       return href
     },
     suggestToResultTicket(suggestion){
-      let rTic = suggestion.data;
-      if(rTic.feature === 'snv'){
-        rTic.variant_type = 'snv';
-        rTic.endpoint = 'variant';
-        [rTic.chrom, rTic.pos, rTic.ref, rTic.alt] = suggestion.data.variant_id.split('-');
+      let rTicket = {}
+
+      if(suggestion.data.feature === 'snv'){
+        rTicket.endpoint = 'variant';
+
+        let var_id_parts = suggestion.data.variant_id.split('-')
+        rTicket.chrom = var_id_parts[0]
+        rTicket.pos   = var_id_parts[1]
+        rTicket.ref   = var_id_parts[2]
+        rTicket.alt   = var_id_parts[3]  
       }else{
-        rTic.endpoint = rTic.feature;
+        // Default assumes gene endpoint
+        rTicket.endpoint = 'gene'
+        rTicket.id = suggestion.value
       }
-      return(rTic);
+      return(rTicket);
     },
     doSearch: function() {
       //convert query string from autocomplete input element to result ticket
-      let resultTicket = this.queryToResultTicket(this.$refs.autocomplete.$el.value);
+      let resultTicket = this.queryToResultTicket(this.$refs.autocomplete.$el.value)
+
       //convert result ticket to href
-      let resultUrl = this.resultTicketToHref(resultTicket);
+      let resultUrl = this.resultTicketToHref(resultTicket)
+
       //instruct browser to goto href
-      console.log(resultUrl);
-      window.location.assign(resultUrl);
+      window.location.assign(resultUrl)
     },
     doSuggest: function(suggestion) {
       //convert suggestion to resultTicket.
       let resultTicket = this.suggestToResultTicket(suggestion);
+
       //convert result ticket to href
       let resultUrl = this.resultTicketToHref(resultTicket);
+
       //instruct browser to goto href
-      console.log(resultUrl);
       window.location.assign(resultUrl);
     },
     onResize: function() {
@@ -164,11 +175,6 @@ export default {
       this.height = height;
       this.isDropdownOpen = open;
     },
-    isEmpty: function(e) {
-      if (this.$refs.autocomplete.isEmpty()) {
-        e.preventDefault();
-      }
-    },
     showShadow: function() {
       return this.isHovered || this.isActive;
     },
@@ -185,55 +191,6 @@ export default {
 </script>
 
 <style scoped>
-.search-box {
-   position: relative;
-   display: flex;
-   flex-direction: row;
-   flex-wrap: nowrap;
-   border: 0px;
-   padding: 5px;
-   margin: 0px;
-   z-index: 9998;
-}
-.search-box-dropdown-open {
-}
-.search-box-dropdown-open::after {
-  content: "";
-  position: absolute;
-  top: calc(100% - 1px);
-  -webkit-top: calc(100% - 1px);
-  left: 0%;
-  width: calc(100% - 26px);
-  -webkit-width: calc(100% - 26px);
-  margin-left: 13px;
-  border-top: 1px solid #ced4da;
-}
-.div-shadow {
-  background-color: white;
-  position: absolute;
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  border-radius: 1.2rem;
-  border: 1px solid #ced4da;
-  z-index: 9998;
-}
-.div-shadow-show {
-  box-shadow: 0px 0px 8px 0 rgba(0, 0, 0, 0.4);
-}
-.div-shadow-expand {
-  border-radius: 1rem 1rem 1rem 1rem;
-}
-.search-box-button {
-  background-color: transparent;
-  border: none;
-  outline: none;
-  cursor: pointer;
-}
-.search-box-button:focus {
-  border: none;
-  box-shadow: none;
-  outline: none;
-}
 #bravosearch :deep(.autocomplete-suggestions) {
   background-color: transparent;
   border: 0px;

@@ -1,5 +1,7 @@
 <template>
-  <NavBar style="margin-left: 5px;"/>
+  <NavBar style="margin-left: 5px;">
+    <SearchBox :autofocus="false"/>
+  </NavBar>
 
   <div id="variantviz">
     <div v-if="this.ready">
@@ -59,6 +61,7 @@
 <script>
 import axios from "axios"
 import NavBar from '@/components/NavBar.vue'
+import SearchBox from '@/components/SearchBox.vue'
 import VariantBasicInfo from '@/components/VariantBasicInfo'
 import VariantCounts from '@/components/VariantCounts'
 import VariantFrequency from '@/components/VariantFrequency'
@@ -71,6 +74,7 @@ export default {
   name: 'App',
   components: {
     NavBar,
+    SearchBox,
     VariantBasicInfo,
     VariantCounts,
     VariantFrequency,

@@ -26,12 +26,6 @@
           :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
           :geneData="geneData"/>
-        <!--
-        <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
-          :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
-          :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
-        -->
-
         <GeneSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
           :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
@@ -237,9 +231,6 @@ export default {
         .get(`${this.api}/genes/api/${this.geneId}`)
         .then( response => {
           let payload = response.data
-          console.log("loadGene payload")
-          console.log(payload)
-
           if (payload.data.length > 0) {
             payload.data.forEach(d => {
               if ((d.gene_name === this.geneId) || (d.gene_id === this.geneId)) {
