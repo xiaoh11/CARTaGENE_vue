@@ -3,7 +3,12 @@
       <a class="navbar-brand" v-bind:href="publicPath">
         <img class="bo-small-logo" width="34" v-bind:src="logo"/>
       </a>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+      <!-- Slot for search box -->
+      <slot>
+      </slot>
+
+      <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item"><a class="nav-link btn-sm" href="/about.html">About</a></li>
         </ul>

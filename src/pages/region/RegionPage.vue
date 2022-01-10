@@ -1,5 +1,7 @@
 <template>
-  <NavBar style="margin-left: 5px;"/>
+  <NavBar style="margin-left: 5px;">
+    <SearchBox :autofocus="false"/>
+  </NavBar>
 
   <div class="container-fluid">
     <div class="row justify-content-center" style="border-bottom: 1px solid #cccccc;margin-bottom: 5px;">
@@ -24,12 +26,14 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue'
+import SearchBox from '@/components/SearchBox.vue'
 import RegionDashboard from '@/components/RegionDashboard.vue'
 
 export default {
   name: 'App',
   components: {
     NavBar,
+    SearchBox,
     RegionDashboard
   },
   provide: function() {
