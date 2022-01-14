@@ -86,7 +86,8 @@ export default {
   },
   data: function(){
     return {
-      api: process.env.VUE_APP_BRAVO_API_URL,
+      //api: process.env.VUE_APP_BRAVO_API_URL,
+      api: "http://localhost:9099/ui",
       panelsIcon: faWindowRestore,
       columnsIcon: faColumns,
       downloadIcon: faDownload,
