@@ -59,10 +59,6 @@ export default {
       type: Object,
       default: function(){ return {} }
     },
-    filters: {
-      type: Array,
-      default: function(){return []}
-    },
     filterArray: {
       type: Array,
       default: function(){return []}
@@ -70,7 +66,8 @@ export default {
   },
   data: function() {
     return {
-      api: process.env.VUE_APP_BRAVO_API_URL,
+      //api: process.env.VUE_APP_BRAVO_API_URL,
+      api: "http://localhost:9099/ui",
 
       closeIcon: faTimes,
       scrollRightIcon: faAngleRight,
@@ -171,6 +168,11 @@ export default {
         'High Confidence (HC)': this.summary.all['LoF (HC)'],
         'Low Confidence (LC)':  this.summary.all['LoF (LC)']
       }
+    },
+  },
+  watch: {
+    filterArray: function() {
+      this.load()
     },
   },
   mounted: function() {
