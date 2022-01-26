@@ -332,6 +332,11 @@
           .finally(() => { });
       },
     },
+    watch: {
+      filterArray: function() {
+        this.load()
+      },
+    },
     mounted: function() {
       this.load();
     },

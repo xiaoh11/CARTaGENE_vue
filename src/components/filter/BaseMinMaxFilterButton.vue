@@ -142,7 +142,7 @@ export default {
       if( this.pMinVal > 0){
         filterArr.push({field: this.fieldVal, type: ">", value: this.pMinVal})
       }
-      if( this.pMaxVal < 0){
+      if( this.pMaxVal < 100){
         filterArr.push({field: this.fieldVal, type: "<", value: this.pMaxVal})
       }
       this.$emit('filterChange', this.givenCategory, filterArr)
