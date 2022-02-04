@@ -13,7 +13,7 @@ export default {
           {field: this.fieldVal, type: ">", value: this.pMinVal / 100}
         )
       }
-      if( this.pMaxVal < 0){
+      if( this.pMaxVal < 100){
         filterArr.push(
           {field: this.fieldVal, type: "<", value: this.pMaxVal / 100}
         )

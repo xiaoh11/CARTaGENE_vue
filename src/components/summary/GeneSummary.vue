@@ -59,10 +59,6 @@ export default {
       type: Object,
       default: function(){ return {} }
     },
-    filters: {
-      type: Array,
-      default: function(){return []}
-    },
     filterArray: {
       type: Array,
       default: function(){return []}
@@ -171,6 +167,11 @@ export default {
         'High Confidence (HC)': this.summary.all['LoF (HC)'],
         'Low Confidence (LC)':  this.summary.all['LoF (LC)']
       }
+    },
+  },
+  watch: {
+    filterArray: function() {
+      this.load()
     },
   },
   mounted: function() {
