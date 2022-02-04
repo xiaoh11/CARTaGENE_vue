@@ -22,9 +22,7 @@ export default {
   mounted: function() {
     var self = this;
     $(this.$el).autocomplete({
-      //serviceUrl: process.env.VUE_APP_BRAVO_API_URL + '/autocomplete',
-      // ENDPOINT SWITCH
-      serviceUrl: 'http://localhost:9099/ui/autocomplete',
+      serviceUrl: process.env.VUE_APP_BRAVO_API_URL + '/autocomplete',
       dataType: "json",
       width: this.width,
       maxHeight: 250,
