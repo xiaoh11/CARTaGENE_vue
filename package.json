@@ -17,6 +17,7 @@
     "@vue/cli": "^5.0.0-rc.0",
     "axios": "^0.23.0",
     "bootstrap": "^4.6.0",
+    "colors": "1.4.0",
     "core-js": "^3.6.5",
     "d3": "^7.1.1",
     "devbridge-autocomplete": "^1.4.11",
@@ -25,7 +26,7 @@
     "tabulator-tables": "^4.9.3",
     "vue": "^3.2.22",
     "vue-gtag": "^2.0.1",
-    "colors": "1.4.0"
+    "vue3-google-oauth2": "^1.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

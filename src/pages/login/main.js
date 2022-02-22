@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import App from './GenePage.vue'
+import App from './LoginPage.vue'
 import gAuthPlugin from 'vue3-google-oauth2'
 
 import VueGtag from 'vue-gtag'
@@ -38,10 +38,6 @@ app.directive('click-outside', clickOutside)
 //   see: https://vuejs.org/guide/components/provide-inject.html#working-with-reactivity
 app.config.unwrapInjectedRef = true
 
-/*
- * AUTH Handling.
- * Extract to utility moduel after demo it works.
- */
 // Auth redirect if auth being used by API
 axios.get(process.env.VUE_APP_BRAVO_API_URL + '/auth_status', {withCredentials: true})
   .then(function(resp){

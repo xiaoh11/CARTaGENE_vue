@@ -228,7 +228,7 @@ export default {
     },
     loadGene: function() {
       axios
-        .get(`${this.api}/genes/api/${this.geneId}`)
+        .get(`${this.api}/genes/api/${this.geneId}`, {withCredentials: true})
         .then( response => {
           let payload = response.data
           if (payload.data.length > 0) {
