@@ -15,9 +15,6 @@
     <button v-if="user == null" v-on:click="handle_login()">Login</button>
     <button v-else v-on:click="handle_logout()">Logout</button>
     <p>
-      {{api_auth_status}}
-    </p>
-    <p>
     End
     </p>
   </div>
@@ -26,7 +23,6 @@
 <script>
 import NavBar from '@/components/NavBar.vue'
 import axios from 'axios';
-axios.defaults.headers.post['X-Requested-With']='XMLHttpRequest'
 axios.defaults.withCredentials=true
 
 export default {
@@ -40,16 +36,18 @@ export default {
       active: false,
       authenticated: false,
       info: '',
-      api_auth_status: {}
+      api: process.env.VUE_APP_BRAVO_API_URL
     }
   },
   methods:{
     update_api_auth_status: function() {
-      axios.get(process.env.VUE_APP_BRAVO_API_URL + '/auth_status', {withCredentials: true})
-        .then(function(resp){ 
-          this.api_auth_status = resp 
+      axios
+        .post(this.api + '/auth_status')
+        .then( resp => { 
+          this.set_state(resp.data) 
         })
     },
+
     set_state: function(state){
       this.info = state
       this.user = state.user
@@ -58,26 +56,19 @@ export default {
     },
 
     handle_logout: function(){ 
-      axios({
-        method: 'post',
-        url:  'http://127.0.0.1:5000/logout',
-        withCredentials: true,
-        data: {}})
-      .then(response => { this.set_state(response.data) })
+      axios.post(this.api + '/logout')
+        .then(response => { this.set_state(response.data) })
     },
 
     handle_login: function() {
       this.$gAuth
         .getAuthCode()
         .then((authCode) => {
-          axios({
-            method: 'post',
-            url:  'http://127.0.0.1:5000/auth_code',
-            withCredentials: true,
-            data: {code: authCode, redirect_uri: 'postmessage'}})
-            .then(response => { 
-              this.set_state(response.data) 
-              this.update_api_auth_status()
+          axios.post(this.api +  '/auth_code',
+            {code: authCode, redirect_uri: 'postmessage'}, 
+            {headers: {'X-Requested-With': 'XMLHttpRequest'} })
+            .then( resp => {
+              this.set_state(resp.data)
             })
         })
         .catch((error) => {
@@ -86,14 +77,7 @@ export default {
     }
   },
   mounted () {
-    axios
-      .get('http://127.0.0.1:5000/auth_status', {withCredentials: true})
-      .then(response => {
-        this.info = response.data
-        this.user = response.data.user
-        this.active = response.data.active
-        this.authenticated = response.data.authenticated
-      })
+    this.update_api_auth_status()
   }
 }
 </script>

@@ -41,7 +41,6 @@ app.config.unwrapInjectedRef = true
 // Auth redirect if auth being used by API
 axios.get(process.env.VUE_APP_BRAVO_API_URL + '/auth_status', {withCredentials: true})
   .then(function(resp){
-    console.log(resp)
     if(resp.data.authenticated){
       console.log('authenticated')
     } else {
