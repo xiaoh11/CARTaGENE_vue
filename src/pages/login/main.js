@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import App from './LoginPage.vue'
-import gAuthPlugin from 'vue3-google-oauth2'
 
 import VueGtag from 'vue-gtag'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -12,15 +11,6 @@ import {clickOutside} from '@/CustomDirectives'
 import axios from 'axios'
 
 const app = createApp(App);
-
-const gAuthOptions = {
-  clientId: process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_ID,
-  scope: 'email',
-  prompt: 'consent',
-  fetch_basic_profile: false
-}
-
-app.use(gAuthPlugin, gAuthOptions)
 
 // Inject gtag header if config includes a non-blank google analyitics id
 if(process.env.GA_ID){
@@ -41,11 +31,16 @@ app.config.unwrapInjectedRef = true
 // Auth redirect if auth being used by API
 axios.get(process.env.VUE_APP_BRAVO_API_URL + '/auth_status', {withCredentials: true})
   .then(function(resp){
-    if(resp.data.authenticated){
+    if(resp.data.login_disabled){
+      console.log('login disabled')
+      app.mount('#app')
+    }else if(resp.data.authenticated){
       console.log('authenticated')
+      app.mount('#app')
     } else {
       console.log('NOT authenticated')
+      // Redirect to login passing this location as the eventual destination
+      let dest = encodeURIComponent(window.location.href)
+      window.location.href=process.env.VUE_APP_BRAVO_API_URL + '/login?dest=' + dest
     }
   })
-
-app.mount('#app')
