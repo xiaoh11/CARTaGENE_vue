@@ -1,7 +1,5 @@
 import { createApp } from 'vue'
 import App from './GenePage.vue'
-import gAuthPlugin from 'vue3-google-oauth2'
-
 import VueGtag from 'vue-gtag'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'tabulator-tables/dist/css/bootstrap/tabulator_bootstrap.css'
