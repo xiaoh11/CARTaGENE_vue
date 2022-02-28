@@ -9,18 +9,9 @@ import '@/assets/bravo.css'
 import '@/assets/snv_consequences.css'
 import '@/assets/snv_tabulator_table.css'
 import {clickOutside} from '@/CustomDirectives'
-import axios from 'axios'
+import { authAwareMount } from '@/AuthAwareMount'
 
 const app = createApp(App);
-
-const gAuthOptions = {
-  clientId: process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_ID,
-  scope: 'email',
-  prompt: 'consent',
-  fetch_basic_profile: false
-}
-
-app.use(gAuthPlugin, gAuthOptions)
 
 // Inject gtag header if config includes a non-blank google analyitics id
 if(process.env.GA_ID){
@@ -38,18 +29,5 @@ app.directive('click-outside', clickOutside)
 //   see: https://vuejs.org/guide/components/provide-inject.html#working-with-reactivity
 app.config.unwrapInjectedRef = true
 
-/*
- * AUTH Handling.
- * Extract to utility moduel after demo it works.
- */
-// Auth redirect if auth being used by API
-axios.get(process.env.VUE_APP_BRAVO_API_URL + '/auth_status', {withCredentials: true})
-  .then(function(resp){
-    if(resp.data.authenticated){
-      console.log('authenticated')
-    } else {
-      console.log('NOT authenticated')
-    }
-  })
 
-app.mount('#app')
+authAwareMount(app, '#app')

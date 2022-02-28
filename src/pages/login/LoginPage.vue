@@ -2,15 +2,18 @@
   <NavBar style="margin-left: 5px;"/>
 
   <div class="LoginStatus">
-    <h2>Login Status</h2>
+    <h2>Queried Login Status</h2>
+    <ul>
+      <li>user: {{qUser}}</li>
+      <li>active: {{qActive}}</li>
+      <li>authenticated: {{qAuthenticated}}</li>
+    </ul>
+    <pre>{{qInfo}}</pre>
+    <h2>App Injected/Provided Login Status</h2>
     <ul>
       <li>user: {{user}}</li>
-      <li>active: {{active}}</li>
-      <li>authenticated: {{authenticated}}</li>
+      <li>login disabled: {{loginDisabled}}</li>
     </ul>
-    <pre>
-    {{info}}
-    </pre>
     <h2> Login/Logout </h2>
     <button v-if="user == null" v-on:click="handle_login()">Login</button>
     <button v-else v-on:click="handle_logout()">Logout</button>
@@ -30,12 +33,16 @@ export default {
   components: {
     NavBar,
   },
+  inject: {
+    user: {default: null},
+    loginDisabled: {default: true}
+  },
   data: function(){ 
     return {
-      user: null,
-      active: false,
-      authenticated: false,
-      info: '',
+      qUser: null,
+      qActive: false,
+      qAuthenticated: false,
+      qInfo: '',
       api: process.env.VUE_APP_BRAVO_API_URL
     }
   },
@@ -49,10 +56,10 @@ export default {
     },
 
     set_state: function(state){
-      this.info = state
-      this.user = state.user
-      this.active = state.active
-      this.authenticated = state.authenticated
+      this.qInfo = state
+      this.qUser = state.user
+      this.qActive = state.active
+      this.qAuthenticated = state.authenticated
     },
 
     handle_logout: function(){ 

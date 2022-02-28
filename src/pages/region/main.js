@@ -2,12 +2,12 @@ import { createApp } from 'vue'
 import App from './RegionPage.vue'
 import VueGtag from 'vue-gtag'
 import 'bootstrap/dist/css/bootstrap.css'
-//import '@/assets/tabulator_workaround.css'
 import 'tabulator-tables/dist/css/bootstrap/tabulator_bootstrap.css'
 import '@/assets/bravo.css'
 import '@/assets/snv_consequences.css'
 import '@/assets/snv_tabulator_table.css'
 import {clickOutside} from '@/CustomDirectives'
+import { authAwareMount } from '@/AuthAwareMount'
 
 const app = createApp(App);
 
@@ -23,4 +23,4 @@ if(process.env.GA_ID){
 
 app.directive('click-outside', clickOutside);
 
-app.mount('#app');
+authAwareMount(app, '#app')

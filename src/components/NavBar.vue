@@ -10,6 +10,12 @@
 
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto">
+          <div v-if="this.user">
+            <li class="nav-item btn-sm">{{user}}</li>
+          </div>
+          <div v-if="!this.loginDisabled">
+            <li class="nav-item"><a class="nav-link btn-sm" :href="this.logInOutUrl">{{logInOutText}}</a></li>
+          </div>
           <li class="nav-item"><a class="nav-link btn-sm" href="/about.html">About</a></li>
         </ul>
       </div>
@@ -21,12 +27,32 @@ import logo from "../assets/bravo_logo_square.png"
 
 export default {
   name: 'NavBar',
-  props: { },
+  inject: {
+    user: {default: null},
+    loginDisabled: {default: true}
+  },
   data() {
     return {
       publicPath: process.env.BASE_URL,
-      logo: logo
+      logo: logo,
+      api: process.env.VUE_APP_BRAVO_API_URL
     };
   },
+  computed: {
+    logInOutUrl: function(){
+      if(this.user){
+        return('/logout.html')
+      } else {
+        return(api + '/login')
+      }
+    },
+    logInOutText: function(){
+      if(this.user){
+        return('Logout')
+      } else {
+        return('Login')
+      }
+    }
+  }
 }
 </script>
