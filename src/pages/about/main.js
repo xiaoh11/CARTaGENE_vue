@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './About.vue'
 import VueGtag from 'vue-gtag'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { authAwareMount } from '@/AuthAwareMount'
 
 const app = createApp(App);
 
@@ -15,4 +16,4 @@ if(process.env.GA_ID){
   });
 }
 
-app.mount('#app')
+authAwareMount(app, '#app')

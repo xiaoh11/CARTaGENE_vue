@@ -50,6 +50,13 @@ module.exports = {
       title: 'Bravo:About',
       chunks: ['chunk-vendors', 'chunk-common', 'about']
     },
+    login: {
+      entry: 'src/pages/login/main.js',
+      template: 'src/pages/login/login.html',
+      filename: 'login.html',
+      title: 'Bravo:Login',
+      chunks: ['chunk-vendors', 'chunk-common', 'login']
+    },
     404: {
       entry: 'src/pages/about/main.js',
       template: 'src/pages/about/terms.html',

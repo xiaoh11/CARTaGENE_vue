@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
-import App from './GenePage.vue'
-import gAuthPlugin from 'vue3-google-oauth2'
+import App from './LoginPage.vue'
 
 import VueGtag from 'vue-gtag'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -8,7 +7,7 @@ import 'tabulator-tables/dist/css/bootstrap/tabulator_bootstrap.css'
 import '@/assets/bravo.css'
 import '@/assets/snv_consequences.css'
 import '@/assets/snv_tabulator_table.css'
-import {clickOutside} from '@/CustomDirectives'
+import { clickOutside } from '@/CustomDirectives'
 import { authAwareMount } from '@/AuthAwareMount'
 
 const app = createApp(App);
@@ -28,6 +27,5 @@ app.directive('click-outside', clickOutside)
 // Temporary config for refs in provide/inject.
 //   see: https://vuejs.org/guide/components/provide-inject.html#working-with-reactivity
 app.config.unwrapInjectedRef = true
-
 
 authAwareMount(app, '#app')

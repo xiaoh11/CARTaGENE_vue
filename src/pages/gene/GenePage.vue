@@ -38,7 +38,7 @@ export default {
     return {
       geneId: urlParams.get('id')
     }
-  }
+  },
 }
 </script>
 
