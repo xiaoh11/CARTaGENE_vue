@@ -7,7 +7,7 @@ import '@/assets/bravo.css'
 import '@/assets/snv_consequences.css'
 import '@/assets/snv_tabulator_table.css'
 import {clickOutside} from '@/CustomDirectives'
-import { authAwareMount } from '@/AuthAwareMount'
+import { authExpectedMount } from '@/AuthAwareMount'
 
 const app = createApp(App);
 
@@ -27,5 +27,4 @@ app.directive('click-outside', clickOutside)
 //   see: https://vuejs.org/guide/components/provide-inject.html#working-with-reactivity
 app.config.unwrapInjectedRef = true
 
-
-authAwareMount(app, '#app')
+authExpectedMount(app, '#app')

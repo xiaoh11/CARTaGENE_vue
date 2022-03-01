@@ -4,7 +4,7 @@ import VueGtag from 'vue-gtag'
 import 'bootstrap/dist/css/bootstrap.css'
 import '@/assets/bravo.css'
 import {clickOutside} from '@/CustomDirectives'
-import { authAwareMount } from '@/AuthAwareMount'
+import { authExpectedMount } from '@/AuthAwareMount'
 
 const app = createApp(App);
 
@@ -20,4 +20,4 @@ if(process.env.GA_ID){
 
 app.directive('click-outside', clickOutside);
 
-authAwareMount(app, '#app')
+authExpectedMount(app, '#app')
