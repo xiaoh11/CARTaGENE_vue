@@ -89,7 +89,8 @@ export default {
           name: name,
           colorBy: "strand",
           url: `${this.api}/variant/api/snv/cram/${this.variant.variant_id}-${heterozygous ? 1 : 0}-${sample_no}`,
-          indexURL: `${this.api}/variant/api/snv/crai/${this.variant.variant_id}-${heterozygous ? 1 : 0}-${sample_no}`
+          indexURL: `${this.api}/variant/api/snv/crai/${this.variant.variant_id}-${heterozygous ? 1 : 0}-${sample_no}`,
+          withCredentials: true
         });
       }
     }
