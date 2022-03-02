@@ -8,6 +8,8 @@
             <h5>{{ subtitle }}</h5>
             <template v-if="subtitle2">
               <small class="text-muted">{{ subtitle2 }}</small>
+              <br/>
+              <small class="text-muted">UI Version: {{version}}</small>
             </template>
           </template>
           <hr class="margin-centered" width="25%">
@@ -48,6 +50,7 @@ export default {
   data() {
     return {
       publicPath: process.env.BASE_URL,
+      version: process.env.VUE_APP_VERSION,
       logo: logo,
       exampleLinks: {
         'HBB': 'gene.html?id=HBB',

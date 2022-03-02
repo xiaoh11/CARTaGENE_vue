@@ -61,7 +61,7 @@
 
 <script>
 import axios from "axios";
-axios.defaults.withCredentials=true
+axios.defaults.withCredentials=false
 
 export default {
   name: 'VariantBasicInfo',
@@ -90,7 +90,9 @@ export default {
     checkClinVar: function() {
       var queries = [];
       for (const rsid of this.variant.rsids) {
-        queries.push(axios.get(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=clinvar&term=${rsid}&retmode=json`));
+        queries.push(axios.get(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=clinvar&term=${rsid}&retmode=json`,
+          {withCredentials: false}
+        ));
       }
       axios
         .all(queries)
@@ -102,7 +104,7 @@ export default {
           }
           if (this.clinvar_links.length == 0) { // try chrom and position query
             axios
-              .get(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=clinvar&term=${this.variant.chrom}[chr]%20AND%20${this.variant.pos}[chrpos]&retmode=json`)
+              .get(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=clinvar&term=${this.variant.chrom}[chr]%20AND%20${this.variant.pos}[chrpos]&retmode=json`, {withCredentials: false})
               .then( response => {
                 if (response.data.esearchresult.count > 0) {
                   this.clinvar_links.push(`https://www.ncbi.nlm.nih.gov/clinvar?term=${this.variant.chrom}[chr]%20AND%20${this.variant.pos}[chrpos]`);
@@ -125,7 +127,9 @@ export default {
     checkPubMed: function() {
       var queries = [];
       for (const rsid of this.variant.rsids) {
-        queries.push(axios.get(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${rsid}&retmode=json`));
+        queries.push(axios.get(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${rsid}&retmode=json`,
+          {withCredentials: false}),
+        );
       }
       axios
         .all(queries)
