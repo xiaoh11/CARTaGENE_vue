@@ -37,8 +37,9 @@
 </template>
 
 <script>
-import axios from "axios";
 import Percentile from '@/components/Percentile.vue';
+import axios from "axios";
+axios.defaults.withCredentials=true
 
 export default {
   name: 'VariantMetrics',

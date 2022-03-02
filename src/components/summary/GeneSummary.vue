@@ -37,6 +37,7 @@ import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { faPlusSquare, faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
+axios.defaults.withCredentials=true
 
 import NumericSummaryCard from '@/components/summary/NumericSummaryCard.vue'
 

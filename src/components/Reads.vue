@@ -46,8 +46,9 @@
 </template>
 
 <script>
-import axios from "axios";
 import igv from "igv";
+import axios from "axios";
+axios.defaults.withCredentials=true
 
 export default {
   name: 'Reads',
