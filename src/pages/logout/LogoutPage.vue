@@ -10,6 +10,7 @@
           <div class="row justify-content-center">
             <div class="col-10 col-sm-8 col-md-6">
               <p>{{statusText}}</p>
+              <p>{{message}}</p>
             </div>
           </div>
         </div>
@@ -28,10 +29,11 @@ export default {
   components: {
     NavBar,
   },
-  data: function(){ 
+  data: function(){
     return {
       api: process.env.VUE_APP_BRAVO_API_URL,
-      authenticated: true
+      authenticated: true,
+      message: null,
     }
   },
   methods:{
@@ -42,10 +44,17 @@ export default {
       this.qAuthenticated = state.authenticated
     },
 
-    handle_logout: function(){ 
+    handle_logout: function(){
       axios.post(this.api + '/logout')
-        .then(resp => { 
+        .then(resp => {
           this.authenticated = resp.data.authenticated
+          this.message = "Redirecting in 5 seconds"
+          setTimeout(function(){
+            window.location.href = '/'
+          }, 5000)
+        })
+        .catch(err => {
+          this.message = "Error while attempting to log out."
         })
     },
   },
