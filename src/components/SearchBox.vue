@@ -22,6 +22,7 @@
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import AutoComplete from '@/components/Autocomplete.vue';
+import axios from 'axios';
 
 export default {
   name: 'SearchBox',
@@ -29,6 +30,7 @@ export default {
     FontAwesomeIcon,
     AutoComplete
   },
+  emits: ['noSearchResults'],
   props: {
     autofocus: {
       type: Boolean
@@ -42,7 +44,7 @@ export default {
       isActive: false,
       isDropdownOpen: false,
       searchIcon: faSearch,
-      searchapi: process.env.VUE_APP_BRAVO_API_URL + '/search'
+      searchapi: process.env.VUE_APP_BRAVO_API_URL + '/autocomplete'
     };
   },
   methods: {
@@ -136,14 +138,17 @@ export default {
       return(rTicket);
     },
     doSearch: function() {
-      //convert query string from autocomplete input element to result ticket
-      let resultTicket = this.queryToResultTicket(this.$refs.autocomplete.$el.value)
-
-      //convert result ticket to href
-      let resultUrl = this.resultTicketToHref(resultTicket)
-
-      //instruct browser to goto href
-      window.location.assign(resultUrl)
+      // Use first autocomplete result, or handle no results.
+      let queryVal = this.$refs.autocomplete.$el.value
+      axios.get(this.searchapi, {params: {query: queryVal}})
+        .then(resp => {
+          let suggestion = resp.data.suggestions.shift()
+          if(suggestion){
+            this.doSuggest(suggestion)
+          } else {
+            this.$emit("noSearchResults", queryVal)
+          }
+        })
     },
     doSuggest: function(suggestion) {
       //convert suggestion to resultTicket.

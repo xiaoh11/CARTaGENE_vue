@@ -124,7 +124,16 @@ export default {
   },
   created: function() {
     let urlParams = new URLSearchParams(window.location.search)
-    this.variantId = urlParams.get('id')
+    let id = urlParams.get('id')
+    if(id){
+      this.variantId = urlParams.get('id')
+    }else{
+      let parts = [
+        urlParams.get('chrom'), urlParams.get('pos'),
+        urlParams.get('ref'), urlParams.get('alt')
+      ]
+      this.variantId = parts.join('-')
+    }
   },
   mounted: function() {
     this.load();
