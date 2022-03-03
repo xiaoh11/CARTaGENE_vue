@@ -15,8 +15,7 @@ export default {
   emits: ['inputfocus', 'inputfocusout', 'dropdownopen', 'dropdownclose', 'suggestionSelect'],
   data: function() {
     return {
-      ready: false,
-      searchapi: process.env.VUE_APP_BRAVO_API_URL + '/search'
+      ready: false
     };
   },
   mounted: function() {

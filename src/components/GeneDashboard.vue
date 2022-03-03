@@ -47,6 +47,7 @@ import { faWindowRestore, faDownload, faColumns }
   from '@fortawesome/free-solid-svg-icons'
 import clone from 'just-clone'
 import axios from 'axios'
+axios.defaults.withCredentials=true
 
 import GeneInfo from '@/components/infoblock/GeneInfo.vue'
 import GeneSummary    from '@/components/summary/GeneSummary.vue'

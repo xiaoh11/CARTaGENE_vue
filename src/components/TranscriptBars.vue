@@ -18,8 +18,9 @@
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import axios from "axios";
 import * as d3 from "d3";
+import axios from "axios";
+axios.defaults.withCredentials=true
 
 export default {
   name: "TranscriptBars",

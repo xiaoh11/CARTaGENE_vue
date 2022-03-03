@@ -59,7 +59,6 @@
 </template>
 
 <script>
-import axios from "axios"
 import NavBar from '@/components/NavBar.vue'
 import SearchBox from '@/components/SearchBox.vue'
 import VariantBasicInfo from '@/components/VariantBasicInfo'
@@ -69,6 +68,8 @@ import VariantConsequences from '@/components/VariantConsequences'
 import VariantDepth from '@/components/VariantDepth'
 import VariantMetrics from '@/components/VariantMetrics'
 import Reads from '@/components/Reads'
+import axios from "axios"
+axios.defaults.withCredentials=true
 
 export default {
   name: 'App',
@@ -123,7 +124,16 @@ export default {
   },
   created: function() {
     let urlParams = new URLSearchParams(window.location.search)
-    this.variantId = urlParams.get('id')
+    let id = urlParams.get('id')
+    if(id){
+      this.variantId = urlParams.get('id')
+    }else{
+      let parts = [
+        urlParams.get('chrom'), urlParams.get('pos'),
+        urlParams.get('ref'), urlParams.get('alt')
+      ]
+      this.variantId = parts.join('-')
+    }
   },
   mounted: function() {
     this.load();

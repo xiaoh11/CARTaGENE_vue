@@ -12,9 +12,9 @@
 
 import axios from 'axios'
 
-// Expects app to have user and login_disabled props
+// Pre-emptive redirect for pages expected to have backend auth requirement.
 // Auth redirect if auth being used by API
-function authAwareMount(app, mountPoint){
+function authExpectedMount(app, mountPoint){
   axios.get(process.env.VUE_APP_BRAVO_API_URL + '/auth_status', {withCredentials: true})
     .then(function(resp){
       if(resp.data.login_disabled){
@@ -33,4 +33,16 @@ function authAwareMount(app, mountPoint){
     })
 }
 
-export {authAwareMount}
+
+// Provide information from auth endpoint to application,
+//   but do not pre-emptively route to login if unathenticated
+function authAwareMount(app, mountPoint){
+  axios.get(process.env.VUE_APP_BRAVO_API_URL + '/auth_status', {withCredentials: true})
+    .then(function(resp){
+        app.provide('user', resp.data.user) 
+        app.provide('loginDisabled', resp.data.login_disabled) 
+        app.mount(mountPoint)
+    })
+}
+
+export {authAwareMount, authExpectedMount}

@@ -1,3 +1,6 @@
+//Include package version in 
+process.env.VUE_APP_VERSION = require('./package.json').version
+
 module.exports = {
   publicPath: '/',
   pages: {
@@ -56,6 +59,13 @@ module.exports = {
       filename: 'login.html',
       title: 'Bravo:Login',
       chunks: ['chunk-vendors', 'chunk-common', 'login']
+    },
+    logout: {
+      entry: 'src/pages/logout/main.js',
+      template: 'src/pages/logout/logout.html',
+      filename: 'logout.html',
+      title: 'Bravo:Login',
+      chunks: ['chunk-vendors', 'chunk-common', 'logout']
     },
     404: {
       entry: 'src/pages/about/main.js',

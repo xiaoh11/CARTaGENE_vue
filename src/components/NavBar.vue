@@ -1,25 +1,25 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white">
-      <a class="navbar-brand" v-bind:href="publicPath">
-        <img class="bo-small-logo" width="34" v-bind:src="logo"/>
-      </a>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <a class="navbar-brand" v-bind:href="publicPath">
+      <img class="bo-small-logo" width="34" v-bind:src="logo"/>
+    </a>
 
-      <!-- Slot for search box -->
-      <slot>
-      </slot>
+    <!-- Slot for search box -->
+    <slot>
+    </slot>
 
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav ml-auto">
-          <div v-if="this.user">
-            <li class="nav-item btn-sm">{{user}}</li>
-          </div>
-          <div v-if="!this.loginDisabled">
-            <li class="nav-item"><a class="nav-link btn-sm" :href="this.logInOutUrl">{{logInOutText}}</a></li>
-          </div>
-          <li class="nav-item"><a class="nav-link btn-sm" href="/about.html">About</a></li>
-        </ul>
-      </div>
-    </nav>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ml-auto">
+        <div v-if="this.user">
+          <li class="nav-item btn-sm">{{user}}</li>
+        </div>
+        <div v-if="!this.loginDisabled">
+          <li class="nav-item"><a class="nav-link btn-sm" :href="this.logInOutUrl">{{logInOutText}}</a></li>
+        </div>
+        <li class="nav-item"><a class="nav-link btn-sm" href="/about.html">About</a></li>
+      </ul>
+    </div>
+  </nav>
 </template>
 
 <script>
@@ -43,7 +43,8 @@ export default {
       if(this.user){
         return('/logout.html')
       } else {
-        return(api + '/login')
+        let dest = encodeURIComponent(window.location.href)
+        return(this.api + '/login?dest=' + dest)
       }
     },
     logInOutText: function(){

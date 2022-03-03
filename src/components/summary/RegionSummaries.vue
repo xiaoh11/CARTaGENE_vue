@@ -221,124 +221,125 @@
 </template>
 
 <script>
-  import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-  import { faTimes } from '@fortawesome/free-solid-svg-icons';
-  import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
-  import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
-  import { faPlusSquare, faMinusSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
+import { faPlusSquare, faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 
-  import axios from "axios";
+import axios from "axios";
+axios.defaults.withCredentials=true
 
-  export default {
-    name: "RegionSummaries",
-    inject: {
-      chrom: {default: 0},
-      start: {default: 0},
-      stop: {default: 1}
+export default {
+  name: "RegionSummaries",
+  inject: {
+    chrom: {default: 0},
+    start: {default: 0},
+    stop: {default: 1}
+  },
+  emits: ['close'],
+  props: {
+    region: {
+      type: Object,
+      default: function(){ return {} }
     },
-    emits: ['close'],
-    props: {
-      region: {
-        type: Object,
-        default: function(){ return {} }
-      },
-      filters: {
-        type: Array,
-        default: function(){return []}
-      },
-      filterArray: {
-        type: Array,
-        default: function(){return []}
-      },
+    filters: {
+      type: Array,
+      default: function(){return []}
     },
-    components: {
-      FontAwesomeIcon,
+    filterArray: {
+      type: Array,
+      default: function(){return []}
     },
-    data: function() {
-      return {
-        api: process.env.VUE_APP_BRAVO_API_URL,
-        tooltipHtml: "",
-        closeIcon: faTimes,
-        scrollRightIcon: faAngleRight,
-        scrollLeftIcon: faAngleLeft,
-        expandIcon: faPlusSquare,
-        collapseIcon: faMinusSquare,
-        hasLeftScroll: false,
-        hasRightScroll: false,
-        loading: false,
-        loaded: false,
-        failed: false,
-        collapsed: true,
-        summary: null
+  },
+  components: {
+    FontAwesomeIcon,
+  },
+  data: function() {
+    return {
+      api: process.env.VUE_APP_BRAVO_API_URL,
+      tooltipHtml: "",
+      closeIcon: faTimes,
+      scrollRightIcon: faAngleRight,
+      scrollLeftIcon: faAngleLeft,
+      expandIcon: faPlusSquare,
+      collapseIcon: faMinusSquare,
+      hasLeftScroll: false,
+      hasRightScroll: false,
+      loading: false,
+      loaded: false,
+      failed: false,
+      collapsed: true,
+      summary: null
+    }
+  },
+  methods:{
+    count_synonymous: function(category) {
+      return (this.summary[category]['synonymous_variant'] || 0) +
+        (this.summary[category]['start_retained_variant'] || 0) +
+        (this.summary[category]['stop_retained_variant'] || 0);
+    },
+    count_nonsynonymous: function(category) {
+      return (this.summary[category]['missense_variant'] || 0) +
+        (this.summary[category]['start_lost'] || 0) +
+        (this.summary[category]['stop_gained'] || 0) +
+        (this.summary[category]['stop_lost'] || 0);
+    },
+    count_frameshifts: function(category) {
+      return this.summary[category]['frameshift_variant'] || 0;
+    },
+    count_inframe_insertions: function(category) {
+      return (this.summary[category]['inframe_insertion'] || 0);
+    },
+    count_inframe_deletions: function(category) {
+      return (this.summary[category]['inframe_deletion'] || 0);
+    },
+    updateHorizontalScroll: function() {
+      var cards = this.$el.querySelector(".cards");
+      this.hasLeftScroll = cards.scrollLeft != 0;
+      this.hasRightScroll = Math.abs(cards.scrollWidth - cards.clientWidth - cards.scrollLeft) > 1;
+    },
+    load: function() {
+      if ((this.chrom == null) || (this.start == null) || (this.stop == null)) {
+        return;
       }
+      let url = `${this.api}/variants/region/snv/${this.chrom}-${this.start}-${this.stop}/summary`;
+      this.summary = null;
+      this.loaded = false;
+      this.failed = false;
+      this.loading = true;
+      axios
+        .post(url, {
+          filters: this.filterArray,
+          introns: true,
+        })
+        .then(response => {
+          var payload = response.data;
+          this.summary = payload['data'];
+          this.loading = false;
+          this.failed = false;
+          this.loaded = true;
+          this.$nextTick(() => {
+            this.updateHorizontalScroll();
+          });
+        })
+        .catch(error => {
+          console.log(error)
+          this.loading = false;
+          this.loaded = false;
+          this.failed = true;
+          this.summary = null;
+        })
+        .finally(() => { });
     },
-    methods:{
-      count_synonymous: function(category) {
-        return (this.summary[category]['synonymous_variant'] || 0) +
-          (this.summary[category]['start_retained_variant'] || 0) +
-          (this.summary[category]['stop_retained_variant'] || 0);
-      },
-      count_nonsynonymous: function(category) {
-        return (this.summary[category]['missense_variant'] || 0) +
-          (this.summary[category]['start_lost'] || 0) +
-          (this.summary[category]['stop_gained'] || 0) +
-          (this.summary[category]['stop_lost'] || 0);
-      },
-      count_frameshifts: function(category) {
-        return this.summary[category]['frameshift_variant'] || 0;
-      },
-      count_inframe_insertions: function(category) {
-        return (this.summary[category]['inframe_insertion'] || 0);
-      },
-      count_inframe_deletions: function(category) {
-        return (this.summary[category]['inframe_deletion'] || 0);
-      },
-      updateHorizontalScroll: function() {
-        var cards = this.$el.querySelector(".cards");
-        this.hasLeftScroll = cards.scrollLeft != 0;
-        this.hasRightScroll = Math.abs(cards.scrollWidth - cards.clientWidth - cards.scrollLeft) > 1;
-      },
-      load: function() {
-        if ((this.chrom == null) || (this.start == null) || (this.stop == null)) {
-          return;
-        }
-        let url = `${this.api}/variants/region/snv/${this.chrom}-${this.start}-${this.stop}/summary`;
-        this.summary = null;
-        this.loaded = false;
-        this.failed = false;
-        this.loading = true;
-        axios
-          .post(url, {
-            filters: this.filterArray,
-            introns: true,
-          })
-          .then(response => {
-            var payload = response.data;
-            this.summary = payload['data'];
-            this.loading = false;
-            this.failed = false;
-            this.loaded = true;
-            this.$nextTick(() => {
-              this.updateHorizontalScroll();
-            });
-          })
-          .catch(error => {
-            console.log(error)
-            this.loading = false;
-            this.loaded = false;
-            this.failed = true;
-            this.summary = null;
-          })
-          .finally(() => { });
-      },
+  },
+  watch: {
+    filterArray: function() {
+      this.load()
     },
-    watch: {
-      filterArray: function() {
-        this.load()
-      },
-    },
-    mounted: function() {
-      this.load();
-    },
-  }
+  },
+  mounted: function() {
+    this.load();
+  },
+}
 </script>
