@@ -43,7 +43,8 @@ export default {
       if(this.user){
         return('/logout.html')
       } else {
-        return(this.api + '/login')
+        let dest = encodeURIComponent(window.location.href)
+        return(this.api + '/login?dest=' + dest)
       }
     },
     logInOutText: function(){
