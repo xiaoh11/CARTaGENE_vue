@@ -29,6 +29,7 @@ export default {
     start: {default: 0},
     stop: {default: 1},
   },
+  emits: ["hover", "scroll"],
   props: {
     showCols: {
       type: Object,

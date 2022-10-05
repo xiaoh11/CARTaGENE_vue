@@ -20,7 +20,7 @@
         <RegionSummaries v-if="showPanels.summaries.val" :filterArray='filterArray'
           @close="showPanels.summaries.val = false"/>
         <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false" 
-          :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
+          :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
         <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
           :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
@@ -32,7 +32,8 @@
         <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
           :givenWidth="childWidth" :givenMargins="childMargins" />
         <FilterBar @filterChange='handleFilterChange'/>
-        <RegionSNVTable :filters="filterArray" :doDownload="doDownload"/>
+        <RegionSNVTable :filters="filterArray" :doDownload="doDownload" 
+          @scroll='handleTableScroll' @hover='handleTableHover'/>
       </div>
     </div>
   </div>
@@ -117,12 +118,15 @@ export default {
         top:    12,
         bottom: 5
       },
-      // which variant is selected by the user.
+      // genomic position of variant under the mouse in the table.
+      hoveredVarPosition: null,
+
       hoveredVariant: {
         index: null,
         data: null,
-        hovered: null
+        hovered: false
       },
+
       // which variants are appearing in the variants table.
       visibleVariants: {
         start_index: null,
@@ -171,6 +175,15 @@ export default {
     },
     handleInfoViewToggle: function(listGroup, varKey){
       this[listGroup][varKey].val = !this[listGroup][varKey].val
+    },
+    handleTableScroll: function(start_idx, end_idx, rows_data){
+      this.visibleVariants = { 
+        start_index: start_idx,
+        stop_index: end_idx,
+        data: rows_data}
+    },
+    handleTableHover: function(idx, data, hovered){
+      this.hoveredVarPosition = data.pos
     },
   },
   mounted: function() {

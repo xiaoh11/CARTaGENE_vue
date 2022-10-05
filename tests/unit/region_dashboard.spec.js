@@ -10,6 +10,11 @@ describe('RegionDashboard components structure.', () => {
     expect(bravoViz.exists()).to.be.true
   })
 
+  it('has variant highlighting properties', () => {
+    expect(wrapper.componentVM.hoveredVarPosition).to.not.be.undefined
+    expect(wrapper.componentVM.visibleVariants).to.not.be.undefined
+  })
+
   it('renames annotation filter field to region specific value on filter change', () => {
     let givenAnno = [
       {field: 'annotation', type: '=', value: 'stop_gained'},
