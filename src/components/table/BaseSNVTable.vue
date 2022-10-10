@@ -117,14 +117,6 @@ export default {
         lastRowIdx:  lastVisibleRowIndex, 
         rowsData: visibleRowsData }
     },
-
-    scrolled: function() {
-      if (this.tabulator.getData().length > 0) {
-        let visVars = this.getVisibleVariants();
-        this.$emit("scroll", visVars.firstRowIdx, visVars.lastRowIdx, visVars.rowsData);
-      }
-    },
-
     hover: function(variant, hovered) {
       this.tabulator.getRows().forEach(r => { // clean up all elements (just in case)
         r.getElement().classList.remove("hover");
@@ -319,6 +311,10 @@ export default {
         this.loading = false;
         this.loaded = true;
         return response;
+      },
+      scrollVertical: (top) => {
+        let visVars = this.getVisibleVariants();
+        this.$emit("scroll", visVars.firstRowIdx, visVars.lastRowIdx, visVars.rowsData);
       },
       paginationSize: this.paginationSize,
       height: "600px",

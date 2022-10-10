@@ -221,7 +221,6 @@ export default {
     givenWidth: function() {
       if ((!this.loading) && (!this.failed) && (this.loaded_data_size > 0)) {
         this.draw()
-        this.highlight()
       }
     },
     hoveredVarPosition(newVal, oldVal) {

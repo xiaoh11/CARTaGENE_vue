@@ -23,7 +23,7 @@
           :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
         <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
-          :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
+          :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
         <RegionSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
           :segmentBounds="segmentBounds" 
@@ -120,12 +120,6 @@ export default {
       },
       // genomic position of variant under the mouse in the table.
       hoveredVarPosition: null,
-
-      hoveredVariant: {
-        index: null,
-        data: null,
-        hovered: false
-      },
 
       // which variants are appearing in the variants table.
       visibleVariants: {

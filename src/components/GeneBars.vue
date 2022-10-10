@@ -60,6 +60,10 @@ export default {
     },
     'hoveredVariant':{
       type: Object
+    },
+    hoveredVarPosition: {
+      type: Number,
+      default: null
     }
   },
   components: {
@@ -239,6 +243,16 @@ export default {
         .enter()
         .append("text")
         .style("pointer-events", "none");
+      this.highlight_line = this.drawing.append("line")
+          .attr("class", "highlight_line")
+          .attr("x1", 0)
+          .attr("y1", 0)
+          .attr("x2", 0)
+          .attr("y2", this.height)
+          .attr("stroke-width", 2)
+          .attr("stroke-linecap", "round")
+          .attr("stroke", "#e77f00")
+          .attr("visibility", "hidden");
 
       this.rects_box.on("mouseover", this.handleBarMouseover)
       this.rects_box.on("mouseout", this.handleBarMouseout)
@@ -300,19 +314,6 @@ export default {
         .attr("width", function(d) { return d.box_right - d.box_left; })
         .attr("y", function(d) { return d.y * 22 + 22 - 18 - 2; });
     },
-    highlight: function() {
-      this.drawing.selectAll("line").remove();
-      if ((this.hoveredVariant.index != null) && (this.hoveredVariant.hovered)) {
-        this.drawing.append("line")
-          .attr("x1", this.x_scale(this.hoveredVariant.data.pos))
-          .attr("y1", 0)
-          .attr("x2", this.x_scale(this.hoveredVariant.data.pos))
-          .attr("y2", this.height)
-          .attr("stroke-width", 2)
-          .attr("stroke-linecap", "round")
-          .attr("stroke", "#e77f00");
-      }
-    }
   },
   beforeCreate: function() {
     // initialize non reactive data
@@ -339,20 +340,26 @@ export default {
     this.load();
   },
   watch: {
-    hoveredVariant: function() {
-      if ((!this.loading) && (!this.failed)) {
-        if (this.genes.length > 0) {
-          this.highlight();
-        }
-      }
-    },
     givenWidth: function() {
       if ((!this.loading) && (!this.failed)) {
         if (this.genes.length > 0) {
           this.draw()
         }
       }
-    }
+    },
+    hoveredVarPosition(newVal, oldVal) {
+      if(newVal == null){
+        this.highlight_line
+          .attr("x1", 0)
+          .attr("x2", 0)
+          .attr("visibility", "hidden")
+      } else {
+        this.highlight_line
+          .attr("x1", this.x_scale(newVal))
+          .attr("x2", this.x_scale(newVal))
+          .attr("visibility", "inherit")
+      }
+    },
   }
 }
 </script>
