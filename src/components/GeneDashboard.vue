@@ -19,11 +19,11 @@
         <GeneSummary v-if="showPanels.summaries.val" :filterArray='filterArray'
           @close="showPanels.summaries.val = false"/>
         <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false" 
-          :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
+          :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
 
         <TranscriptBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
-          :hoveredVariant="hoveredVariant" :segmentBounds="segmentBounds" 
+          :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
           :geneData="geneData"/>
         <GeneSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
@@ -33,7 +33,8 @@
         <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
           :givenWidth="childWidth" :givenMargins="childMargins" />
         <FilterBar @filterChange='handleFilterChange'/>
-        <GeneSNVTable :filters="filterArray" :doDownload="doDownload"/>
+        <GeneSNVTable :filters="filterArray" :doDownload="doDownload"
+          @scroll='handleTableScroll' @hover='handleTableHover'/>
       </div>
     </div>
   </div>
@@ -142,6 +143,9 @@ export default {
       //formerly region.segments.plot
       segmentBounds: [0, 300],
 
+      // genomic position of variant under the mouse in the table.
+      hoveredVarPosition: null,
+
       // which variant is selected by the user.
       hoveredVariant: {
         index: null,
@@ -197,6 +201,15 @@ export default {
     handleResize: function() {
       this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
       this.childWidth = this.$el.clientWidth
+    },
+    handleTableScroll: function(start_idx, end_idx, rows_data){
+      this.visibleVariants = { 
+        start_index: start_idx,
+        stop_index: end_idx,
+        data: rows_data}
+    },
+    handleTableHover: function(idx, data, hovered){
+      this.hoveredVarPosition = data.pos
     },
     unwindGeneExons: function (gene) {
       gene.exons = [];

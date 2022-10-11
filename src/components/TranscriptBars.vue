@@ -58,8 +58,9 @@ export default {
         })
       }
     },
-    'hoveredVariant':{
-      type: Object
+    hoveredVarPosition: {
+      type: Number,
+      default: null
     }
   },
   data: function(){
@@ -67,6 +68,21 @@ export default {
       closeIcon: faTimes,
       tooltipHtml: "",
     }
+  },
+  watch: {
+    hoveredVarPosition(newVal, oldVal) {
+      if(newVal == null){
+        this.highlight_line
+          .attr("x1", 0)
+          .attr("x2", 0)
+          .attr("visibility", "hidden")
+      } else {
+        this.highlight_line
+          .attr("x1", this.x_scale(newVal))
+          .attr("x2", this.x_scale(newVal))
+          .attr("visibility", "inherit")
+      }
+    },
   },
   beforeCreate: function() {
     // initialize non reactive data
@@ -178,6 +194,17 @@ export default {
         .append("text")
         .style("pointer-events", "none");
 
+      this.highlight_line = this.drawing.append("line")
+          .attr("class", "highlight_line")
+          .attr("x1", 0)
+          .attr("y1", 0)
+          .attr("x2", 0)
+          .attr("y2", this.height)
+          .attr("stroke-width", 2)
+          .attr("stroke-linecap", "round")
+          .attr("stroke", "#e77f00")
+          .attr("visibility", "hidden");
+
       this.rects_box.on("mouseover", this.handleBarMouseover)
       this.rects_box.on("mouseout", this.handleBarMouseout)
       this.rects_box.on("click", d => this.$emit("click", d));
@@ -244,19 +271,6 @@ export default {
         .attr("width", function(d) { return d.box_right - d.box_left; })
         .attr("y", d => d.y * this.step - this.transcript_height - (Math.max(this.cds_height, this.exon_height) - this.transcript_height) / 2 - this.font_size);
     },
-    highlight: function() {
-      this.drawing.selectAll("line").remove();
-      if ((this.hoveredVariant.index != null) && (this.hoveredVariant.hovered)) {
-        this.drawing.append("line")
-          .attr("x1", this.x_scale(this.hoveredVariant.data.pos))
-          .attr("y1", 0)
-          .attr("x2", this.x_scale(this.hoveredVariant.data.pos))
-          .attr("y2", this.height)
-          .attr("stroke-width", 2)
-          .attr("stroke-linecap", "round")
-          .attr("stroke", "#e77f00");
-      }
-    }
   }
 }
 </script>

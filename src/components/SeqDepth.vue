@@ -49,8 +49,9 @@ export default {
         })
       }
     },
-    hoveredVariant: {
-      type: Object
+    hoveredVarPosition: {
+      type: Number,
+      default: null
     }
   },
   inject: {
@@ -121,6 +122,10 @@ export default {
       return d3.format('d')(value) + "x";
     },
     initializeSVG: function () {
+      this.x_scale = d3.scaleLinear();
+      this.y_axis = d3.axisLeft();
+      this.y_scale = d3.scaleLinear();
+
       this.svg = d3.select(this.$el)
         .append("svg")
           .style("display", "block")
@@ -141,9 +146,16 @@ export default {
           .style("font-size", "11px")
           .style("text-anchor", "middle")
           .text("Avg. Depth");
-      this.x_scale = d3.scaleLinear();
-      this.y_axis = d3.axisLeft();
-      this.y_scale = d3.scaleLinear();
+      this.highlight_line = this.drawing.append("line")
+          .attr("class", "highlight_line")
+          .attr("x1", 0)
+          .attr("y1", 0)
+          .attr("x2", 0)
+          .attr("y2", this.height)
+          .attr("stroke-width", 2)
+          .attr("stroke-linecap", "round")
+          .attr("stroke", "#e77f00")
+          .attr("visibility", "hidden");
     },
     initializeCoverageSVG: function() {
       this.depth_g.selectAll("path")
@@ -175,20 +187,6 @@ export default {
         .attr("clip-path", "url(#depth-clip)")
         .attr("d", area);
     },
-    highlight: function() {
-      this.drawing.selectAll(".highlight_line").remove();
-      if ((this.hoveredVariant.index != null) && (this.hoveredVariant.hovered)) {
-        this.drawing.append("line")
-          .attr("class", "highlight_line")
-          .attr("x1", this.x_scale(this.hoveredVariant.data.pos))
-          .attr("y1", 0)
-          .attr("x2", this.x_scale(this.hoveredVariant.data.pos))
-          .attr("y2", this.height)
-          .attr("stroke-width", 2)
-          .attr("stroke-linecap", "round")
-          .attr("stroke", "#e77f00");
-      }
-    }
   },
   beforeCreate() {
     // initialize non-reactive data
@@ -196,7 +194,7 @@ export default {
     this.color = '#ffa37c';
     this.svg = null;
     this.drawing = null;
-    this.drawing_g = null;
+    this.highlight_line = null;
     this.x_scale = null;
     this.y_axis = null;
     this.y_scale = null;
@@ -220,17 +218,24 @@ export default {
       10000, null, new Promise( resolve => resolve()));
   },
   watch: {
-    hoveredVariant: function() {
-      if ((!this.loading) && (!this.failed) && (this.loaded_data_size > 0)) {
-        this.highlight();
-      }
-    },
     givenWidth: function() {
       if ((!this.loading) && (!this.failed) && (this.loaded_data_size > 0)) {
         this.draw()
-        this.highlight()
       }
-    }
+    },
+    hoveredVarPosition(newVal, oldVal) {
+      if(newVal == null){
+        this.highlight_line
+          .attr("x1", 0)
+          .attr("x2", 0)
+          .attr("visibility", "hidden")
+      } else {
+        this.highlight_line
+          .attr("x1", this.x_scale(newVal))
+          .attr("x2", this.x_scale(newVal))
+          .attr("visibility", "inherit")
+      }
+    },
   }
 }
 </script>
