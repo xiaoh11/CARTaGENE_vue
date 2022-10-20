@@ -223,6 +223,11 @@
   opacity: 1;
 }
 
+.bravo-modal-titlebox {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
 
 /* Bootstrap overrides */
 .cards {
@@ -251,6 +256,14 @@
 
 .card-body {
   padding: 10px;
+}
+
+.badge-light.clickable {
+  cursor: pointer;
+}
+
+.modal {
+  display: inherit;
 }
 
 @media (max-width: 575.98px) {

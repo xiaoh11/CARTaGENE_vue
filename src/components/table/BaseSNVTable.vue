@@ -276,8 +276,6 @@ export default {
         },
       ])
     }
-
-
   },
   mounted: function() {
     this.tabulator = new Tabulator(this.$refs.snvtable, {

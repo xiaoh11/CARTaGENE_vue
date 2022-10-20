@@ -1,66 +1,66 @@
 <template>
-  <div class="modal" id="modalAnnotations" role="dialog" data-backdrop="false" style="z-index:99999;">
-    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-       <div class="modal-content">
-         <div class="modal-header">
-           <h5 class="modal-title">{{ title }}</h5>
-           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-             <span aria-hidden="true">&times;</span>
-           </button>
-         </div>
-          <div class="modal-body">
-            <small>
-              <div id="accordion">
-                <div v-for="(c, index) in annotations" :key="c.consequence">
-                  <span :class="badgeClass(c.consequence)">&#9632;</span>
-                  <pre> debug {{index}} </pre>
-                  
-                  <!-- TODO: Compete content build from props
-
-                  <a data-toggle="collapse" v-bind:href="'#collapse' + index">{{ $DOMAIN_DICTIONARY.consequence[c.consequence].text }}</a>
-                  <div v-if="c.transcripts.length > 0" v-bind:id="'collapse' + index" v-bind:class="index == 0 ? 'collapse show' : 'collapse'" data-parent="#accordion">
-                    <ul class="list-unstyled">
-                      <li v-for="transcript in c.transcripts">
-                        {{ transcript.gene_name }}: {{ transcript.transcript_name }}
-                        <ul>
-                          <li><span style="color: #85144b;">{{ transcript.biotype }}</span></li>
-                          <li v-if="transcript.HGVSc">HGVSc: <b>{{ transcript.HGVSc }}</b></li>
-                          <li v-if="transcript.HGVSp">HGVSp: <b>{{ transcript.HGVSp}}</b></li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                -->
-              </div>
-            </small>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">Close</button>
-          </div>
+  <Teleport to="body">
+    <div v-if="showModal" class="modal" id="modalAnnotations" role="dialog" style="z-index:99999;">
+      <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+             <div class="bravo-modal-titlebox">
+               <h5 class="modal-title">{{ title }}</h5>
+               <h6 class="modal-title">{{ subtitle }}</h6>
+             </div>
+             <button  @click="$emit('closeModal')" class="close" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+             </button>
+           </div>
+            <div class="modal-body">
+              <pre>ModalBody</pre>
+            </div>
+            <div class="modal-footer">
+              <button @click="$emit('closeModal')" class="btn btn-sm btn-primary">Close</button>
+            </div>
+        </div>
       </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <script>
 export default {
   name: "SNVTableModalAnnotation",
   props: {
-    title: {
-      type: String,
-      default: "Variant Id"
+    showModal: {
+      type: Boolean,
+      default: function() {return false}
     },
-    annotations: {
-      type: Array,
-      default: function() {return []}
+    geneRowData: {
+      type: Object,
+      default: function() {return {}}
     }
+  },
+  emits: ['closeModal'],
+  computed:{
+    title() { return this.geneRowData.variant_id },
+    subtitle() {return this.geneRowData.annotation.gene.name},
+    consequences() {return this.extractConsequences(this.geneRowData)}
   },
   methods: {
     badge_class: function(consequenceKey) {
       return('badge badge-light ' + 'badge--' + consequenceKey)
+    },
+    extractConsequences: function(rowData) {
+      // initialize consequences from gene annotation
+      let conseqs = {}
+      rowData.annotation.gene.consequence.forEach((c) => {conseqs[c] = []})
+
+      // push copy of transcript data into each consequence lists it belongs to
+      rowData.annotation.gene.transcripts.forEach((trx) => {
+        let trxCpy = Object.assign({}, trx)
+        delete trxCpy.consequence
+        trx.consequence.forEach((c) => { conseqs[c].push(trxCpy) })
+      })
+
+      return conseqs
     }
   }
 }
 </script>
-
