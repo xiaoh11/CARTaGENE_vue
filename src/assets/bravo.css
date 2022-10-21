@@ -73,8 +73,22 @@
   background-color: #cccccc;
 }
 
+.modal__titlebox {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
 
-/* BEM-ify extracted classes
+.modal__conseq {
+  font-variant: small-caps;
+  font-weight: bold;
+} 
+
+.modal__conseq--clickable {
+  cursor: pointer;
+}
+
+/* Classes to BEM-ify
  * https://github.com/statgen/bravo_vue/issues/10 */
 .bravo-tab {
    display: flex;
@@ -221,12 +235,6 @@
   transform: translateX(-50%) translateY(-50%);
   z-index: 9999;
   opacity: 1;
-}
-
-.bravo-modal-titlebox {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
 }
 
 /* Bootstrap overrides */
