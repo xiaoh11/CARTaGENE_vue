@@ -13,26 +13,28 @@
              </button>
            </div>
             <div class="modal-body">
-            <small>
-              <div id="accordion">
+              <CAccordion :flush="true">
                 <div v-for="(txs, conseq) in consequences" :key="conseq">
-                  <span :class="badge_class(conseq)">&#9632;</span>
-                  <span class="modal__conseq modal__conseq--clickable">
-                    {{snvConsequences[conseq].title}}
-                  </span>
-                  <ul class="list-unstyled">
-                    <li v-for="transcript in txs">
-                      <li><span>{{ transcript.name }}</span></li>
-                      <ul>
-                        <li><span style="color: #85144b;">{{ transcript.biotype }}</span></li>
-                        <li v-if="transcript.HGVSc">HGVSc: <b>{{ transcript.HGVSc }}</b></li>
-                        <li v-if="transcript.HGVSp">HGVSp: <b>{{ transcript.HGVSp}}</b></li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
+                <CAccordionItem :item-key="conseq">
+                  <CAccordionHeader :flush="true">
+                    <span :class="badge_class(conseq)">&#9632;</span>
+                    <span>{{snvConsequences[conseq].title}}</span>
+                  </CAccordionHeader>
+                  <CAccordionBody>
+                    <ul class="list-unstyled">
+                      <li v-for="transcript in txs">
+                        <li><span>{{ transcript.name }}</span></li>
+                        <ul>
+                          <li><span style="color: #85144b;">{{ transcript.biotype }}</span></li>
+                          <li v-if="transcript.HGVSc">HGVSc: <b>{{ transcript.HGVSc }}</b></li>
+                          <li v-if="transcript.HGVSp">HGVSp: <b>{{ transcript.HGVSp}}</b></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </CAccordionBody>
+                </CAccordionItem>
               </div>
-            </small>
+              </CAccordion>
             </div>
             <div class="modal-footer">
               <button @click="$emit('closeModal')" class="btn btn-sm btn-primary">Close</button>
@@ -45,9 +47,17 @@
 
 <script>
 import snvConsequences from '@/domainModel/snvConsequences'
+//import CAccordion from '@coreui/vue'
+import { CAccordion, CAccordionItem, CAccordionBody, CAccordionHeader } from '@coreui/vue'
 
 export default {
   name: "SNVTableModalAnnotation",
+  components: {
+    CAccordion,
+    CAccordionItem,
+    CAccordionBody,
+    CAccordionHeader
+  },
   props: {
     showModal: {
       type: Boolean,
