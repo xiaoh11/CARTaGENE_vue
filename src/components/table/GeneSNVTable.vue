@@ -69,7 +69,7 @@ export default {
           if (annotations.length > 0) {
             let title = snvConsequences[annotations[0]].title 
             let cssClass = `badge--${annotations[0]}`
-            html += `<span class="badge badge-light clickable ${cssClass}" style="margin-right:1px;font-weight:bold;-webkit-text-stroke: 0.15px black;">${title} </span>`
+            html += `<span class="badge badge-light clickable ${cssClass}" style="">${title} </span>`
             html += `<span>(${annotations.length})</span>`
           }
           return html;
@@ -87,8 +87,9 @@ export default {
       }
 
       let lofteeCol = {
-        title: "LOFTEE <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Variant was predicted to be Loss-of-Function by LOFTEE.'>?</a>",
+        title: "LOFTEE",
         titleDownload: "LOFTEE",
+        headerTooltip: "Variant was predicted to be Loss-of-Function by LOFTEE.",
         field: "annotation.gene.lof",
         hozAlign: "left",
         minWidth: 95,

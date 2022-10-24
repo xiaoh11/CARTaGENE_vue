@@ -279,6 +279,7 @@
 
 .badge-light.clickable {
   cursor: pointer;
+	-webkit-text-stroke: 0.15px black;
 }
 
 .modal {
