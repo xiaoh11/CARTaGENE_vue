@@ -1,0 +1,173 @@
+{
+  "allele_count": 4,
+  "allele_freq": 0.0004793860134668648,
+  "allele_num": 8344,
+  "annotation": {
+    "genes": [
+      {
+        "_consequence": [
+          16,
+          13,
+          10
+        ],
+        "consequence": [
+          "3_prime_UTR_variant",
+          "NMD_transcript_variant",
+          "downstream_gene_variant"
+        ],
+        "hgvs": [
+          "c.*356T>C",
+          "c.*96T>C"
+        ],
+        "name": "ENSG00000244734",
+        "transcripts": [
+          {
+            "HGVSc": "c.*96T>C",
+            "_consequence": [
+              16
+            ],
+            "biotype": "protein_coding",
+            "consequence": [
+              "3_prime_UTR_variant"
+            ],
+            "name": "ENST00000335295"
+          },
+          {
+            "_consequence": [
+              10
+            ],
+            "biotype": "protein_coding",
+            "consequence": [
+              "downstream_gene_variant"
+            ],
+            "name": "ENST00000380315"
+          },
+          {
+            "_consequence": [
+              10
+            ],
+            "biotype": "retained_intron",
+            "consequence": [
+              "downstream_gene_variant"
+            ],
+            "name": "ENST00000475226"
+          },
+          {
+            "_consequence": [
+              10
+            ],
+            "biotype": "protein_coding",
+            "consequence": [
+              "downstream_gene_variant"
+            ],
+            "name": "ENST00000485743"
+          },
+          {
+            "HGVSc": "c.*356T>C",
+            "_consequence": [
+              16,
+              13
+            ],
+            "biotype": "nonsense_mediated_decay",
+            "consequence": [
+              "3_prime_UTR_variant",
+              "NMD_transcript_variant"
+            ],
+            "name": "ENST00000633227"
+          },
+          {
+            "HGVSc": "c.*96T>C",
+            "_consequence": [
+              16
+            ],
+            "biotype": "protein_coding",
+            "consequence": [
+              "3_prime_UTR_variant"
+            ],
+            "name": "ENST00000647020"
+          }
+        ]
+      },
+      {
+        "_consequence": [
+          11
+        ],
+        "consequence": [
+          "upstream_gene_variant"
+        ],
+        "name": "ENSG00000221031",
+        "transcripts": [
+          {
+            "_consequence": [
+              11
+            ],
+            "biotype": "ribozyme",
+            "consequence": [
+              "upstream_gene_variant"
+            ],
+            "name": "ENST00000408104"
+          }
+        ]
+      },
+      {
+        "_consequence": [
+          11
+        ],
+        "consequence": [
+          "upstream_gene_variant"
+        ],
+        "name": "ENSG00000285498",
+        "transcripts": [
+          {
+            "_consequence": [
+              11
+            ],
+            "biotype": "TEC",
+            "consequence": [
+              "upstream_gene_variant"
+            ],
+            "name": "ENST00000644706"
+          }
+        ]
+      }
+    ],
+    "region": {
+      "_consequence": [
+        16,
+        13,
+        11,
+        10,
+        3
+      ],
+      "consequence": [
+        "3_prime_UTR_variant",
+        "NMD_transcript_variant",
+        "upstream_gene_variant",
+        "downstream_gene_variant",
+        "regulatory_region_variant"
+      ],
+      "hgvs": [
+        "c.*356T>C",
+        "c.*96T>C"
+      ]
+    },
+    "regulatory": [
+      {
+        "biotype": "promoter_flanking_region",
+        "name": "ENSR00000952768"
+      }
+    ]
+  },
+  "cadd_phred": 12.09000015258789,
+  "chrom": "11",
+  "filter": [],
+  "het_count": 4,
+  "hom_count": 0,
+  "pos": 5225502,
+  "rsids": [
+    "rs34029390"
+  ],
+  "site_quality": 255,
+  "stop": 5225502,
+  "variant_id": "11-5225502-A-G"
+}
