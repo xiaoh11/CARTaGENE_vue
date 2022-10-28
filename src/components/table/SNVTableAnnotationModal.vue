@@ -6,7 +6,6 @@
            <div class="modal-header">
              <div class="modal__titlebox">
                <h5 class="modal-title">{{ title }}</h5>
-               <h6 class="modal-title">{{ subtitle }}</h6>
              </div>
              <button  @click="$emit('closeModal')" class="close" aria-label="Close">
                <span aria-hidden="true">&times;</span>
@@ -47,7 +46,6 @@
 
 <script>
 import snvConsequences from '@/domainModel/snvConsequences'
-//import CAccordion from '@coreui/vue'
 import { CAccordion, CAccordionItem, CAccordionBody, CAccordionHeader } from '@coreui/vue'
 
 export default {
@@ -63,16 +61,15 @@ export default {
       type: Boolean,
       default: function() {return false}
     },
-    geneRowData: {
+    rowData: {
       type: Object,
       default: function() {return {}}
-    }
+    },
   },
   emits: ['closeModal'],
   computed:{
-    title() { return this.geneRowData.variant_id },
-    subtitle() {return this.geneRowData.annotation.gene.name},
-    consequences() {return this.extractConsequences(this.geneRowData)}
+    title() { return this.rowData.variant_id },
+    consequences() {return this.distillConsequences(this.rowData)}
   },
   created: function() {
     // Hack to make imported constant available to template
@@ -82,7 +79,43 @@ export default {
     badge_class: function(consequenceKey) {
       return('badge badge-light ' + 'badge--' + consequenceKey)
     },
-    extractConsequences: function(rowData) {
+    fillConseqTrxMap: function(geneArr, uniqConseqs){
+      // Get unique consequences
+      let conseqNames = geneArr.reduce((acc, g) => acc.concat(g.consequence), [])
+
+      // Use uniq Consequences as keys in the consequences-transcripts dict 
+      let conseqs = {}
+      uniqConseqs.forEach((c) => {conseqs[c] = []})
+      
+      // Stuff copy of transcript of each gene into appropriate consequence bins.
+      geneArr.forEach( (gene) => {
+        gene.transcripts.forEach( (trx) => {
+          let trxCpy = Object.assign({}, trx)
+          delete trxCpy.consequence
+          delete trxCpy._consequence
+          trx.consequence.forEach((c) => { conseqs[c].push(trxCpy) })
+        })
+      })
+
+      return conseqs
+    },
+    distillConsequences: function(rowData) {
+      // Handle difference between region and gene snv data
+      let geneArr = rowData.annotation?.genes || new Array(rowData?.annotation?.gene)
+      let uniqConseqs = rowData.annotation?.gene?.consequence || rowData.annotation?.region?.consequence
+
+      let conseqTrxMap = this.fillConseqTrxMap(geneArr, uniqConseqs)
+
+      // Handle regulaory_region consequence if present
+      let regKey = Object.keys(conseqTrxMap)
+        .find(ele => /regulatory_region/.test(ele))
+      if(regKey && rowData.annotation?.regulatory){
+        conseqTrxMap[regKey] = conseqTrxMap[regKey].concat(rowData.annotation.regulatory)
+      }
+
+      return(conseqTrxMap)
+    },
+    geneRowToConsequences: function(rowData) {
       // initialize consequences from gene annotation
       let conseqs = {}
       rowData.annotation.gene.consequence.forEach((c) => {conseqs[c] = []})

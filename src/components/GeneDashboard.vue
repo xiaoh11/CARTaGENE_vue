@@ -38,7 +38,7 @@
           @openModal="handleOpenModal"/>
       </div>
     </div>
-    <SNVTableAnnotationModal :showModal="showModal" :geneRowData="modalData" @closeModal="handleCloseModal"/>
+    <SNVTableAnnotationModal :showModal="showModal" :rowData="modalData" @closeModal="handleCloseModal"/>
   </div>
 </template>
 

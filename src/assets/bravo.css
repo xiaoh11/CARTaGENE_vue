@@ -79,6 +79,15 @@
   flex-wrap: nowrap;
 }
 
+.snvtable__cell--clickable {
+  cursor: pointer;
+  border-radius: 6px;
+  border: 1px solid #2c3e50;
+  margin: 0px;
+  text-align: center;
+  box-shadow: 0 0 2px -1px rgba(0,0,0,0.15);
+}
+
 /* Classes to BEM-ify
  * https://github.com/statgen/bravo_vue/issues/10 */
 .bravo-tab {
