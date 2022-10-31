@@ -16,6 +16,7 @@ export default {
       downloadFileName: `variants_${this.geneId}.csv`
     }
   },
+  emits: ['openModal'],
   computed: {
     // define url to get data appropriate for region snv table
     ajaxUrl() { 
@@ -26,19 +27,26 @@ export default {
     // add region implementation for consequence, annotation, and loftee
     tblColumnDefs: function(){
       let consequenceCol =  {
-        title: "Consequence <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).'>?</a>",
+        title: "Consequence",
         titleDownload: "Consequence",
-        field: `annotation.gene.hgvs`,
+        field: "annotation.gene.hgvs",
+        headerTooltip: "HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).",
         hozAlign: "left",
         headerSort: false,
         minWidth: 120,
         visible: this.showCols.consequence,
         formatter: (cell, params, onrendered) => {
+          let html = ""
           if ((cell.getValue() != undefined) && (cell.getValue().length > 0)) {
-            return cell.getValue()[0] + ` <a href="javascript:void(0)" role="button" onclick='this.dispatchEvent(new CustomEvent("click-annotations", { "bubbles": true, "detail": ${cell.getRow().getPosition()} }))'>(${cell.getValue().length})</a>`
-          } else {
-            return ""
+            html += '<div class="snvtable__cell--clickable" role="button">'
+            html += cell.getValue()[0] + " (" + cell.getValue().length + ")"
+            html += "</div>"
           }
+          return html
+        },
+        cellClick: (e, cell) => {
+          console.log("consequence click")
+          this.$emit("openModal", cell._cell.row.data)
         },
         accessorDownload: (value) => {
           if (value != null) {
@@ -50,9 +58,10 @@ export default {
       }
 
       let annoCol =  {
-        title: "Annotation <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).'>?</a>",
+        title: "Annotation",
         titleDownload: "Annotation",
-        field: 'annotation.gene.consequence',
+        field: "annotation.gene.consequence",
+        headerTooltip: "Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).",
         hozAlign: "left",
         minWidth: 120,
         visible: this.showCols.annotation,
@@ -62,10 +71,15 @@ export default {
           if (annotations.length > 0) {
             let title = snvConsequences[annotations[0]].title 
             let cssClass = `badge--${annotations[0]}`
-            html += `<span class="badge badge-light ${cssClass}" style="margin-right:1px;font-weight:bold;-webkit-text-stroke: 0.15px black;">${title}</span>`
-            html += ` <a href="javascript:void(0)" role="button" onclick='this.dispatchEvent(new CustomEvent("click-annotations", { "bubbles": true, "detail": ${cell.getRow().getPosition()} }))'>(${annotations.length})</a>` // we emit here an Event intead of directly calling Bootstrap modal, because we want to do all modal's dynamics through VueJs.
+            html += `<div class="snvtable__cell--clickable" role="button">`
+            html += `<span class="badge badge-light clickable ${cssClass}" style="">${title} </span>`
+            html += `<span>(${annotations.length})</span>`
+            html += `</div>`
           }
-          return html;
+          return html
+        },
+        cellClick: (e, cell) => {
+          this.$emit('openModal', cell._cell.row.data)
         },
         accessorDownload: (value) => {
           if (value != null) {
@@ -77,8 +91,9 @@ export default {
       }
 
       let lofteeCol = {
-        title: "LOFTEE <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Variant was predicted to be Loss-of-Function by LOFTEE.'>?</a>",
+        title: "LOFTEE",
         titleDownload: "LOFTEE",
+        headerTooltip: "Variant was predicted to be Loss-of-Function by LOFTEE.",
         field: "annotation.gene.lof",
         hozAlign: "left",
         minWidth: 95,

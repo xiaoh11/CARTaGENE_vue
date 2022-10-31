@@ -34,9 +34,11 @@
           :givenWidth="childWidth" :givenMargins="childMargins" />
         <FilterBar @filterChange='handleFilterChange'/>
         <GeneSNVTable :filters="filterArray" :doDownload="doDownload"
-          @scroll='handleTableScroll' @hover='handleTableHover'/>
+          @scroll='handleTableScroll' @hover='handleTableHover' 
+          @openModal="handleOpenModal"/>
       </div>
     </div>
+    <SNVTableAnnotationModal :showModal="showModal" :rowData="modalData" @closeModal="handleCloseModal"/>
   </div>
 </template>
 
@@ -59,6 +61,7 @@ import TranscriptBars from '@/components/TranscriptBars.vue'
 import GeneSnvCount   from '@/components/histogram/GeneSnvCount.vue'
 import BpCoordBar     from '@/components/BpCoordBar.vue'
 import GeneSNVTable   from '@/components/table/GeneSNVTable.vue'
+import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
 
 export default {
   name: 'GeneDashboard',
@@ -72,7 +75,8 @@ export default {
     TranscriptBars,
     GeneSnvCount,
     BpCoordBar,
-    GeneSNVTable
+    GeneSNVTable,
+    SNVTableAnnotationModal
   },
   inject: {
     geneId: {default: null}
@@ -113,6 +117,8 @@ export default {
         frequency:      { title: "Frequency (%)", val: true}
       },
       showTableMenuDropDown: false,
+      showModal: false,
+      modalData: {},
       // keys are category of filter,
       // values are array of mongo-like filters.
       filter: {},
@@ -173,6 +179,15 @@ export default {
     }
   },
   methods:{
+    handleOpenModal: function(rowData){ 
+      console.log('handle Open Modal')
+      this.modalData = rowData
+      this.showModal = true
+    },
+    handleCloseModal: function(){ 
+      console.log('handle Close Modal')
+      this.showModal = false }
+    ,
     handleInfoViewToggle: function(listGroup, varKey){
       this[listGroup][varKey].val = !this[listGroup][varKey].val
     },

@@ -73,8 +73,22 @@
   background-color: #cccccc;
 }
 
+.modal__titlebox {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
 
-/* BEM-ify extracted classes
+.snvtable__cell--clickable {
+  cursor: pointer;
+  border-radius: 6px;
+  border: 1px solid #2c3e50;
+  margin: 0px;
+  text-align: center;
+  box-shadow: 0 0 2px -1px rgba(0,0,0,0.15);
+}
+
+/* Classes to BEM-ify
  * https://github.com/statgen/bravo_vue/issues/10 */
 .bravo-tab {
    display: flex;
@@ -223,6 +237,25 @@
   opacity: 1;
 }
 
+/* Bootstrap 5 stand in.
+ * coreui uses bootstrap5 styles.  Until migrated we need to provide some of
+ * that stylying manually */
+
+.accordion-button {
+ 	position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--cui-accordion-btn-padding-y) var(--cui-accordion-btn-padding-x);
+  font-size: 1rem;
+  color: var(--cui-accordion-btn-color);
+  text-align: left;
+  background-color: var(--cui-accordion-btn-bg);
+  border: 0;
+  border-radius: 0;
+  overflow-anchor: none;
+  transition: var(--cui-accordion-transition); 
+}
 
 /* Bootstrap overrides */
 .cards {
@@ -251,6 +284,15 @@
 
 .card-body {
   padding: 10px;
+}
+
+.badge-light.clickable {
+  cursor: pointer;
+	-webkit-text-stroke: 0.15px black;
+}
+
+.modal {
+  display: inherit;
 }
 
 @media (max-width: 575.98px) {

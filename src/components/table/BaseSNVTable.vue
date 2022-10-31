@@ -178,8 +178,9 @@ export default {
     baseColumnDefs: function(){
       return([
         {
-          title: "Variant Id <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' title='chrom-position-ref-alt'>?</a>",
+          title: "Variant Id",
           titleDownload: "Variant Id",
+					headerTooltip: "chrom-position-ref-alt",
           width: 130,
           field: "variant_id",
           visible: this.showCols.variantID,
@@ -188,6 +189,7 @@ export default {
         {
           title: "rsId",
           titleDownload: "rsId",
+					headerTooltip: "Reference SNP (rs) number is a locus accession for a variant type assigned by dbSNP.",
           width: 100,
           field: "rsids",
           visible: this.showCols.rsID.val,
@@ -230,8 +232,9 @@ export default {
           }
         },
         {
-          title: "CADD <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Variant deleteriousness score (PHRED-like scaled) computed with Combined Annoation Dependent Depletion (CADD) tool.'>?</a>",
+          title: "CADD",
           titleDownload: "CADD",
+					headerTooltip: "Variant deleteriousness score (PHRED-like scaled) computed with Combined Annoation Dependent Depletion (CADD) tool.",
           field: "cadd_phred",
           width: 80,
           hozAlign: "left",
@@ -248,7 +251,8 @@ export default {
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
-          title: "Het <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Number of heterozygotes.'>?</a>",
+          title: "Het",
+					headerTooltip: "Number of heterozygotes.",
           titleDownload: "Het",
           field: "het_count",
           width: 80,
@@ -257,8 +261,9 @@ export default {
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
-          title: "Hom <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Number of homozygotes for alternate allele.'>?</a>",
+          title: "Hom",
           titleDownload: "Hom",
+					headerTooltip: "Number of homozygotes for alternate allele.",
           field: "hom_count",
           width: 90,
           hozAlign: "left",
@@ -276,8 +281,6 @@ export default {
         },
       ])
     }
-
-
   },
   mounted: function() {
     this.tabulator = new Tabulator(this.$refs.snvtable, {

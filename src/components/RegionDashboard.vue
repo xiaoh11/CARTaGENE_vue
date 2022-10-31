@@ -33,9 +33,11 @@
           :givenWidth="childWidth" :givenMargins="childMargins" />
         <FilterBar @filterChange='handleFilterChange'/>
         <RegionSNVTable :filters="filterArray" :doDownload="doDownload" 
-          @scroll='handleTableScroll' @hover='handleTableHover'/>
+          @scroll='handleTableScroll' @hover='handleTableHover'
+          @openModal="handleOpenModal"/>
       </div>
     </div>
+    <SNVTableAnnotationModal :showModal="showModal" :rowData="modalData" @closeModal="handleCloseModal"/>
   </div>
 </template>
 
@@ -54,6 +56,7 @@ import GeneBars        from '@/components/GeneBars.vue'
 import RegionSnvCount  from '@/components/histogram/RegionSnvCount.vue'
 import BpCoordBar      from '@/components/BpCoordBar.vue'
 import RegionSNVTable  from '@/components/table/RegionSNVTable.vue'
+import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -67,7 +70,8 @@ export default {
     GeneBars,
     RegionSnvCount,
     BpCoordBar,
-    RegionSNVTable
+    RegionSNVTable,
+    SNVTableAnnotationModal
   },
   inject: {
     chrom: {default: null},
@@ -101,6 +105,7 @@ export default {
         frequency:      { title: "Frequency (%)", val: true}
       },
       showTableMenuDropDown: false,
+      showModal: false,
 
       // keys are category of filter,
       // values are array of mongo-like filters.
@@ -141,6 +146,16 @@ export default {
     },
   },
   methods: {
+    handleOpenModal: function(rowData){ 
+      console.log('handle Open Modal')
+      console.log(rowData)
+      this.modalData = rowData
+      this.showModal = true
+    },
+    handleCloseModal: function(){ 
+      console.log('handle Close Modal')
+      this.showModal = false }
+    ,
     togglePanelAttr: function(attrName) {
       this[attrName] = !this[attrName]
       this.showMenuDropDown = !this.showMenuDropDown
