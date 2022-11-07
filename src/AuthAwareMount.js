@@ -41,8 +41,6 @@ function authExpectedMount(app, mountPoint){
 function agreementExpectedMount(app, mountPoint){
   axios.get(process.env.VUE_APP_BRAVO_API_URL + '/auth_status', {withCredentials: true})
     .then(function(resp){
-      console.log(resp.data)
-
       if(resp.data.login_disabled){
         app.mount(mountPoint)
 

@@ -41,7 +41,6 @@ export default {
           return html
         },
         cellClick: (e, cell) => {
-          console.log("consequence click")
           this.$emit('openModal', cell._cell.row.data)
         },
         accessorDownload: (value) => {

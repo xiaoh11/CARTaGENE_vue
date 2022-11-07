@@ -180,12 +180,10 @@ export default {
   },
   methods:{
     handleOpenModal: function(rowData){ 
-      console.log('handle Open Modal')
       this.modalData = rowData
       this.showModal = true
     },
     handleCloseModal: function(){ 
-      console.log('handle Close Modal')
       this.showModal = false }
     ,
     handleInfoViewToggle: function(listGroup, varKey){

@@ -74,11 +74,9 @@ export default {
       axios
         .post(`${this.api}/agree_to_terms`)
         .then(response => {
-          console.log(response.data)
           window.location.href = this.dest
         })
         .catch(error => {
-          console.log("Error posting agree to terms:" + error)
           this.errorSavingAgreement = true;
         });
     }
