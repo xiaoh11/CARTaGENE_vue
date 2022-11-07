@@ -15,17 +15,73 @@
           <li>You will not share data from this site with others.
         Instead, please direct them to this site, dbGaP, or elsewhere to view this data.</li>
         </ul>
+        <div v-if="promptAgreement">
+          <p>Click to indicate you agree to the above terms.</p>
+          <button id="agreeBtn" class="btn btn-outline-primary" v-on:click="handleAgree">
+            Agree to terms
+          </button>
+        </div>
+        <p id="agreeMsg" v-if="hasAgreed">You have agreed to the terms.</p>
+        <p id="errorMsg" v-if="errorSavingAgreement">
+          There was an error persisting your agreement to the terms.  Please try again later.
+        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+axios.defaults.withCredentials=true
 import NavBar from '../../components/NavBar.vue'
 
 export default {
   name: 'App',
-  components: {NavBar}
-    
+  components: {NavBar},
+  inject: {
+    user: {default: null},
+    agreedToTerms: {default: null}
+  },
+  data: function(){
+    return {
+      api: process.env.VUE_APP_BRAVO_API_URL,
+      errorSavingAgreement: false
+    }
+  },
+  computed: {
+    promptAgreement: function() {
+      return(this.user !== null &&
+             this.agreedToTerms === false &&
+             !this.errorSavingAgreement)
+    },
+    hasAgreed: function() {
+      return(this.user !== null &&
+             this.agreedToTerms === true &&
+             !this.errorSavingAgreement)
+    },
+    dest: function() {
+      let urlParams = new URLSearchParams(window.location.search)
+      let decodedDest = decodeURIComponent(urlParams.get('dest'))
+      if(decodedDest[0] === '/'){
+        return(decodedDest)
+      } else {
+        return('/')
+      }
+    }
+  },
+  methods: {
+    handleAgree: function() {
+      axios
+        .post(`${this.api}/agree_to_terms`)
+        .then(response => {
+          console.log(response.data)
+          window.location.href = this.dest
+        })
+        .catch(error => {
+          console.log("Error posting agree to terms:" + error)
+          this.errorSavingAgreement = true;
+        });
+    }
+  }
 }
 </script>
