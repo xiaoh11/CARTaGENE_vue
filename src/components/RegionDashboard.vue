@@ -147,13 +147,10 @@ export default {
   },
   methods: {
     handleOpenModal: function(rowData){ 
-      console.log('handle Open Modal')
-      console.log(rowData)
       this.modalData = rowData
       this.showModal = true
     },
     handleCloseModal: function(){ 
-      console.log('handle Close Modal')
       this.showModal = false }
     ,
     togglePanelAttr: function(attrName) {

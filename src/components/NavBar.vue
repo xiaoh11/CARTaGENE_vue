@@ -17,6 +17,7 @@
           <li class="nav-item"><a class="nav-link btn-sm" :href="this.logInOutUrl">{{logInOutText}}</a></li>
         </div>
         <li class="nav-item"><a class="nav-link btn-sm" href="/about.html">About</a></li>
+        <li class="nav-item"><a class="nav-link btn-sm" href="/terms.html">Terms</a></li>
       </ul>
     </div>
   </nav>
