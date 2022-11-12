@@ -106,6 +106,7 @@ export default {
       },
       showTableMenuDropDown: false,
       showModal: false,
+      modalData: {},
 
       // keys are category of filter,
       // values are array of mongo-like filters.
