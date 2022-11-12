@@ -1,0 +1,28 @@
+{
+  "data": {
+    "suggestions": [
+      {
+        "data": {
+          "chrom": "11",
+          "feature": "gene",
+          "start": 5225464,
+          "stop": 5229395,
+          "type": "protein_coding"
+        },
+        "value": "HBB"
+      },
+      {
+        "data": {
+          "chrom": "11",
+          "feature": "gene",
+          "start": 5241105,
+          "stop": 5243537,
+          "type": "transcribed_unprocessed_pseudogene"
+        },
+        "value": "HBBP1"
+      }
+    ]
+  },
+  "status": 200,
+  "statusText": "OK"
+}

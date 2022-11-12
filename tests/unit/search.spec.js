@@ -1,66 +1,136 @@
 import { expect } from 'chai'
-import { shallowMount } from '@vue/test-utils'
+import sinon from 'sinon'
+import { mount, shallowMount } from '@vue/test-utils'
 import SearchBox from '@/components/SearchBox.vue'
-import Autocomplete from '@/components/Autocomplete.vue'
+import axios from 'axios';
+
+// Example search results
+import hbbSearch from '../fixtures/search_result_hbb.json'
+import rs19392256Search from '../fixtures/search_result_rs19392256.json'
+import emptySearch from '../fixtures/search_result_empty.json'
 
 describe('SearchBox.vue components structure.', () => {
-  it('uses a form', () => {
-    const wrapper = shallowMount(SearchBox, { props: { autofocus: true } })
-    const form = wrapper.find('form')
+  var wrapper
+  before(() => {
+    wrapper = mount(SearchBox, { 
+      shallow: false,
+      props: { autofocus: true } 
+    })
+  })
 
+  it('uses a form', () => {
+    const form = wrapper.find('form')
     expect(form.exists()).to.be.true
   })
 
-  it('has an autocomplete input component', () => {
-    const wrapper = shallowMount(SearchBox, { props: { autofocus: true } })
+  it('has an AutoComplete input component', () => {
+    const autoc = wrapper.findComponent({name: 'AutoComplete'})
+    const input = wrapper.get('input')
+    expect(autoc.exists()).to.be.true
+    expect(input.exists()).to.be.true
+  })
 
-    expect(wrapper.findComponent(Autocomplete).exists()).to.be.true
+})
+
+describe('SearchBox.vue doSearch.', () => {
+  //Avoid changes to window.location and REST requests
+  sinon.stub(SearchBox.methods, "followResultTicket")
+  const axiosStub = sinon.stub(axios, 'get')
+
+  let wrapper 
+
+  before(() => {
+    wrapper = mount(SearchBox, { 
+      shallow: true,
+      props: { autofocus: true } 
+    })
+
+    sinon.spy(wrapper.vm, 'suggestToResultTicket')
+    sinon.spy(wrapper.vm, 'queryToResultTicket')
+  })
+
+  beforeEach(() => {
+    sinon.resetHistory()
+  })
+
+  after(() => {
+    sinon.restore()
+  })
+
+  
+  it('Uses autocomplete suggests result', async () => {
+    axiosStub.resolves(hbbSearch)
+    wrapper.vm.$refs.autocomplete.qtext = 'hbb'
+
+    await wrapper.vm.doSearch()
+    expect(wrapper.vm.suggestToResultTicket.called).to.be.true
+    expect(wrapper.vm.queryToResultTicket.called).to.be.false
+  })
+
+  it('Lacking a suggestion, matches query to pattern', async () => {
+    axiosStub.resolves(emptySearch)
+    wrapper.vm.$refs.autocomplete.qtext = '11-5002000-5003000'
+
+    await wrapper.vm.doSearch()
+    expect(wrapper.vm.suggestToResultTicket.called).to.be.false
+    expect(wrapper.vm.queryToResultTicket.called).to.be.true
   })
 })
 
-describe('SearchBox.vue query parsing.', () => {
+describe('SearchBox.vue queryToResultTicket parsing.', () => {
 
   // Instantiate component once only to access the methods
   const wrapper = shallowMount(SearchBox, { props: { autofocus: true } })
 
-  it('tickets an empty query with endpoint: notfound', () => {
-    const empty_result = wrapper.vm.queryToResultTicket('')
-    expect(empty_result.endpoint).to.equal('notfound')
+  const testFun = ({input, expected}) =>
+    function () {
+      const result = wrapper.vm.queryToResultTicket(input);
+      expect(result.endpoint).to.equal(expected)
+    };
 
-    const ws_result = wrapper.vm.queryToResultTicket('    ')
-    expect(ws_result.endpoint).to.equal('notfound')
+  // Test variant queries
+  it('handles chr11:10,500,100-A-T', testFun({input: 'chr11:10,500,100-A-T', expected: 'variant'}));
+  it('handles chr11:10500100-A-T',   testFun({input: 'chr11:10500100-A-T',   expected: 'variant'}));
+  it('handles chr11 10500100 A T',   testFun({input: 'chr11 10500100 A T',   expected: 'variant'}));
+  it('handles 11:10,500,100-A-T',    testFun({input: 'chr11 10500100 A T',   expected: 'variant'}));
+  it('handles 11:10500100-A-T',      testFun({input: 'chr11 10500100 A T',   expected: 'variant'}));
+  it('handles 11 10500100 A T',      testFun({input: 'chr11 10500100 A T',   expected: 'variant'}));
 
-    const comma_result = wrapper.vm.queryToResultTicket(',, ')
-    expect(comma_result.endpoint).to.equal('notfound')
-  })
+  it('handles 11:10500100 - A - T',  testFun({input: '11:10500100 - A - T', expected: 'variant'}));
+  it('handles 11 10500100- A- T',    testFun({input: '11 10500100- A- T',   expected: 'variant'}));
+  it('handles 11 10500100 -A -T',    testFun({input: '11 10500100 -A -T',   expected: 'variant'}));
 
+  // Test empty queires
+  it("handles ''",      testFun({input: '',        expected: 'notfound'}));
+  it("handles '     '", testFun({input: '     ',   expected: 'notfound'}));
+  it("handles ',,   '", testFun({input: ',,   ',   expected: 'notfound'}));
+
+
+  // Test variant queires
   it('tickets a dbSNP reference query with endpoint: variant', () => {
     const rsid_result = wrapper.vm.queryToResultTicket('rs12345678')
     expect(rsid_result.endpoint).to.equal('variant')
   })
 
-  it('tickets a range query with endpoint: region', () => {
-    const range_result = wrapper.vm.queryToResultTicket('chr11:10,500,100-10,503,000')
-    expect(range_result.endpoint).to.equal('region')
-  })
+  // Test region queries
+  it('chr11:10,500,100-10,503,000', testFun({input: 'chr11:10,500,100-10,503,000', expected: 'region'}));
+  it('chr11:10500100-10,503,000',   testFun({input: 'chr11:10500100-10,503,000',   expected: 'region'}));
+  it('chr11:10500100-10503000',     testFun({input: 'chr11:10500100-10503000',     expected: 'region'}));
+  it('chr11 10500100 10503000',     testFun({input: 'chr11 10500100 10503000',     expected: 'region'}));
+  it('chr11:10500100 -10503000',    testFun({input: 'chr11:10500100-10503000',     expected: 'region'}));
+  it('chr11: 10500100 - 10503000',  testFun({input: 'chr11:10500100-10503000',     expected: 'region'}));
+  it('11 10500100 10503000',        testFun({input: 'chr11 10500100 10503000',     expected: 'region'}));
+  it('9 10500100 10503000',         testFun({input: 'chr11 10500100 10503000',     expected: 'region'}));
+  it('X 10500100 10503000',         testFun({input: 'chr11 10500100 10503000',     expected: 'region'}));
 
-  it('tickets a vcf variant query with endpoint: variant', () => {
-    const range_result = wrapper.vm.queryToResultTicket('chr11:10,500,100-10,503,000-A-T')
-    expect(range_result.endpoint).to.equal('variant')
-  })
-
-  it('tickets a vcf variant query with endpoint: variant', () => {
-    const range_result = wrapper.vm.queryToResultTicket('chr11:10,500,100-10,503,000-A-T')
-    expect(range_result.endpoint).to.equal('variant')
-  })
-
-  it('defaults to ticket query with endpoint: gene', () => {
-    const range_result = wrapper.vm.queryToResultTicket('HBBP1')
-    expect(range_result.endpoint).to.equal('gene')
+  // Test default query
+  it('defaults to ticket query with endpoint: notFound', () => {
+    const range_result = wrapper.vm.queryToResultTicket('foobar')
+    expect(range_result.endpoint).to.equal('notfound')
   })
 })
 
-describe('SearchBox.vue query routing', () => {
+describe('SearchBox.vue query route result via resultTicketToHref', () => {
   /*
    * Cannot directly verify window.location.href is set as expected.
    * jsdom does not implment nor handle location changes 
@@ -92,7 +162,7 @@ describe('SearchBox.vue query routing', () => {
 
 describe('SearchBox.vue suggestion routing', () => {
   // representative responses from api autocomplete endpoint
-  const snv_suggest = {
+  const rsid_suggest = {
     "data": {
       "feature": "snv",
       "type": "missense_variant",
@@ -123,7 +193,7 @@ describe('SearchBox.vue suggestion routing', () => {
   })
 
   it('Maps snv suggestion feature to endpoint: variant', () => {
-    const result = wrapper.vm.suggestToResultTicket(snv_suggest);
+    const result = wrapper.vm.suggestToResultTicket(rsid_suggest);
 
     expect(result.endpoint).to.equal('variant');
     expect(result.chrom).to.equal('8');

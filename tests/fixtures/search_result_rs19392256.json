@@ -1,0 +1,40 @@
+{
+  "data": {
+    "suggestions": [
+      {
+        "data": {
+          "feature": "snv",
+          "type": "intron_variant",
+          "variant_id": "11-5225796-G-C"
+        },
+        "value": "rs193922560"
+      },
+      {
+        "data": {
+          "feature": "snv",
+          "type": "intron_variant",
+          "variant_id": "11-5225822-C-G"
+        },
+        "value": "rs193922561"
+      },
+      {
+        "data": {
+          "feature": "snv",
+          "type": "intron_variant",
+          "variant_id": "11-5225822-C-T"
+        },
+        "value": "rs193922561"
+      },
+      {
+        "data": {
+          "feature": "snv",
+          "type": "synonymous_variant",
+          "variant_id": "11-5225718-G-A"
+        },
+        "value": "rs193922562"
+      }
+    ]
+  },
+  "status": 200,
+  "statusText": "OK"
+}

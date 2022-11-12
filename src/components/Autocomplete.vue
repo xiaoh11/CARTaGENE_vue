@@ -1,6 +1,6 @@
 <template>
   <input ref="acInput" class="search-box-input" name="value" type="text" autocomplete="off" 
-    placeholder="Search for gene or region" v-bind:autofocus="autofocus"
+    v-model="qtext" placeholder="Search for gene or region" v-bind:autofocus="autofocus"
     @focus="$emit('inputfocus')" @focusout="$emit('inputfocusout')"
   />
 </template>
@@ -15,7 +15,8 @@ export default {
   emits: ['inputfocus', 'inputfocusout', 'dropdownopen', 'dropdownclose', 'suggestionSelect'],
   data: function() {
     return {
-      ready: false
+      ready: false,
+      qtext: ''
     };
   },
   mounted: function() {
