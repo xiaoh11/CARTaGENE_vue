@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './About.vue'
 import VueGtag from 'vue-gtag'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import '@/assets/bravo.css'
 import { authAwareMount } from '@/AuthAwareMount'
 
 const app = createApp(App);
@@ -10,7 +11,7 @@ const app = createApp(App);
 if(process.env.GA_ID){
   app.use(VueGtag, {
     property: {
-      id: process.env.GA_ID,
+      id: process.env.VUE_APP_GA_ID,
       send_page_view: true
     }
   });

@@ -90,6 +90,14 @@
 
 /* Classes to BEM-ify
  * https://github.com/statgen/bravo_vue/issues/10 */
+.bo-big-logo {
+  margin-bottom: 10px;
+}
+
+.bo-small-logo {
+  border-radius: 10px;
+}
+
 .bravo-tab {
    display: flex;
    flex-direction: row;
@@ -338,10 +346,6 @@
    border: none;
    box-shadow: none;
    outline: none;
-}
-
-.bo-small-logo {
-  border-radius: 10px;
 }
 
 .search-box {

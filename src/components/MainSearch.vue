@@ -8,8 +8,6 @@
             <h5>{{ subtitle }}</h5>
             <template v-if="subtitle2">
               <small class="text-muted">{{ subtitle2 }}</small>
-              <br/>
-              <small class="text-muted">UI Version: {{version}}</small>
             </template>
           </template>
           <hr class="margin-centered" width="25%">
@@ -72,18 +70,3 @@ export default {
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-  .bo-big-logo {
-    margin-bottom: 10px;
-  }
-
-  /* override with no left or right margin to allow centering */
-  .margin-centered {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    margin-left: auto;
-    margin-right: auto;
-  }
-</style>

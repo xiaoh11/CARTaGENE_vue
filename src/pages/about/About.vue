@@ -25,6 +25,9 @@
         <p>
         If you have a question about BRAVO, contact <a href="mailto:bravo-group@umich.edu">bravo-group@umich.edu</a>
         </p>
+        <p>
+          <small>Bravo UI version: {{uiVersion}}</small>, <small>Bravo API version: {{apiVersion}}</small>
+        </p>
       </div>
     </div>
   </div>
@@ -32,21 +35,23 @@
 
 <script>
 import NavBar from '../../components/NavBar.vue'
+import axios from 'axios'
 
 export default {
   name: 'App',
-  components: {NavBar}
-    
+  components: {NavBar},
+  data() {
+    return {
+      uiVersion: process.env.VUE_APP_VERSION,
+      apiVersionURL: process.env.VUE_APP_BRAVO_API_URL + '/version',
+      apiVersion: ""
+    }
+  },
+  mounted: function() {
+    axios.get(this.apiVersionURL)
+      .then(resp => {
+        this.apiVersion = resp.data.version
+      })
+  }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin-top: 0px;
-  margin-left: 5px;
-}
-</style>
