@@ -148,15 +148,12 @@ export default {
       axios.get(this.searchapi, {params: {query: queryVal}})
         .then(resp => {
           let suggestion = resp.data.suggestions.shift()
-          console.log(resp)
-          console.log("suggestion:")
-          console.log(suggestion)
           if(suggestion){
             let resultTicket = this.suggestToResultTicket(suggestion);
-            //this.followResultTicket(resultTicket)
+            this.followResultTicket(resultTicket)
           } else {
             let resultTicket = this.queryToResultTicket(queryVal);
-            //this.followResultTicket(resultTicket)
+            this.followResultTicket(resultTicket)
           }
         })
     },
