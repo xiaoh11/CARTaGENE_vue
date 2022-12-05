@@ -43,6 +43,6 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## Testing
 Automatically watch the js files and run the tests whenever one changes.
-```r
+```sh
 fd '\.(js|Vue|vue)$' . | entr -c npm run test:unit
 ```
