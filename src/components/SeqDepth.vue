@@ -73,50 +73,35 @@ export default {
     }
   },
   methods: {
-    load_cycle: function(url, size, next, chain) {
-      axios
-        .post(url, {
-          size: size,
-          next: next,
-        })
-        .then(response => {
-          let payload = response.data;
-          this.loaded_data_size += payload.data.length;
-          let next_link = chain.then( () => {
-            if (payload.data.length > 0) {
-              // remove last element which is just a copy of preceding element
-              this.coverage_stats.pop();
-
-              this.coverage_stats.push(...payload.data); // ECMA6
-
-              // add copy of the last window to mark an end
-              this.coverage_stats.push(JSON.parse(JSON.stringify(payload.data[payload.data.length - 1])));
-              this.coverage_stats[this.coverage_stats.length - 1].last = true;
-              this.initializeCoverageSVG();
-              this.draw();
-            }
-          });
-          if (payload.next != null) {
-            this.load_cycle(`${this.api}/coverage/${this.chrom}-${this.start}-${this.stop}`, size, payload.next, next_link);
+    load_depths: function(chrom, start, stop, continue_from=0){
+      console.log('start: ' + start + ', stop: '+ stop + ', continue: ' + continue_from)
+      return axios
+        .post(`${this.api}/chunked-coverage`, 
+          {chrom: chrom, start: start, stop: stop, continue_from: continue_from})
+        .then( resp => {
+          this.cov_data.push(...resp.data.coverage)
+          this.draw()
+          this.loaded_data_size = this.cov_data.length
+          if( resp.data.continue_from < stop){
+            return this.load_depths(chrom, start, stop, resp.data.continue_from)
           } else {
             this.loading = false;
             this.loaded = true;
           }
-        })
-        .catch(error => {
+        }).catch(error => {
           console.log("Error loading depth:" + error)
           this.loaded = false;
           this.loading = false;
           this.failed = true;
-        });
+        })
     },
     load: function() {
       this.failed = false;
       this.loaded = false;
       this.loading = true;
-      this.coverage_stats = [];
-      this.loaded_data_size = 0;
-      this.load_cycle(`${this.api}/coverage/${this.chrom}-${this.start}-${this.stop}`, 10000, null, new Promise( resolve => resolve()));
+      this.initializeCoverageSVG()
+      this.loaded_data_size = 0
+      this.load_depths(this.chrom, this.start, this.stop, 0)
     },
     format_y_ticks: function(value) {
       return d3.format('d')(value) + "x";
@@ -159,10 +144,10 @@ export default {
     },
     initializeCoverageSVG: function() {
       this.depth_g.selectAll("path")
-        .data([this.coverage_stats])
+        .data([this.cov_data])
         .enter()
         .append("path")
-          .style("fill", this.color)
+          .style("fill", "#ffa37c")
           .style("stroke-width", 0.1)
           .style("stroke", "black");
     },
@@ -173,7 +158,7 @@ export default {
         .attr("width", this.givenWidth - this.givenMargins.left - this.givenMargins.right)
         .attr("height", this.height);
       this.x_scale.range(this.segmentBounds).domain(this.segmentRegions);
-      this.y_scale.range([this.height, 0]).domain([0, d3.max(this.coverage_stats, function(d) { return d.mean; })]);
+      this.y_scale.range([this.height, 0]).domain([0, d3.max(this.cov_data, function(d) { return d.mean; })]);
       this.y_axis.scale(this.y_scale).ticks(4).tickFormat(this.format_y_ticks);
       this.y_axis_g.call(this.y_axis);
       var area = d3.area()
@@ -191,7 +176,6 @@ export default {
   beforeCreate() {
     // initialize non-reactive data
     this.height = 70;
-    this.color = '#ffa37c';
     this.svg = null;
     this.drawing = null;
     this.highlight_line = null;
@@ -199,7 +183,7 @@ export default {
     this.y_axis = null;
     this.y_scale = null;
     this.y_axis_g = null;
-    this.coverage_stats = [];
+    this.cov_data = [];
   },
   mounted: function() {
     this.initializeSVG();
@@ -212,7 +196,6 @@ export default {
     this.failed = false;
     this.loaded = false;
     this.loading = true;
-    this.coverage_stats = [];
     this.loaded_data_size = 0;
     this.load_cycle(`${this.api}/coverage/${this.region.regionChrom}-${this.region.regionStart}-${this.region.regionStop}`,
       10000, null, new Promise( resolve => resolve()));
