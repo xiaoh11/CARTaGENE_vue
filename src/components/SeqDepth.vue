@@ -74,7 +74,6 @@ export default {
   },
   methods: {
     load_depths: function(chrom, start, stop, continue_from=0){
-      console.log('start: ' + start + ', stop: '+ stop + ', continue: ' + continue_from)
       return axios
         .post(`${this.api}/chunked-coverage`, 
           {chrom: chrom, start: start, stop: stop, continue_from: continue_from})

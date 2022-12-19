@@ -109,7 +109,10 @@ export default {
     this.draw();
   },
   computed: {
-    numTranscripts() { return 0}
+    numTranscripts() { 
+      let n_transcripts = this.geneData?.transcripts?.length
+      return (n_transcripts ? n_transcripts : 0)
+    }
   },
   methods: {
     handleBarMouseover: function(evt, transcript) {
