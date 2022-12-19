@@ -21,50 +21,43 @@ module.exports = {
     variant: {
       entry: 'src/pages/variant/main.js',
       template: 'src/pages/variant/variant.html',
-      //filename: 'variant',
       title: 'Bravo:Variant',
       chunks: ['chunk-vendors', 'chunk-common', 'variant']
     },
     region: {
       entry: 'src/pages/region/main.js',
       template: 'src/pages/region/region.html',
-      //filename: 'region',
       title: 'Bravo:Region',
       chunks: ['chunk-vendors', 'chunk-common', 'region']
     },
     gene: {
       entry: 'src/pages/gene/main.js',
       template: 'src/pages/gene/gene.html',
-      //filename: 'gene',
       title: 'Bravo:Gene',
       chunks: ['chunk-vendors', 'chunk-common', 'gene']
     },
     terms: {
       entry: 'src/pages/terms/main.js',
       template: 'src/pages/terms/terms.html',
-      //filename: 'terms',
       title: 'Bravo:Terms',
       chunks: ['chunk-vendors', 'chunk-common', 'terms']
     },
     about: {
       entry: 'src/pages/about/main.js',
-      template: 'src/pages/about/terms.html',
-      filename: 'about.html',
+      template: 'src/pages/about/about.html',
       title: 'Bravo:About',
       chunks: ['chunk-vendors', 'chunk-common', 'about']
     },
     login: {
       entry: 'src/pages/login/main.js',
       template: 'src/pages/login/login.html',
-      filename: 'login.html',
       title: 'Bravo:Login',
       chunks: ['chunk-vendors', 'chunk-common', 'login']
     },
     logout: {
       entry: 'src/pages/logout/main.js',
       template: 'src/pages/logout/logout.html',
-      filename: 'logout.html',
-      title: 'Bravo:Login',
+      title: 'Bravo:Logout',
       chunks: ['chunk-vendors', 'chunk-common', 'logout']
     },
     404: {
