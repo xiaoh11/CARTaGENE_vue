@@ -58,7 +58,7 @@ export default {
       exampleLinks: {
         'HBB': 'gene.html?id=HBB',
         '11:5225000-5229000': 'region.html?chrom=11&start=5225000&stop=5229000',
-        '22-16389447-A-G': 'variant.html?id=11-5225589-A-G',
+        '22-16389447-A-G': 'variant.html?id=22-16389447-A-G',
         'rs193922562': 'variant.html?id=rs193922562'
       }
     }
