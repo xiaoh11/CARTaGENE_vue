@@ -29,7 +29,8 @@ export default {
         headerTooltip: "HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).",
         hozAlign: "left",
         headerSort: false,
-        minWidth: 120,
+        width: 120,
+        minWidth: 100,
         visible: this.showCols.consequence,
         formatter: (cell, params, onrendered) => {
           let html = ""
@@ -58,6 +59,7 @@ export default {
         headerTooltip: "Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).",
         field: 'annotation.region.consequence',
         hozAlign: "left",
+        width: 165,
         minWidth: 120,
         visible: this.showCols.annotation,
         formatter: (cell, params, onrendered) => {
