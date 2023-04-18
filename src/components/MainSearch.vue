@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import logo from "../assets/bravo_logo_beta.png"
+import logo from "../assets/bravo_logo.png"
 import SearchBox from '@/components/SearchBox.vue'
 
 export default {
