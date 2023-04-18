@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="120"
+   height="120"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg4580"
+   inkscape:version="1.2.2 (1:1.2.2+202212051550+b0a8486541)"
+   sodipodi:docname="b-icon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title845">BRAVO Application Icon</title>
+  <defs
+     id="defs4574">
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect168"
+       is_visible="true"
+       lpeversion="1"
+       nodesatellites_param="F,0,0,1,0,39.6875,0,1 @ F,0,0,1,0,39.6875,0,1 @ F,0,0,1,0,39.6875,0,1 @ F,0,0,1,0,39.6875,0,1"
+       unit="px"
+       method="auto"
+       mode="F"
+       radius="150"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="4.97"
+     inkscape:cx="-3.3199195"
+     inkscape:cy="44.668008"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="2560"
+     inkscape:window-height="1366"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
+  <metadata
+     id="metadata4577">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>BRAVO Application Icon</dc:title>
+        <dc:date>2023-04-18</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Colin Gross</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Copyright Regents of the University of Michigan</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="mix-blend-mode:normal;fill:#007bff;fill-opacity:1;stroke:none;stroke-width:27.9678;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m -3.8125,0 h 217.625 A 39.6875,39.6875 45 0 1 253.5,39.6875 v 217.625 A 39.6875,39.6875 135 0 1 213.8125,297 H -3.8125 A 39.6875,39.6875 45 0 1 -43.5,257.3125 l 0,-217.625 A 39.6875,39.6875 135 0 1 -3.8125,0 Z"
+       id="rect5150"
+       inkscape:path-effect="#path-effect168"
+       inkscape:original-d="m -43.5,0 h 297 v 297 h -297 z" />
+    <path
+       style="fill:none;stroke:#ffffff;stroke-width:35.4808;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 51.522308,24.554558 V 268.55765 l 47.68941,0.92651 c 45.566232,2.68128 75.183362,-14.06059 76.395632,-64.35753 1.42488,-51.46276 -53.18608,-60.18614 -124.085042,-56.48654 29.536308,-4.49213 97.847612,7.28118 99.082802,-63.431626 0.0975,-74.499203 -58.038452,-60.130791 -99.082802,-60.653419 z"
+       id="pathB"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccc" />
+  </g>
+</svg>
