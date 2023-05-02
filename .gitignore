@@ -7,8 +7,9 @@ node_modules
 .env.local
 .env.*.local
 
-# proeduction env files
+# staging and production env files
 .env.production
+.env.staging
 
 # Log files
 npm-debug.log*

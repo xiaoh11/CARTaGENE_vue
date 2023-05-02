@@ -9,11 +9,22 @@ npm install
 ```
 
 ### Compiles and hot-reloads for development
+Uses constants defined in `.env` file.
 ```
 npm run serve
 ```
 
+### Compiles and minifies for staging
+Staging build is a production build with different constants for oauth, sub-title, etc.
+Configuration for this mode needs to be in a `.env.staging` file.
+This will override values in the .env file.
+```
+npm run staging
+```
+
 ### Compiles and minifies for production
+Production build configuration needs to be in a `.env.production` file.
+This will override values in the .env file.
 ```
 npm run build
 ```
