@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import logo from "../assets/bravo_logo_square.png"
+import logo from "../assets/b_icon.svg"
 
 export default {
   name: 'NavBar',
