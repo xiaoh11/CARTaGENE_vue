@@ -271,8 +271,8 @@ export default {
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
-          title: "Frequencey %",
-          titleDownload: "Frequencey %",
+          title: "Frequency %",
+          titleDownload: "Frequency %",
           field: "allele_freq",
           width: 125,
           hozAlign: "left",
