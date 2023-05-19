@@ -1,11 +1,13 @@
 {
   "name": "vapp",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "staging": "NODE_ENV=production vue-cli-service build --mode staging",
+    "build_staging": "NODE_ENV=production vue-cli-service build --mode staging",
+    "make_tar": "scripts/make_dist_tar.sh $npm_package_version prod",
+    "make_tar_staging": "scripts/make_dist_tar.sh $npm_package_version staging",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "dbg": "webpack -h"
