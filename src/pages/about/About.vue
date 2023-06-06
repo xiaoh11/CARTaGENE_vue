@@ -3,27 +3,27 @@
   <div class="container-fluid">
     <div class="row justify-content-center">
       <div class="col-10 col-sm-8 col-md-6">
-        <h1 style="margin-bottom: 1em">About BRAVO</h1>
+        <h1 style="margin-bottom: 1em">About CARTaGENE Variant Browser</h1>
         <p>
-        This version of BRAVO variant browser shows chromosome locations, alleles, functional annotations, and allele frequencies for 705 million variants observed in 132,345 deeply sequenced (&gt;38x) genomes from the <a href="https://www.nhlbiwgs.org">TOPMed</a> data freeze 8.
+        This variant browser shows chromosome locations, alleles, functional annotations, and allele frequencies for over 80 million variants observed in 2,173 deeply sequenced genomes from the CARTaGENE study in Quebec, Canada.
         </p>
         <p>
-        The information is shared by TOPMed <a href="https://www.nhlbiwgs.org/group/project-studies">studies</a> from Phases 1, 2, and 3, and is available for users that agree to the <a href="{{ url_for('.terms') }}">terms</a>.
+        The information is publicly available for users that agree to the <a href="terms.html">terms</a>.
         </p>
         <p>
-        The sequencing analysis pipeline consists of two major processes:
+        This variant browser is built using the open source BRAVO platform:
         <ul>
           <li>
-            Harmonization of read alignments form the sequence data provided by the sequencing centers;
+            BRAVO API application at <a href="https://github.com/statgen/bravo_api.git">bravo_api</a>
           </li>
           <li>
-            Joint variant discovery and genotype calling across studies using the <a href="https://genome.sph.umich.edu/wiki/GotCloud">GotCloud</a> pipeline.
+            BRAVO UI application at <a href="https://github.com/statgen/bravo_vue.git">bravo_vue</a>
           </li>
         </ul>
-        More detailed description of data processing methods for each data freeze is available on the TOPMed <a href="https://www.nhlbiwgs.org/data-sets">page</a>.
+        
         </p>
         <p>
-        If you have a question about BRAVO, contact <a href="mailto:bravo-group@umich.edu">bravo-group@umich.edu</a>
+        If you have a question about the CARTaGENE variant browser, contact <a href="">this email</a>
         </p>
         <p>
           <small>Bravo UI version: {{uiVersion}}</small>, <small>Bravo API version: {{apiVersion}}</small>

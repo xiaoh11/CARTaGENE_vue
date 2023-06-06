@@ -6,11 +6,12 @@
           <img class="bo-big-logo" v-bind:src="logo" width="200"/>
           <template v-if="subtitle">
             <h5>{{ subtitle }}</h5>
+            <hr class="margin-centered" width="25%">
             <template v-if="subtitle2">
               <small class="text-muted">{{ subtitle2 }}</small>
             </template>
           </template>
-          <hr class="margin-centered" width="25%">
+
         </div>
       </div>
     </div>
@@ -24,6 +25,7 @@
     <div class="row justify-content-center mt-3">
       <div class="col-10 col-sm-8 col-md-6">
         <p class="text-center text-muted">
+          Examples:
           <template  v-for="(value, name) in exampleLinks" v-bind:key="name">
             <a v-bind:href="publicPath + value">{{ name }}</a>{{', '}}
           </template>
@@ -39,7 +41,7 @@
 </template>
 
 <script>
-import logo from "../assets/bravo_title_logo.svg"
+import logo from "../assets/CARTAGENE_logo.jpeg"
 import SearchBox from '@/components/SearchBox.vue'
 
 export default {
@@ -56,10 +58,10 @@ export default {
       logo: logo,
       message: null,
       exampleLinks: {
-        'HBB': 'gene.html?id=HBB',
-        '11:5225000-5229000': 'region.html?chrom=11&start=5225000&stop=5229000',
-        '22-16389447-A-G': 'variant.html?id=22-16389447-A-G',
-        'rs193922562': 'variant.html?id=rs193922562'
+        'PCSK9': 'gene.html?id=PCSK9', 
+        '1:55,030,000-55,075,000': 'region.html?chrom=1&start=55030000&stop=55075000',
+        '22-16389447-A-G': 'variant.html?chrom=22&pos=16389447&ref=A&alt=G',
+        'rs34747326': 'variant.html?chrom=22&pos=16389447&ref=A&alt=G'
       }
     }
   },

@@ -45,7 +45,9 @@ export default {
         'SAS': 'South Asian',
         'FIN': 'Finnish',
         'NFE': 'Non-Finnish European',
-        'ASJ': 'Ashkenazi Jewish'
+        'ASJ': 'Ashkenazi Jewish',
+        'AMI': 'Amish',
+        'MID': 'Middle Eastern'
       }
     }
   },

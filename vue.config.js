@@ -13,7 +13,7 @@ module.exports = {
       filename: 'index.html',
       // when using title option,
       // template title tag needs to be <title><%= htmlWebpackPlugin.options.title %></title>
-      title: 'Bravo:Home',
+      title: 'CARTaGENE:Home',
       // chunks to include on this page, by default includes
       // extracted common chunks and vendor chunks.
       chunks: ['chunk-vendors', 'chunk-common', 'home']
@@ -21,31 +21,31 @@ module.exports = {
     variant: {
       entry: 'src/pages/variant/main.js',
       template: 'src/pages/variant/variant.html',
-      title: 'Bravo:Variant',
+      title: 'CARTaGENE:Variant',
       chunks: ['chunk-vendors', 'chunk-common', 'variant']
     },
     region: {
       entry: 'src/pages/region/main.js',
       template: 'src/pages/region/region.html',
-      title: 'Bravo:Region',
+      title: 'CARTaGENE:Region',
       chunks: ['chunk-vendors', 'chunk-common', 'region']
     },
     gene: {
       entry: 'src/pages/gene/main.js',
       template: 'src/pages/gene/gene.html',
-      title: 'Bravo:Gene',
+      title: 'CARTaGENE:Gene',
       chunks: ['chunk-vendors', 'chunk-common', 'gene']
     },
     terms: {
       entry: 'src/pages/terms/main.js',
       template: 'src/pages/terms/terms.html',
-      title: 'Bravo:Terms',
+      title: 'CARTaGENE:Terms',
       chunks: ['chunk-vendors', 'chunk-common', 'terms']
     },
     about: {
       entry: 'src/pages/about/main.js',
       template: 'src/pages/about/about.html',
-      title: 'Bravo:About',
+      title: 'CARTaGENE:About',
       chunks: ['chunk-vendors', 'chunk-common', 'about']
     },
     login: {
@@ -57,14 +57,14 @@ module.exports = {
     logout: {
       entry: 'src/pages/logout/main.js',
       template: 'src/pages/logout/logout.html',
-      title: 'Bravo:Logout',
+      title: 'CARTaGENE:Logout',
       chunks: ['chunk-vendors', 'chunk-common', 'logout']
     },
     404: {
       entry: 'src/pages/about/main.js',
       template: 'src/pages/about/terms.html',
       filename: '404.html',
-      title: 'Bravo:404',
+      title: 'CARTaGENE:404',
       chunks: ['chunk-vendors', 'chunk-common', '404']
     },
   },

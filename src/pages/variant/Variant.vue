@@ -110,9 +110,14 @@ export default {
             this.variant.pub_freq.push({ds: '1000G'})
           }
 
-          // provide default gnomAD data set
-          if( !this.variant.pub_freq.some((x) => x.ds == 'gnomAD r2.1')){
-            this.variant.pub_freq.push({ds: 'gnomAD r2.1'})
+          // HX: provide default gnomADe data set 
+          if( !this.variant.pub_freq.some((x) => x.ds == 'gnomADe')){
+            this.variant.pub_freq.push({ds: 'gnomADe'})
+          }
+
+          // HX: provide default gnomADg data set
+          if( !this.variant.pub_freq.some((x) => x.ds == 'gnomADg')){
+            this.variant.pub_freq.push({ds: 'gnomADg'})
           }
         })
         .catch( error => {

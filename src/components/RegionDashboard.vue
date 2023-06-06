@@ -1,6 +1,6 @@
 <template>
   <div id="bravo-plot"> 
-    <p>RegionDashboard</p>
+    <!-- HX: <p>RegionDashboard</p> -->
     <RegionInfo/>
     <div id="bravoviz">
       <div class="parentMenu">
