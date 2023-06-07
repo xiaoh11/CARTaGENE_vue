@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import logo from "../assets/b_icon.svg"
+import logo from "../assets/cg_icon.svg"
 
 export default {
   name: 'NavBar',

@@ -27,30 +27,57 @@
           </div>
         </div>
 
+        <!-- HX -->
+        <!-- <div class="col-12 col-md-6 mt-3">
+          <h5>More information of allele frequency in TOPMed:</h5>
+          <p>
+            <a :href="getLinkUrl()">BRAVO Powered by TOPMed Freeze5 on GRCh38</a>
+          </p>
+        </div> -->
+        <!-- HX -->
+        <div class="row">
+          <div class="col-12 col-md-6 mt-3">
+            <div class="card shadow-sm" style="min-width: 300px">
+              <div class="card-body">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-12" style="margin-bottom:8px;">
+                      <h5>Allele frequency in TOPMed</h5>
+                      <p>See <strong>{{ this.variant.variant_id }}</strong> in <a :href="getLinkUrl()">BRAVO for TOPMed Freeze 5</a></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- HX -->
+
         <div class="row">
           <div class="col-12 mt-3">
             <VariantConsequences :variant="this.variant"/>
           </div>
         </div>
 
-
         <div class="row">
-          <div class="col-md-4 mt-3">
+          <div class="col-md-4 mt-3 mb-4">
             <VariantDepth :variant="this.variant"/>
           </div>
         </div>
 
-        <div class="row">
+        <!-- HX -->
+        <!-- <div class="row">
           <div class="col-12 mt-3">
             <VariantMetrics :variant="this.variant"/>
           </div>
-        </div>
+        </div> -->
 
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-12 mt-3">
             <Reads :variant="this.variant"/>
           </div>
-        </div>
+        </div> -->
+        <!-- HX -->
 
       </div>
     </div>
@@ -92,6 +119,11 @@ export default {
     }
   },
   methods : {
+    // HX
+    getLinkUrl() {
+    return `https://bravo.sph.umich.edu/freeze5/hg38/variant/${this.variant.variant_id}`;
+    },
+    // HX
     load: function() {
       axios
         .get(`${this.api}/variant/api/snv/${this.variantId}`)
@@ -118,7 +150,7 @@ export default {
           // HX: provide default gnomADg data set
           if( !this.variant.pub_freq.some((x) => x.ds == 'gnomADg')){
             this.variant.pub_freq.push({ds: 'gnomADg'})
-          }
+          };
         })
         .catch( error => {
           this.variant = {}
