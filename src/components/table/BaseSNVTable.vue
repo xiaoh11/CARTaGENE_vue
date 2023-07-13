@@ -18,9 +18,17 @@
 </div>
 </template>
 
+
+
 <script>
 //import {TabulatorFull as Tabulator} from "tabulator-tables"
 import Tabulator from 'tabulator-tables'
+import 'tabulator-tables/dist/css/bootstrap/tabulator_bootstrap4.min.css';//HX
+import axios from "axios" //HX
+import 'bootstrap/dist/css/bootstrap.css';//HX
+import 'bootstrap/dist/js/bootstrap.js';//HX
+import $ from 'jquery';
+import 'bootstrap';
 
 export default {
   name: "BaseSNVTable",
@@ -31,6 +39,14 @@ export default {
   },
   emits: ["hover", "scroll"],
   props: {
+    segmentRegions: {
+      type: Array,
+      default: function(){return [100000, 101000]},
+    },
+    introns: {
+      type: Boolean,
+      default: function(){return true},
+    },
     showCols: {
       type: Object,
       default: function(){
@@ -45,7 +61,8 @@ export default {
           nAlleles:    {val: false},
           het:         {val: true},
           homAlt:      {val: true},
-          frequency:   {val: true}
+          frequency:   {val: true},
+          freq_pop:    {val: true}, //HX
         })
       }
     },
@@ -70,20 +87,50 @@ export default {
       tabulator: null,
       hoveredRowPosition: null,
       paginationSize: 100,
-      downloadFileName: "variants.csv"
+      downloadFileName: "variants.csv",
     }
   },
   computed: {
     // should be overridden by extending component
-    ajaxUrl() { return(this.api) }
+    ajaxUrl() { return(this.api) },
   },
   watch: {
+    //HX
+    introns: function() {
+      this.tabulator.setData(this.ajaxUrl)
+        .then(function(){
+          console.log('Table data reloaded with new introns value.');
+        })
+        .catch(function(error){
+          console.error('Failed to reload table data with new introns value:', error);
+        });
+    },
     filters: function() {
       this.tabulator.setFilter(this.filters);
     },
     doDownload: function() {
       if(this.tabulator == null){ return }
       this.tabulator.download('csv', this.downloadFileName)
+    },
+    // HX
+    showCols: {
+      handler: function(newShowCols, oldShowCols) {
+        for (let column in newShowCols) {
+          //console.log(column, newShowCols[column].val, oldShowCols[column].val);
+          if (newShowCols[column].val) {
+            // console.log(newShowCols[column]);
+            // console.log("show", column);
+            this.tabulator.showColumn(newShowCols[column].field);
+          } else {
+            // console.log("hide", column);
+            this.tabulator.hideColumn(newShowCols[column].field);
+          }
+        }
+        //this.tabulator.toggleColumn('variant_id');
+        //this.tabulator.redraw();
+        // console.log("we are here!");
+      },
+      deep: true
     }
   },
   methods:{
@@ -175,21 +222,26 @@ export default {
       return this.baseColumnDefs()
     },
     // common column defs. 
+    // HX: fix title tooltip, add allele_pop_freq column
     baseColumnDefs: function(){
       return([
         {
-          title: "Variant Id",
+          // title: "Variant Id" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='1)chromosome &#10;2)position&#10;3)reference allele&#10;4)alternate allele'>?</a>",
+          title: "Variant Id " + "<a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='1)Chromosome 2)Position 3)Reference allele 4)Alternate allele'>?</a>",
+          // titleFormatter: function(cell) {
+          //   return "Variant Id" + " <p class='tooltip'>?<span class='tooltiptext'>Tooltip text</span></p>";
+          // },
           titleDownload: "Variant Id",
-					headerTooltip: "chrom-position-ref-alt",
+					// headerTooltip: "chrom-position-ref-alt",
           width: 130,
           field: "variant_id",
           visible: this.showCols.variantID,
-          formatter: (cell) => { return `<a href='variant.html?id=${cell.getValue()}'>${cell.getValue()}</a>`; }
+          formatter: (cell) => { return `<a href='variant.html?id=${cell.getValue()}'>${cell.getValue()}</a>`; },
         },
         {
-          title: "rsId",
+          title: "rsId" + " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Reference SNP (rs) number is a locus accession for a variant type assigned by dbSNP.'>?</a>",
           titleDownload: "rsId",
-					headerTooltip: "Reference SNP (rs) number is a locus accession for a variant type assigned by dbSNP.",
+					// headerTooltip: "Reference SNP (rs) number is a locus accession for a variant type assigned by dbSNP.",
           width: 100,
           field: "rsids",
           visible: this.showCols.rsID.val,
@@ -232,9 +284,9 @@ export default {
           }
         },
         {
-          title: "CADD",
+          title: "CADD" + " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Variant deleteriousness score (PHRED-like scaled) computed with Combined Annoation Dependent Depletion (CADD) tool. '>?</a>",
           titleDownload: "CADD",
-					headerTooltip: "Variant deleteriousness score (PHRED-like scaled) computed with Combined Annoation Dependent Depletion (CADD) tool.",
+					// headerTooltip: "Variant deleteriousness score (PHRED-like scaled) computed with Combined Annoation Dependent Depletion (CADD) tool.",
           field: "cadd_phred",
           width: 80,
           hozAlign: "left",
@@ -251,8 +303,8 @@ export default {
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
-          title: "Het",
-					headerTooltip: "Number of heterozygotes.",
+          title: "Het" + " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Number of heterozygotes. '>?</a>",
+					// headerTooltip: "Number of heterozygotes.",
           titleDownload: "Het",
           field: "het_count",
           width: 80,
@@ -261,9 +313,9 @@ export default {
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
-          title: "Hom",
+          title: "Hom" + " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Number of homozygotes for alternate allele. '>?</a>",
           titleDownload: "Hom",
-					headerTooltip: "Number of homozygotes for alternate allele.",
+					// headerTooltip: "Number of homozygotes for alternate allele.",
           field: "hom_count",
           width: 90,
           hozAlign: "left",
@@ -274,10 +326,30 @@ export default {
           title: "Frequency %",
           titleDownload: "Frequency %",
           field: "allele_freq",
-          width: 125,
+          width: 115,
           hozAlign: "left",
           visible: this.showCols.frequency.val,
           formatter: (cell, params, onrendered) => `${(cell.getValue() * 100).toPrecision(3)}%`,
+        },
+        //HX:
+        {
+          title: "Frequency per population %" + " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='OTH: Others; AFR: African; AMR: Ad Mixed American; EAS: East Asian; ASN: Asian; EUR: European; SAS: South Asian; FIN: Finnish, NFE: Non-Finnish European, ASJ: Ashkenazi Jewish, AMI: Amish, MID: Middle Eastern'>?</a>",
+          titleDownload: "Frequency per population %",
+          field: "allele_pop_freq",
+          headerSort: false,
+          //headerTooltip: "'OTH': 'Others'\n'AFR': 'African'\n'AMR': 'Ad Mixed American'\n'EAS': 'East Asian'\n'ASN': 'Asian'\n'EUR': 'European'\n'SAS': 'South Asian'\n'FIN': 'Finnish'\n'NFE': 'Non-Finnish European'\n'ASJ': 'Ashkenazi Jewish'\n'AMI': 'Amish'\n'MID': 'Middle Eastern'",
+          
+          width: 380,
+          hozAlign: "left",
+          visible: this.showCols.freq_pop,
+          formatter: (cell, params, onrendered) => {
+            let freqObj = cell.getValue();
+            let freqStr = '';
+            for (let [pop, freq] of Object.entries(freqObj)) {
+              freqStr += `${pop}: ${(freq*100).toFixed(2)}%, `;
+            }
+            return freqStr.slice(0, -2);  // remove trailing comma and space
+          },
         },
       ])
     }
@@ -295,6 +367,9 @@ export default {
       },
       ajaxContentType: "json",
       ajaxRequesting: () => {
+        if ((this.ajaxUrl == null) || (this.ajaxUrl.length == 0)) {
+          return false; //abort ajax request
+        }
         this.failed = false;
         this.loaded = false;
         this.loading = true;
@@ -305,6 +380,7 @@ export default {
         if (params.page == 1) {
           params.next = null;
         }
+        params.introns = this.introns; //HX
         return url;
       },
       ajaxResponse: (url, params, response) => {
@@ -346,7 +422,10 @@ export default {
       renderComplete: this.tblRenderComplete,
       rowMouseEnter:  this.tblRowMouseEnter,
       rowMouseLeave:  this.tblRowMouseLeave
-    })
+    });
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip(); //HX initialize tooltip
+    });
     // register event handlers tabulator 5.0
     //this.tabulator.on("ajaxError", this.tblAjaxError)
     //this.tabulator.on("dataProcessed", this.tblDataLoaded)
@@ -357,3 +436,5 @@ export default {
   }
 }
 </script>
+
+

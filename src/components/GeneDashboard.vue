@@ -8,6 +8,21 @@
         <ToggleList list-title="Columns" list-group="showCols" :list-vars="showCols"
           @varToggled="handleInfoViewToggle" :icon="columnsIcon"/>
 
+        <div style="display: inline-block;">
+          <button v-if="gene_view" type="button" class="parentMenu__button" v-on:click="toggleIntrons()">
+            <div v-if="showIntrons">
+              Introns 
+              <font-awesome-icon style="background-color: transparent; display: inline-block; vertical-align: middle" :icon="showIntronsIcon">
+              </font-awesome-icon>
+            </div>
+            <div v-else>
+              Introns 
+              <font-awesome-icon style="background-color: transparent; display: inline-block; vertical-align: middle" :icon="hideIntronsIcon">
+              </font-awesome-icon>
+            </div>
+          </button>
+        </div>
+
         <div class="d-none d-sm-inline" style="display: inline-block;"> 
           <button type="button" class="parentMenu__button" v-on:click="doDownload++">
             CSV
@@ -17,23 +32,33 @@
       </div>
       <div v-if="positionResolved" style="position: relative; min-height: 20px">
         <GeneSummary v-if="showPanels.summaries.val" :filterArray='filterArray'
+          :introns="introns"
           @close="showPanels.summaries.val = false"/>
         <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false" 
           :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
-
+        <br>
         <TranscriptBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
           :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
           :geneData="geneData"/>
+        <br>
         <GeneSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
           :segmentBounds="segmentBounds" 
+          :includeIntrons="introns"
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
           :filters="filterArray" :visibleVariants="visibleVariants"/>
+        
         <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
           :givenWidth="childWidth" :givenMargins="childMargins" />
         <FilterBar @filterChange='handleFilterChange'/>
-        <GeneSNVTable :filters="filterArray" :doDownload="doDownload"
+        <!-- HX -->
+        <GeneSNVTable 
+          :introns="introns"
+          :segmentBounds="segmentBounds" 
+          :segmentRegions="segmentRegions"
+          :show-cols="showCols" 
+          :filters="filterArray" :doDownload="doDownload"
           @scroll='handleTableScroll' @hover='handleTableHover' 
           @openModal="handleOpenModal"/>
       </div>
@@ -46,7 +71,7 @@
 
 import { computed } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faWindowRestore, faDownload, faColumns } 
+import { faWindowRestore, faDownload, faColumns, faEyeSlash, faEye } 
   from '@fortawesome/free-solid-svg-icons'
 import clone from 'just-clone'
 import axios from 'axios'
@@ -104,17 +129,18 @@ export default {
         snvCount:  {title: "Variants Count", val: true},
       },
       showCols: {
-        variantID:      { title: "Variant ID", val: true},
-        rsID:           { title: "rsID", val: true},
-        consequence:    { title: "Consequence", val: true},
-        annotation:     { title: "Annotation", val: true},
-        LOFTEE:         { title: "LOFTEE", val: true},
-        quality:        { title: "Quality", val: true},
-        CADD:           { title: "CADD", val: true},
-        nAlleles:       { title: "N Alleles", val: false},
-        het:            { title: "Het", val: true},
-        homAlt:         { title: "Hom Alt", val: true},
-        frequency:      { title: "Frequency (%)", val: true}
+        variantID:      { title: "Variant ID", field: "variant_id", val: true},
+        rsID:           { title: "rsID", field: "rsids", val: true},
+        consequence:    { title: "Consequence", field: "annotation.gene.hgvs", val: true},
+        annotation:     { title: "Annotation",field: "annotation.gene.consequence", val: true},
+        LOFTEE:         { title: "LOFTEE", field: "annotation.gene.lof", val: true},
+        quality:        { title: "Quality", field: "filter", val: true},
+        CADD:           { title: "CADD", field: "cadd_phred", val: true},
+        nAlleles:       { title: "N Alleles", field: "allele_num", val: false},
+        het:            { title: "Het", field: "het_count", val: true},
+        homAlt:         { title: "Hom Alt", field: "hom_count", val: true},
+        frequency:      { title: "Frequency (%)", field: "allele_freq", val: true},
+        freq_pop:       { title: "Frequency per population %", field: "allele_pop_freq", val: true}, //HX
       },
       showTableMenuDropDown: false,
       showModal: false,
@@ -123,16 +149,18 @@ export default {
       // values are array of mongo-like filters.
       filter: {},
       // Payload data from loadGenes
-      geneData: {},
+      geneData: {}, //HX: region.gene
       // Source of provides to child components.
-      start: null,
-      stop: null,
-      chrom: null,
+      start: null, //HX: region.regionStart
+      stop: null, //HX: region.regionStop
+      chrom: null, //HX: region.regionChrom
       ensemblId: "",
 
       // introns may not be needed as it's assumed for genes
-      introns: false,
-      segments: {},
+      introns: true, //HX: region.intron
+      showIntrons: true,
+      hideIntronsIcon: faEyeSlash,
+      showIntronsIcon: faEye,
 
       //formerly dimensions.width
       //  width passed to child components.
@@ -147,7 +175,10 @@ export default {
       },
       // bounds for child element displays in pixels
       //formerly region.segments.plot
-      segmentBounds: [0, 300],
+
+      segmentRegions: [this.start, this.stop], //HX region.segments.region
+      segmentBounds: [0, 300], //HX region.segments.plot
+      
 
       // genomic position of variant under the mouse in the table.
       hoveredVarPosition: null,
@@ -173,9 +204,14 @@ export default {
     positionResolved: function() {
       return( this.chrom && this.start && this.stop )
     },
-    segmentRegions: function() {
-      // genomic bounds for child elements in base pairs
-      return [this.start, this.stop]
+    //HX
+    // segmentRegions: function() {
+    //   //HX: formerly region.segments.region
+    //   // genomic bounds for child elements in base pairs
+    //   return [this.start, this.stop]
+    // },
+    gene_view() {
+      return (this.geneId != null);
     }
   },
   methods:{
@@ -186,8 +222,14 @@ export default {
     handleCloseModal: function(){ 
       this.showModal = false }
     ,
+    //HX
     handleInfoViewToggle: function(listGroup, varKey){
       this[listGroup][varKey].val = !this[listGroup][varKey].val
+      if (listGroup === 'showCols') {
+        for (let key in this.showCols) {
+          console.log(`Column: ${key}, Value: ${this.showCols[key].val}`);
+        }
+      }
     },
     togglePanelAttr: function(attrName) {
       this[attrName] = !this[attrName]
@@ -211,9 +253,17 @@ export default {
 
       this.filter[filterCategory] = filtArr
     },
+
+    //HX
     handleResize: function() {
-      this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
-      this.childWidth = this.$el.clientWidth
+      console.log('Resize called');
+      console.log('client width: ' + this.$el.clientWidth);
+      this.childWidth = this.$el.clientWidth;
+      this.domain2range(this.showIntrons);
+      this.segmentBounds = [0, this.childWidth-this.childMargins.left-this.childMargins.right];
+      console.log('segmentBounds: ', this.segmentBounds);
+      // this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
+      // this.childWidth = this.$el.clientWidth
     },
     handleTableScroll: function(start_idx, end_idx, rows_data){
       this.visibleVariants = { 
@@ -225,6 +275,7 @@ export default {
       this.hoveredVarPosition = data.pos
     },
     unwindGeneExons: function (gene) {
+      console.log("unwindGeneExons is called");
       gene.exons = [];
       gene.cds = [];
       gene.coding_regions = [];
@@ -253,6 +304,41 @@ export default {
         }
       });
     },
+    //HX
+    domain2range: function(show_introns) {
+      console.log('intron: '+show_introns)
+      console.log("domain2range is called")
+      console.log("old region: "+this.segmentRegions + "\nintrons = " + this.introns + "\nold bounds: " + this.segmentBounds)
+      if (!show_introns) {
+        const gap_width = 5; // 5 pixels for a gap between axis breaks
+        const range_width = this.childWidth - this.childMargins.left - this.childMargins.right - (this.geneData.coding_regions.length - 1) * gap_width;
+        const domain_width = this.geneData.coding_regions.reduce((length, region) => length + region[1] - region[0] + 1, 0);
+        var domain = [];
+        var range = [];
+        this.geneData.coding_regions.forEach((region, i) => {
+          domain.push(region[0]);
+          domain.push(region[1]);
+          if (i == 0) {
+            range.push(0);
+            range.push(Math.floor(range_width * (region[1] - region[0]) / domain_width));
+          } else if (i == this.geneData.coding_regions.length - 1) {
+            range.push(range[range.length - 1] + gap_width);
+            range.push(this.childWidth - this.childMargins.left - this.childMargins.right);
+          } else {
+            range.push(range[range.length - 1] + gap_width);
+            range.push(range[range.length - 1] + Math.floor(range_width * (region[1] - region[0]) / domain_width));
+          }
+        });
+        this.introns = false;
+        this.segmentRegions = domain;
+        this.segmentBounds = range;
+      } else {
+        this.introns = true;
+        this.segmentRegions = [this.start, this.stop];
+        this.segmentBounds = [0, this.childWidth - this.childMargins.left - this.childMargins.right];
+      }
+      console.log("updated region: "+this.segmentRegions + "\nintrons = " + this.introns + "\nupdated bounds: " + this.segmentBounds)
+    },
     loadGene: function() {
       axios
         .get(`${this.api}/genes/api/${this.geneId}`, {withCredentials: true})
@@ -261,6 +347,8 @@ export default {
           if (payload.data.length > 0) {
             payload.data.forEach(d => {
               if ((d.gene_name === this.geneId) || (d.gene_id === this.geneId)) {
+                // console.log(this.segmentRegions);
+
                 // modify data in place
                 this.unwindGeneExons(d);
 
@@ -270,18 +358,32 @@ export default {
                 this.start = d.start
                 this.stop = d.stop
                 this.geneData = d
+                // console.log(this.geneData.coding_regions)
                 this.introns = true
+                // HX
+                this.segmentRegions = [d.start, d.stop]
+                console.log(this.segmentRegions)
+                this.segmentBounds = [0, this.childWidth-this.childMargins.left-this.childMargins.right]
+                console.log(this.segmentBounds)
               }
             })
           }
         })
     },
+    toggleIntrons() {
+      this.domain2range(!this.showIntrons);
+      this.showIntrons = !this.showIntrons;
+    },
   },
   mounted: function() {
-    this.loadGene()
-
-    this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
     this.childWidth = this.$el.clientWidth
+    if (this.gene_view) {
+      this.loadGene();
+    } else {
+      this.segmentBounds = [0, this.childWidth-this.childMargins.left-this.childMargins.right]
+    }
+    // this.loadGene()
+    // this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
     window.addEventListener('resize', this.handleResize)
   },
   beforeUnmount: function() {

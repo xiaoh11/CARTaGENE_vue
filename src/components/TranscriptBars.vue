@@ -7,6 +7,7 @@
     <font-awesome-icon style="background-color: transparent;" :icon="closeIcon"></font-awesome-icon>
   </button>
   <div class="bravo-info-message">Displaying {{ numTranscripts }} transcript(s)</div>
+  <br>
   <div ref="scroller" style="max-height: 200px; display: block; overflow: hidden scroll;">
     <svg ref="barsSvg">
       <g ref="barsDrawing"></g>
@@ -70,6 +71,13 @@ export default {
     }
   },
   watch: {
+    //HX
+    segmentRegions: function(){
+      this.draw()
+    },
+    segmentBounds: function(){
+      this.draw()
+    },
     hoveredVarPosition(newVal, oldVal) {
       if(newVal == null){
         this.highlight_line

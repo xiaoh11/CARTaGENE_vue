@@ -11,6 +11,7 @@
   <div v-if="this.loaded && (this.variants >  0)" class="bravo-info-message">
     Displaying {{ this.variants.toLocaleString() }} variant(s)
   </div>
+  <br>
   <div v-if="this.loaded && (this.variants == 0)" class="bravo-info-message">
     No variants
   </div>
@@ -118,6 +119,7 @@ export default {
   },
   methods: {
     load: function(width) {
+      console.log("load is called")
       if(width == null){ return }
 
       this.clearDrawing();
@@ -137,6 +139,7 @@ export default {
             this.histogram_window_size = payload.data["window-size"];
             this.histogram_data = payload.data.windows;
             this.variants = this.histogram_data.reduce((total, entry) => total + entry.count, 0);
+            console.log("variants = " + this.variants);
             this.draw();
             this.drawHistogram();
             this.drawVariants();
@@ -216,7 +219,7 @@ export default {
     this.timestamp = null;
     this.histogram_data = [];
     this.histogram_window_size = 0;
-    this.height = 70;
+    this.height = 100;
     this.color = '#ffa37c';
     this.drawing = null;
     this.histogram_g = null;
@@ -231,6 +234,13 @@ export default {
     this.load(this.givenWidth);
   },
   watch: {
+    //HX
+    segmentRegions: function(){
+      this.load(this.givenWidth)
+      this.draw()
+      this.drawHistogram()
+      this.drawVariants()
+    },
     filters: function() {
       this.load(this.givenWidth)
     },
@@ -243,6 +253,7 @@ export default {
         this.load(newVal)
       }
       if(this.loaded && (this.histogram_data.length > 0)) {
+        this.load(this.givenWidth)
         this.draw()
         this.drawHistogram()
         this.drawVariants()

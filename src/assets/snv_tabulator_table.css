@@ -1,5 +1,5 @@
 .tabulator {
-  font-size: 12px;
+  font-size: 14px;
 }
 /* BEGIN. :hover doesn't behave as expected on mobile device, so we mannually append our own row-hovered css class */
 .tabulator .tabulator-row.tabulator-selectable.row-hovered {

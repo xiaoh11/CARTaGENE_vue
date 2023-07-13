@@ -23,7 +23,8 @@ export default {
     // add region implementation for consequence, annotation, and loftee
     tblColumnDefs: function(){
       let consequenceCol =  {
-        title: "Consequence",
+        // title: "Consequence",
+        title: "Consequence" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).'>?</a>",
         titleDownload: "Consequence",
         field: `annotation.region.hgvs`,
         headerTooltip: "HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).",
@@ -35,7 +36,7 @@ export default {
         formatter: (cell, params, onrendered) => {
           let html = ""
           if ((cell.getValue() != undefined) && (cell.getValue().length > 0)) {
-            html += `<div class="snvtable__cell--clickable" role="button">`
+            html += `<div>`
             html += cell.getValue()[0] + ' (' + cell.getValue().length + ')'
             html += `</div>`
           }
@@ -54,12 +55,13 @@ export default {
       }
 
       let annoCol =  {
-        title: "Annotation",
+        // title: "Annotation",
+        title: "Annotation" +" <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).'>?</a>",
         titleDownload: "Annotation",
         headerTooltip: "Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).",
         field: 'annotation.region.consequence',
         hozAlign: "left",
-        width: 165,
+        width: 145,
         minWidth: 120,
         visible: this.showCols.annotation,
         formatter: (cell, params, onrendered) => {
@@ -68,7 +70,7 @@ export default {
           if (annotations.length > 0) {
             let title = snvConsequences[annotations[0]].title 
             let cssClass = `badge--${annotations[0]}`
-            html += `<div class="snvtable__cell--clickable" role="button">`
+            html += `<div>`
             html += `<span class="badge badge-light clickable ${cssClass}" style="">${title} </span>`
             html += `<span>(${annotations.length})</span>`
             html += `</div>`
@@ -88,7 +90,8 @@ export default {
       }
 
       let lofteeCol = {
-        title: "LOFTEE",
+        // title: "LOFTEE",
+        title: "LOFTEE" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='Variant was predicted to be Loss-of-Function by LOFTEE.'>?</a>",
         titleDownload: "LOFTEE",
         headerTooltip: "Variant was predicted to be Loss-of-Function by LOFTEE.",
         field: "annotation.region.lof",

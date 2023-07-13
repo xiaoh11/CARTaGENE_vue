@@ -2,6 +2,8 @@
 import BaseSNVTable from '@/components/table/BaseSNVTable.vue'
 import lofCategories from '@/domainModel/lofCategories'
 import snvConsequences from '@/domainModel/snvConsequences'
+import axios from "axios" //HX
+
 
 export default {
   name: "GeneSNVTable",
@@ -24,13 +26,12 @@ export default {
     }
   },
   methods: {
-    // add region implementation for consequence, annotation, and loftee
     tblColumnDefs: function(){
       let consequenceCol =  {
-        title: "Consequence",
+        title: "Consequence" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).'>?</a>",
         titleDownload: "Consequence",
         field: "annotation.gene.hgvs",
-        headerTooltip: "HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).",
+        // headerTooltip: "HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).",
         hozAlign: "left",
         headerSort: false,
         width: 120,
@@ -39,7 +40,7 @@ export default {
         formatter: (cell, params, onrendered) => {
           let html = ""
           if ((cell.getValue() != undefined) && (cell.getValue().length > 0)) {
-            html += '<div class="snvtable__cell--clickable" role="button">'
+            html += '<div>'
             html += cell.getValue()[0] + " (" + cell.getValue().length + ")"
             html += "</div>"
           }
@@ -58,10 +59,10 @@ export default {
       }
 
       let annoCol =  {
-        title: "Annotation",
+        title: "Annotation" +" <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).'>?</a>",
         titleDownload: "Annotation",
         field: "annotation.gene.consequence",
-        headerTooltip: "Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).",
+        // headerTooltip: "Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).",
         hozAlign: "left",
         width: 165,
         minWidth: 120,
@@ -72,7 +73,7 @@ export default {
           if (annotations.length > 0) {
             let title = snvConsequences[annotations[0]].title 
             let cssClass = `badge--${annotations[0]}`
-            html += `<div class="snvtable__cell--clickable" role="button">`
+            html += `<div>`
             html += `<span class="badge badge-light clickable ${cssClass}" style="">${title} </span>`
             html += `<span>(${annotations.length})</span>`
             html += `</div>`
@@ -92,9 +93,9 @@ export default {
       }
 
       let lofteeCol = {
-        title: "LOFTEE",
+        title: "LOFTEE" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='Variant was predicted to be Loss-of-Function by LOFTEE.'>?</a>",
         titleDownload: "LOFTEE",
-        headerTooltip: "Variant was predicted to be Loss-of-Function by LOFTEE.",
+        // headerTooltip: "Variant was predicted to be Loss-of-Function by LOFTEE.",
         field: "annotation.gene.lof",
         hozAlign: "left",
         minWidth: 95,
@@ -119,9 +120,32 @@ export default {
         }
       }
 
+      //HX
+      // const generateDynamicCols = () => {
+      //   if (this.dynamicCols && Object.keys(this.dynamicCols).length > 0) {
+      //     return Object.keys(this.dynamicCols).map(population => ({
+      //       title: `Freq in ${population} %`,
+      //       titleDownload: `Freq in ${population} %`,
+      //       field: `allele_pop_freq.${population}`,
+      //       headerTooltip: `${population} allele frequency`,
+      //       hozAlign: "left",
+      //       width: 120,
+      //       minWidth: 100,
+      //       formatter: "money",  // Assuming you want a decimal, rounded number. Adjust as needed.
+      //       formatterParams: { precision: 5 },
+      //     }));
+      //   } else {
+      //     return [];
+      //   }
+      // }
+
+      //HX
+      // let dynamicCols = generateDynamicCols();
+
       // Insert region specific columns into base columns
       let baseCols = this.baseColumnDefs()
       baseCols.splice(2, 0, consequenceCol, annoCol, lofteeCol)
+      // baseCols = baseCols.concat(dynamicCols);
 
       return baseCols 
     },

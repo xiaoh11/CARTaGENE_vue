@@ -64,6 +64,11 @@ export default {
       type: Array,
       default: function(){return []}
     },
+    //HX
+    introns: {
+      type: Boolean,
+      default: function(){return true}
+    }
   },
   data: function() {
     return {
@@ -120,7 +125,8 @@ export default {
       axios
         .post(url, {
           filters: this.filterArray,
-          introns: true,
+          //HX
+          introns: this.introns
         })
         .then(response => {
           var payload = response.data;
@@ -171,6 +177,10 @@ export default {
     },
   },
   watch: {
+    //HX
+    introns: function (newIntrons, oldIntrons){
+      this.load()
+    },
     filterArray: function() {
       this.load()
     },

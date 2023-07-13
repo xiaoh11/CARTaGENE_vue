@@ -22,6 +22,11 @@
         </div>
 
         <div class="row">
+          <!-- HX  -->
+          <div class="col-12 col-md-6 mt-3">
+            <VariantPopFrequency :allelePopFreq="this.variant.allele_pop_freq" />
+          </div>
+          
           <div v-for="ds in this.variant.pub_freq" class="col-12 col-md-6 mt-3">
             <VariantFrequency :ds="ds"/>
           </div>
@@ -90,6 +95,8 @@ import SearchBox from '@/components/SearchBox.vue'
 import VariantBasicInfo from '@/components/VariantBasicInfo'
 import VariantCounts from '@/components/VariantCounts'
 import VariantFrequency from '@/components/VariantFrequency'
+// HX 
+import VariantPopFrequency from '@/components/VariantPopFrequency'
 import VariantConsequences from '@/components/VariantConsequences'
 import VariantDepth from '@/components/VariantDepth'
 import VariantMetrics from '@/components/VariantMetrics'
@@ -104,6 +111,7 @@ export default {
     SearchBox,
     VariantBasicInfo,
     VariantCounts,
+    VariantPopFrequency,
     VariantFrequency,
     VariantConsequences,
     VariantDepth,

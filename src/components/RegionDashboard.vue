@@ -32,7 +32,9 @@
         <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
           :givenWidth="childWidth" :givenMargins="childMargins" />
         <FilterBar @filterChange='handleFilterChange'/>
-        <RegionSNVTable :filters="filterArray" :doDownload="doDownload" 
+        <RegionSNVTable
+          :show-cols="showCols" 
+          :filters="filterArray" :doDownload="doDownload" 
           @scroll='handleTableScroll' @hover='handleTableHover'
           @openModal="handleOpenModal"/>
       </div>
@@ -92,18 +94,33 @@ export default {
         snvCount:  {title: "Variants Count", val: true},
       },
       showCols: {
-        variantID:      { title: "Variant ID", val: true},
-        rsID:           { title: "rsID", val: true},
-        consequence:    { title: "Consequence", val: true},
-        annotation:     { title: "Annotation", val: true},
-        LOFTEE:         { title: "LOFTEE", val: true},
-        quality:        { title: "Quality", val: true},
-        CADD:           { title: "CADD", val: true},
-        nAlleles:       { title: "N Alleles", val: false},
-        het:            { title: "Het", val: true},
-        homAlt:         { title: "Hom Alt", val: true},
-        frequency:      { title: "Frequency (%)", val: true}
+        variantID:      { title: "Variant ID", field: "variant_id", val: true},
+        rsID:           { title: "rsID", field: "rsids", val: true},
+        consequence:    { title: "Consequence", field: "annotation.gene.hgvs", val: true},
+        annotation:     { title: "Annotation",field: "annotation.gene.consequence", val: true},
+        LOFTEE:         { title: "LOFTEE", field: "annotation.gene.lof", val: true},
+        quality:        { title: "Quality", field: "filter", val: true},
+        CADD:           { title: "CADD", field: "cadd_phred", val: true},
+        nAlleles:       { title: "N Alleles", field: "allele_num", val: false},
+        het:            { title: "Het", field: "het_count", val: true},
+        homAlt:         { title: "Hom Alt", field: "hom_count", val: true},
+        frequency:      { title: "Frequency (%)", field: "allele_freq", val: true},
+        freq_pop:       { title: "Frequency per population %", field: "allele_pop_freq", val: true}, //HX
       },
+      // showCols: {
+      //   variantID:      { title: "Variant ID", val: true},
+      //   rsID:           { title: "rsID", val: true},
+      //   consequence:    { title: "Consequence", val: true},
+      //   annotation:     { title: "Annotation", val: true},
+      //   LOFTEE:         { title: "LOFTEE", val: true},
+      //   quality:        { title: "Quality", val: true},
+      //   CADD:           { title: "CADD", val: true},
+      //   nAlleles:       { title: "N Alleles", val: false},
+      //   het:            { title: "Het", val: true},
+      //   homAlt:         { title: "Hom Alt", val: true},
+      //   frequency:      { title: "Frequency (%)", val: true},
+      //   freq_pop:       { title: "Frequency per population %", field: "allele_pop_freq", val: true}, //HX
+      // },
       showTableMenuDropDown: false,
       showModal: false,
       modalData: {},
@@ -182,6 +199,11 @@ export default {
     },
     handleInfoViewToggle: function(listGroup, varKey){
       this[listGroup][varKey].val = !this[listGroup][varKey].val
+      if (listGroup === 'showCols') {
+        for (let key in this.showCols) {
+          console.log(`Column: ${key}, Value: ${this.showCols[key].val}`);
+        }
+      }
     },
     handleTableScroll: function(start_idx, end_idx, rows_data){
       this.visibleVariants = { 
