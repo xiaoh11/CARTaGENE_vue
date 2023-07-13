@@ -55,8 +55,9 @@
     frequencies: function() {
       return Object.entries(this.allelePopFreq)
         .map(([key, value]) => {
+          let name = this.populations[key] ? `${key} (${this.populations[key]})` : key;
           return {
-            name: `${key} (${this.populations[key]})`,
+            name: name,
             // display values in 5 decimal places
             value: value.toPrecision(4),
             percent: value * 100,
