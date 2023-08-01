@@ -88,6 +88,11 @@ export default {
       hoveredRowPosition: null,
       paginationSize: 100,
       downloadFileName: "variants.csv",
+      populations: {
+        'FrenchCanada': 'FC',
+        'Haiti': 'HT',
+        'Morocco': 'MA',
+      }
     }
   },
   computed: {
@@ -333,7 +338,7 @@ export default {
         },
         //HX:
         {
-          title: "Frequency per population %" + " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='OTH: Others; AFR: African; AMR: Ad Mixed American; EAS: East Asian; ASN: Asian; EUR: European; SAS: South Asian; FIN: Finnish, NFE: Non-Finnish European, ASJ: Ashkenazi Jewish, AMI: Amish, MID: Middle Eastern'>?</a>",
+          title: "Frequency per population %" + " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='FC: French-Canada, HT: Haiti, MA: Morocco'>?</a>",
           titleDownload: "Frequency per population %",
           field: "allele_pop_freq",
           headerSort: false,
@@ -346,7 +351,8 @@ export default {
             let freqObj = cell.getValue();
             let freqStr = '';
             for (let [pop, freq] of Object.entries(freqObj)) {
-              freqStr += `${pop}: ${(freq*100).toFixed(2)}%, `;
+              let freqDisplay = freq === 0 ? '0%' : (freq * 100).toFixed(2) + '%';
+              freqStr += `${this.populations[pop]}: ${freqDisplay}, `;
             }
             return freqStr.slice(0, -2);  // remove trailing comma and space
           },

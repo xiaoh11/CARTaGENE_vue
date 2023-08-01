@@ -70,6 +70,14 @@
           </div>
         </div>
 
+        <div class="row">
+          <div class="col-12 mt-3">
+            <!-- <VariantPheno :variant="this.variant"/> -->
+            <!-- <iframe :src="getPheWeb()" width="800" height="600"></iframe> -->
+          </div>
+        </div>
+
+
         <!-- HX -->
         <!-- <div class="row">
           <div class="col-12 mt-3">
@@ -100,6 +108,7 @@ import VariantPopFrequency from '@/components/VariantPopFrequency'
 import VariantConsequences from '@/components/VariantConsequences'
 import VariantDepth from '@/components/VariantDepth'
 import VariantMetrics from '@/components/VariantMetrics'
+import VariantPheno from '@/components/VariantPheno.vue'
 import Reads from '@/components/Reads'
 import axios from "axios"
 axios.defaults.withCredentials=true
@@ -116,7 +125,8 @@ export default {
     VariantConsequences,
     VariantDepth,
     VariantMetrics,
-    Reads
+    Reads,
+    VariantPheno,
   },
   data: function() {
     return {
@@ -124,12 +134,21 @@ export default {
       variantId: null,
       ready: false,
       variant: {},
+
     }
   },
+  // computed: {
+  //   getPheWeb(){
+  //     return `https://pheweb.org/UKB-TOPMed/variant/${this.variant.variant_id}`;
+  //   }
+  // },
   methods : {
     // HX
     getLinkUrl() {
-    return `https://bravo.sph.umich.edu/freeze5/hg38/variant/${this.variant.variant_id}`;
+      return `https://bravo.sph.umich.edu/freeze5/hg38/variant/${this.variant.variant_id}`;
+    },
+    getPheWeb(){
+      return `https://pheweb.org/UKB-TOPMed/variant/${this.variant.variant_id}`;
     },
     // HX
     load: function() {
@@ -164,7 +183,19 @@ export default {
           this.variant = {}
           console.log('variant data loading failed.');
         });
-    }
+    },
+    //HX
+    get_temp_data() {
+      axios.get(`/api/tempdata/${this.variantId}`)
+      .then(response => {
+          this.variantData = response.data;
+          console.log("here!");
+          console.log(this.variantData);
+        })
+      .catch(error => {
+          console.log(error);
+        });
+    },
   },
   created: function() {
     let urlParams = new URLSearchParams(window.location.search)

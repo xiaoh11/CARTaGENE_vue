@@ -12,6 +12,7 @@
   </div>
   <div v-if="failed" class="statusMessage">Error while loading genes data</div>
   <div v-if="loaded && (genes.length > 0)" class="bravo-info-message">Displaying {{ genes.length }} gene(s)</div>
+  <br>
   <div v-if="loaded && (genes.length == 0)" class="statusMessage">No genes in this region</div>
 </div>
 </template>

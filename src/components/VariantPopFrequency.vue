@@ -47,7 +47,10 @@
         'NFE': 'Non-Finnish European',
         'ASJ': 'Ashkenazi Jewish',
         'AMI': 'Amish',
-        'MID': 'Middle Eastern'
+        'MID': 'Middle Eastern',
+        'FrenchCanada': 'FC (French-Canada)',
+        'Haiti': 'HT (Haiti)',
+        'Morocco': 'MA (Morocco)',
       }
     }
   },
@@ -57,9 +60,10 @@
         .map(([key, value]) => {
           let name = this.populations[key] ? `${key} (${this.populations[key]})` : key;
           return {
-            name: name,
+            name: `${this.populations[key]}`,
             // display values in 5 decimal places
-            value: value.toPrecision(4),
+            //value: value.toPrecision(4),
+            value: value === 0 ? '0' : value.toPrecision(4),
             percent: value * 100,
             max: 1.0
           };
