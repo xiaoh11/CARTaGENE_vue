@@ -204,12 +204,6 @@ export default {
     positionResolved: function() {
       return( this.chrom && this.start && this.stop )
     },
-    //HX
-    // segmentRegions: function() {
-    //   //HX: formerly region.segments.region
-    //   // genomic bounds for child elements in base pairs
-    //   return [this.start, this.stop]
-    // },
     gene_view() {
       return (this.geneId != null);
     }
@@ -227,7 +221,7 @@ export default {
       this[listGroup][varKey].val = !this[listGroup][varKey].val
       if (listGroup === 'showCols') {
         for (let key in this.showCols) {
-          console.log(`Column: ${key}, Value: ${this.showCols[key].val}`);
+          // console.log(`Column: ${key}, Value: ${this.showCols[key].val}`);
         }
       }
     },
@@ -256,12 +250,12 @@ export default {
 
     //HX
     handleResize: function() {
-      console.log('Resize called');
-      console.log('client width: ' + this.$el.clientWidth);
+      // console.log('Resize called');
+      // console.log('client width: ' + this.$el.clientWidth);
       this.childWidth = this.$el.clientWidth;
       this.domain2range(this.showIntrons);
       this.segmentBounds = [0, this.childWidth-this.childMargins.left-this.childMargins.right];
-      console.log('segmentBounds: ', this.segmentBounds);
+      // console.log('segmentBounds: ', this.segmentBounds);
       // this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
       // this.childWidth = this.$el.clientWidth
     },
@@ -275,7 +269,7 @@ export default {
       this.hoveredVarPosition = data.pos
     },
     unwindGeneExons: function (gene) {
-      console.log("unwindGeneExons is called");
+      // console.log("unwindGeneExons is called");
       gene.exons = [];
       gene.cds = [];
       gene.coding_regions = [];
@@ -306,9 +300,9 @@ export default {
     },
     //HX
     domain2range: function(show_introns) {
-      console.log('intron: '+show_introns)
-      console.log("domain2range is called")
-      console.log("old region: "+this.segmentRegions + "\nintrons = " + this.introns + "\nold bounds: " + this.segmentBounds)
+      // console.log('intron: '+show_introns)
+      // console.log("domain2range is called")
+      // console.log("old region: "+this.segmentRegions + "\nintrons = " + this.introns + "\nold bounds: " + this.segmentBounds)
       if (!show_introns) {
         const gap_width = 5; // 5 pixels for a gap between axis breaks
         const range_width = this.childWidth - this.childMargins.left - this.childMargins.right - (this.geneData.coding_regions.length - 1) * gap_width;
@@ -337,7 +331,7 @@ export default {
         this.segmentRegions = [this.start, this.stop];
         this.segmentBounds = [0, this.childWidth - this.childMargins.left - this.childMargins.right];
       }
-      console.log("updated region: "+this.segmentRegions + "\nintrons = " + this.introns + "\nupdated bounds: " + this.segmentBounds)
+      // console.log("updated region: "+this.segmentRegions + "\nintrons = " + this.introns + "\nupdated bounds: " + this.segmentBounds)
     },
     loadGene: function() {
       axios
@@ -362,9 +356,9 @@ export default {
                 this.introns = true
                 // HX
                 this.segmentRegions = [d.start, d.stop]
-                console.log(this.segmentRegions)
+                // console.log(this.segmentRegions)
                 this.segmentBounds = [0, this.childWidth-this.childMargins.left-this.childMargins.right]
-                console.log(this.segmentBounds)
+                // console.log(this.segmentBounds)
               }
             })
           }

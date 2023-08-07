@@ -19,11 +19,11 @@ export default {
       return(`${this.api}/variants/region/snv/${this.chrom}-${this.start}-${this.stop}`) 
     }
   },
+  //HX
   methods: {
     // add region implementation for consequence, annotation, and loftee
     tblColumnDefs: function(){
       let consequenceCol =  {
-        // title: "Consequence",
         title: "Consequence" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).'>?</a>",
         titleDownload: "Consequence",
         field: `annotation.region.hgvs`,
@@ -55,7 +55,6 @@ export default {
       }
 
       let annoCol =  {
-        // title: "Annotation",
         title: "Annotation" +" <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).'>?</a>",
         titleDownload: "Annotation",
         headerTooltip: "Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).",
@@ -68,7 +67,9 @@ export default {
           let html = ""
           let annotations = cell.getValue()
           if (annotations.length > 0) {
-            let title = snvConsequences[annotations[0]].title 
+            // let title = snvConsequences[annotations[0]].title 
+            // HX
+            let title = snvConsequences.lookup([annotations[0]]).title 
             let cssClass = `badge--${annotations[0]}`
             html += `<div>`
             html += `<span class="badge badge-light clickable ${cssClass}" style="">${title} </span>`
@@ -90,7 +91,6 @@ export default {
       }
 
       let lofteeCol = {
-        // title: "LOFTEE",
         title: "LOFTEE" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='Variant was predicted to be Loss-of-Function by LOFTEE.'>?</a>",
         titleDownload: "LOFTEE",
         headerTooltip: "Variant was predicted to be Loss-of-Function by LOFTEE.",

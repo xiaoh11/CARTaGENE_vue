@@ -104,7 +104,7 @@ export default {
     introns: function() {
       this.tabulator.setData(this.ajaxUrl)
         .then(function(){
-          console.log('Table data reloaded with new introns value.');
+          // console.log('Table data reloaded with new introns value.');
         })
         .catch(function(error){
           console.error('Failed to reload table data with new introns value:', error);
@@ -121,19 +121,12 @@ export default {
     showCols: {
       handler: function(newShowCols, oldShowCols) {
         for (let column in newShowCols) {
-          //console.log(column, newShowCols[column].val, oldShowCols[column].val);
           if (newShowCols[column].val) {
-            // console.log(newShowCols[column]);
-            // console.log("show", column);
             this.tabulator.showColumn(newShowCols[column].field);
           } else {
-            // console.log("hide", column);
             this.tabulator.hideColumn(newShowCols[column].field);
           }
         }
-        //this.tabulator.toggleColumn('variant_id');
-        //this.tabulator.redraw();
-        // console.log("we are here!");
       },
       deep: true
     }
@@ -231,13 +224,8 @@ export default {
     baseColumnDefs: function(){
       return([
         {
-          // title: "Variant Id" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='1)chromosome &#10;2)position&#10;3)reference allele&#10;4)alternate allele'>?</a>",
           title: "Variant Id " + "<a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='1)Chromosome 2)Position 3)Reference allele 4)Alternate allele'>?</a>",
-          // titleFormatter: function(cell) {
-          //   return "Variant Id" + " <p class='tooltip'>?<span class='tooltiptext'>Tooltip text</span></p>";
-          // },
           titleDownload: "Variant Id",
-					// headerTooltip: "chrom-position-ref-alt",
           width: 130,
           field: "variant_id",
           visible: this.showCols.variantID,
@@ -246,7 +234,6 @@ export default {
         {
           title: "rsId" + " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Reference SNP (rs) number is a locus accession for a variant type assigned by dbSNP.'>?</a>",
           titleDownload: "rsId",
-					// headerTooltip: "Reference SNP (rs) number is a locus accession for a variant type assigned by dbSNP.",
           width: 100,
           field: "rsids",
           visible: this.showCols.rsID.val,
@@ -291,7 +278,6 @@ export default {
         {
           title: "CADD" + " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Variant deleteriousness score (PHRED-like scaled) computed with Combined Annoation Dependent Depletion (CADD) tool. '>?</a>",
           titleDownload: "CADD",
-					// headerTooltip: "Variant deleteriousness score (PHRED-like scaled) computed with Combined Annoation Dependent Depletion (CADD) tool.",
           field: "cadd_phred",
           width: 80,
           hozAlign: "left",
@@ -309,7 +295,6 @@ export default {
         },
         {
           title: "Het" + " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Number of heterozygotes. '>?</a>",
-					// headerTooltip: "Number of heterozygotes.",
           titleDownload: "Het",
           field: "het_count",
           width: 80,
@@ -320,7 +305,6 @@ export default {
         {
           title: "Hom" + " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Number of homozygotes for alternate allele. '>?</a>",
           titleDownload: "Hom",
-					// headerTooltip: "Number of homozygotes for alternate allele.",
           field: "hom_count",
           width: 90,
           hozAlign: "left",
@@ -342,9 +326,7 @@ export default {
           titleDownload: "Frequency per population %",
           field: "allele_pop_freq",
           headerSort: false,
-          //headerTooltip: "'OTH': 'Others'\n'AFR': 'African'\n'AMR': 'Ad Mixed American'\n'EAS': 'East Asian'\n'ASN': 'Asian'\n'EUR': 'European'\n'SAS': 'South Asian'\n'FIN': 'Finnish'\n'NFE': 'Non-Finnish European'\n'ASJ': 'Ashkenazi Jewish'\n'AMI': 'Amish'\n'MID': 'Middle Eastern'",
-          
-          width: 380,
+          width: 250,
           hozAlign: "left",
           visible: this.showCols.freq_pop,
           formatter: (cell, params, onrendered) => {

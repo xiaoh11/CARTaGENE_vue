@@ -74,8 +74,8 @@ export default {
   },
   methods: {
     load_depths: function(chrom, start, stop, continue_from=0){
-      console.log("load_depths is called")
-      console.log("segment Range in SeqDepth.vue: " + this.segmentRegions)
+      // console.log("load_depths is called")
+      // console.log("segment Range in SeqDepth.vue: " + this.segmentRegions)
       return axios
         .post(`${this.api}/chunked-coverage`, 
           {chrom: chrom, start: start, stop: stop, continue_from: continue_from})
@@ -102,7 +102,7 @@ export default {
       this.loading = true;
       this.initializeCoverageSVG()
       this.loaded_data_size = 0
-      console.log("segment Range in SeqDepth.vue: " + this.segmentRegions)
+      // console.log("segment Range in SeqDepth.vue: " + this.segmentRegions)
       this.load_depths(this.chrom, this.start, this.stop, 0)
     },
     format_y_ticks: function(value) {
@@ -154,15 +154,15 @@ export default {
           .style("stroke", "black");
     },
     draw: function () {
-      console.log("SeqDepth.vue: width = " + this.givenWidth);
+      // console.log("SeqDepth.vue: width = " + this.givenWidth);
       this.svg.attr("width", this.givenWidth).attr("height", this.height + this.givenMargins.top + this.givenMargins.bottom);
       this.drawing.attr("transform", `translate(${this.givenMargins.left}, ${this.givenMargins.top})`);
       this.drawing_clip
         .attr("width", this.givenWidth - this.givenMargins.left - this.givenMargins.right)
         .attr("height", this.height);
       this.x_scale.range(this.segmentBounds).domain(this.segmentRegions);
-      console.log(this.x_scale.range()); //HX
-      console.log(this.x_scale.domain()); //
+      // console.log(this.x_scale.range()); //HX
+      // console.log(this.x_scale.domain()); //
       this.y_scale.range([this.height, 0]).domain([0, d3.max(this.cov_data, function(d) { return d.mean; })]);
       this.y_axis.scale(this.y_scale).ticks(4).tickFormat(this.format_y_ticks);
       this.y_axis_g.call(this.y_axis);

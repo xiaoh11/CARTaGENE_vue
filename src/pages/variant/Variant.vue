@@ -32,14 +32,6 @@
           </div>
         </div>
 
-        <!-- HX -->
-        <!-- <div class="col-12 col-md-6 mt-3">
-          <h5>More information of allele frequency in TOPMed:</h5>
-          <p>
-            <a :href="getLinkUrl()">BRAVO Powered by TOPMed Freeze5 on GRCh38</a>
-          </p>
-        </div> -->
-        <!-- HX -->
         <div class="row">
           <div class="col-12 col-md-6 mt-3">
             <div class="card shadow-sm" style="min-width: 300px">
@@ -48,7 +40,7 @@
                   <div class="row">
                     <div class="col-12" style="margin-bottom:8px;">
                       <h5>Allele frequency in TOPMed</h5>
-                      <p>See <strong>{{ this.variant.variant_id }}</strong> in <a :href="getLinkUrl()">BRAVO for TOPMed Freeze 5</a></p>
+                      <p>View <strong>{{ this.variant.variant_id }}</strong> in <a :href="getLinkUrl()">BRAVO for TOPMed Freeze 5</a></p>
                     </div>
                   </div>
                 </div>
@@ -65,15 +57,14 @@
         </div>
 
         <div class="row">
-          <div class="col-md-4 mt-3 mb-4">
+          <div class="col-md-4 mt-3">
             <VariantDepth :variant="this.variant"/>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-12 mt-3">
-            <!-- <VariantPheno :variant="this.variant"/> -->
-            <!-- <iframe :src="getPheWeb()" width="800" height="600"></iframe> -->
+          <div class="col-12 mt-3 mb-5">
+            <VariantPheno :variant="this.variant"/>
           </div>
         </div>
 
@@ -137,11 +128,6 @@ export default {
 
     }
   },
-  // computed: {
-  //   getPheWeb(){
-  //     return `https://pheweb.org/UKB-TOPMed/variant/${this.variant.variant_id}`;
-  //   }
-  // },
   methods : {
     // HX
     getLinkUrl() {
@@ -182,18 +168,6 @@ export default {
         .catch( error => {
           this.variant = {}
           console.log('variant data loading failed.');
-        });
-    },
-    //HX
-    get_temp_data() {
-      axios.get(`/api/tempdata/${this.variantId}`)
-      .then(response => {
-          this.variantData = response.data;
-          console.log("here!");
-          console.log(this.variantData);
-        })
-      .catch(error => {
-          console.log(error);
         });
     },
   },

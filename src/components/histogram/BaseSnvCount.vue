@@ -119,7 +119,7 @@ export default {
   },
   methods: {
     load: function(width) {
-      console.log("load is called")
+      // console.log("load is called")
       if(width == null){ return }
 
       this.clearDrawing();
@@ -139,7 +139,7 @@ export default {
             this.histogram_window_size = payload.data["window-size"];
             this.histogram_data = payload.data.windows;
             this.variants = this.histogram_data.reduce((total, entry) => total + entry.count, 0);
-            console.log("variants = " + this.variants);
+            // console.log("variants = " + this.variants);
             this.draw();
             this.drawHistogram();
             this.drawVariants();

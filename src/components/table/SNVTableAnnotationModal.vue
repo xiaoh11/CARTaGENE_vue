@@ -17,7 +17,9 @@
                 <CAccordionItem :item-key="conseq">
                   <CAccordionHeader :flush="true">
                     <span :class="badge_class(conseq)">&#9632;</span>
-                    <span>{{snvConsequences[conseq].title}}</span>
+                    <!-- <span>{{snvConsequences[conseq].title}}</span> -->
+                    <!-- HX -->
+                    <span>{{snvConsequences.lookup(conseq).title}}</span> 
                   </CAccordionHeader>
                   <CAccordionBody>
                     <ul class="list-unstyled">

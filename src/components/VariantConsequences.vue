@@ -21,7 +21,9 @@
                     <td>
                       <span v-for="effect in consequence.effects" :key="effect" 
                         :class="effectBadge(effect)" style="'margin-right': '1px'">
-                        {{ effectConsequences[effect].title }}</span>
+                        <!-- {{ effectConsequences[effect].title }}</span> -->
+                        <!-- HX -->
+                        {{ snvConsequences.lookup(effect).title }}</span>
                     </td>
                     <td>
                       <span class="badge" :class="lofBadge(consequence.lof)">
@@ -56,10 +58,15 @@ import snvConsequences from '@/domainModel/snvConsequences'
 export default {
   name: 'VariantConsequences',
   props: ['variant'],
-  data: function(){
-    return {
-      effectConsequences: snvConsequences
-    }
+  // data: function(){
+  //   return {
+  //     effectConsequences: snvConsequences
+  //   }
+  // },
+  // HX
+  created: function() {
+    // Hack to make imported constant available to template
+    this.snvConsequences = snvConsequences
   },
   methods:{
     effectBadge: function(consequenceKey) {

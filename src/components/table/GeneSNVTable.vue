@@ -31,7 +31,6 @@ export default {
         title: "Consequence" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).'>?</a>",
         titleDownload: "Consequence",
         field: "annotation.gene.hgvs",
-        // headerTooltip: "HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).",
         hozAlign: "left",
         headerSort: false,
         width: 120,
@@ -62,7 +61,6 @@ export default {
         title: "Annotation" +" <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).'>?</a>",
         titleDownload: "Annotation",
         field: "annotation.gene.consequence",
-        // headerTooltip: "Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).",
         hozAlign: "left",
         width: 165,
         minWidth: 120,
@@ -71,7 +69,9 @@ export default {
           let html = ""
           let annotations = cell.getValue()
           if (annotations.length > 0) {
-            let title = snvConsequences[annotations[0]].title 
+            // let title = snvConsequences[annotations[0]].title 
+            // HX
+            let title = snvConsequences.lookup(annotations[0]).title
             let cssClass = `badge--${annotations[0]}`
             html += `<div>`
             html += `<span class="badge badge-light clickable ${cssClass}" style="">${title} </span>`
@@ -95,7 +95,6 @@ export default {
       let lofteeCol = {
         title: "LOFTEE" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='Variant was predicted to be Loss-of-Function by LOFTEE.'>?</a>",
         titleDownload: "LOFTEE",
-        // headerTooltip: "Variant was predicted to be Loss-of-Function by LOFTEE.",
         field: "annotation.gene.lof",
         hozAlign: "left",
         minWidth: 95,
@@ -119,28 +118,6 @@ export default {
           }
         }
       }
-
-      //HX
-      // const generateDynamicCols = () => {
-      //   if (this.dynamicCols && Object.keys(this.dynamicCols).length > 0) {
-      //     return Object.keys(this.dynamicCols).map(population => ({
-      //       title: `Freq in ${population} %`,
-      //       titleDownload: `Freq in ${population} %`,
-      //       field: `allele_pop_freq.${population}`,
-      //       headerTooltip: `${population} allele frequency`,
-      //       hozAlign: "left",
-      //       width: 120,
-      //       minWidth: 100,
-      //       formatter: "money",  // Assuming you want a decimal, rounded number. Adjust as needed.
-      //       formatterParams: { precision: 5 },
-      //     }));
-      //   } else {
-      //     return [];
-      //   }
-      // }
-
-      //HX
-      // let dynamicCols = generateDynamicCols();
 
       // Insert region specific columns into base columns
       let baseCols = this.baseColumnDefs()
