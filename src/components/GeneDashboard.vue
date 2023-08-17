@@ -221,7 +221,6 @@ export default {
       this[listGroup][varKey].val = !this[listGroup][varKey].val
       if (listGroup === 'showCols') {
         for (let key in this.showCols) {
-          // console.log(`Column: ${key}, Value: ${this.showCols[key].val}`);
         }
       }
     },
@@ -250,12 +249,9 @@ export default {
 
     //HX
     handleResize: function() {
-      // console.log('Resize called');
-      // console.log('client width: ' + this.$el.clientWidth);
       this.childWidth = this.$el.clientWidth;
       this.domain2range(this.showIntrons);
       this.segmentBounds = [0, this.childWidth-this.childMargins.left-this.childMargins.right];
-      // console.log('segmentBounds: ', this.segmentBounds);
       // this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
       // this.childWidth = this.$el.clientWidth
     },
@@ -300,9 +296,6 @@ export default {
     },
     //HX
     domain2range: function(show_introns) {
-      // console.log('intron: '+show_introns)
-      // console.log("domain2range is called")
-      // console.log("old region: "+this.segmentRegions + "\nintrons = " + this.introns + "\nold bounds: " + this.segmentBounds)
       if (!show_introns) {
         const gap_width = 5; // 5 pixels for a gap between axis breaks
         const range_width = this.childWidth - this.childMargins.left - this.childMargins.right - (this.geneData.coding_regions.length - 1) * gap_width;
@@ -331,7 +324,6 @@ export default {
         this.segmentRegions = [this.start, this.stop];
         this.segmentBounds = [0, this.childWidth - this.childMargins.left - this.childMargins.right];
       }
-      // console.log("updated region: "+this.segmentRegions + "\nintrons = " + this.introns + "\nupdated bounds: " + this.segmentBounds)
     },
     loadGene: function() {
       axios
@@ -341,7 +333,6 @@ export default {
           if (payload.data.length > 0) {
             payload.data.forEach(d => {
               if ((d.gene_name === this.geneId) || (d.gene_id === this.geneId)) {
-                // console.log(this.segmentRegions);
 
                 // modify data in place
                 this.unwindGeneExons(d);
@@ -352,13 +343,10 @@ export default {
                 this.start = d.start
                 this.stop = d.stop
                 this.geneData = d
-                // console.log(this.geneData.coding_regions)
                 this.introns = true
                 // HX
                 this.segmentRegions = [d.start, d.stop]
-                // console.log(this.segmentRegions)
                 this.segmentBounds = [0, this.childWidth-this.childMargins.left-this.childMargins.right]
-                // console.log(this.segmentBounds)
               }
             })
           }

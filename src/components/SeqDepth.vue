@@ -74,13 +74,12 @@ export default {
   },
   methods: {
     load_depths: function(chrom, start, stop, continue_from=0){
-      // console.log("load_depths is called")
-      // console.log("segment Range in SeqDepth.vue: " + this.segmentRegions)
       return axios
         .post(`${this.api}/chunked-coverage`, 
           {chrom: chrom, start: start, stop: stop, continue_from: continue_from})
         .then( resp => {
-          this.cov_data.push(...resp.data.coverage)
+          this.cov_data.push(...resp.data.coverage);
+          this.cov_data[this.cov_data.length - 1].last = true
           this.draw()
           this.loaded_data_size = this.cov_data.length
           if( resp.data.continue_from < stop){
@@ -88,7 +87,7 @@ export default {
           } else {
             this.loading = false;
             this.loaded = true;
-          }
+          } 
         }).catch(error => {
           console.log("Error loading depth:" + error)
           this.loaded = false;
@@ -102,7 +101,6 @@ export default {
       this.loading = true;
       this.initializeCoverageSVG()
       this.loaded_data_size = 0
-      // console.log("segment Range in SeqDepth.vue: " + this.segmentRegions)
       this.load_depths(this.chrom, this.start, this.stop, 0)
     },
     format_y_ticks: function(value) {
@@ -112,7 +110,6 @@ export default {
       this.x_scale = d3.scaleLinear();
       this.y_axis = d3.axisLeft();
       this.y_scale = d3.scaleLinear();
-
       this.svg = d3.select(this.$el)
         .append("svg")
           .style("display", "block")
@@ -154,15 +151,13 @@ export default {
           .style("stroke", "black");
     },
     draw: function () {
-      // console.log("SeqDepth.vue: width = " + this.givenWidth);
+      console.log("SeqDepth.vue: cov_data = ", JSON.stringify(this.cov_data, null, 2));
       this.svg.attr("width", this.givenWidth).attr("height", this.height + this.givenMargins.top + this.givenMargins.bottom);
       this.drawing.attr("transform", `translate(${this.givenMargins.left}, ${this.givenMargins.top})`);
       this.drawing_clip
         .attr("width", this.givenWidth - this.givenMargins.left - this.givenMargins.right)
         .attr("height", this.height);
       this.x_scale.range(this.segmentBounds).domain(this.segmentRegions);
-      // console.log(this.x_scale.range()); //HX
-      // console.log(this.x_scale.domain()); //
       this.y_scale.range([this.height, 0]).domain([0, d3.max(this.cov_data, function(d) { return d.mean; })]);
       this.y_axis.scale(this.y_scale).ticks(4).tickFormat(this.format_y_ticks);
       this.y_axis_g.call(this.y_axis);
@@ -171,15 +166,17 @@ export default {
         .y0( () => 0)
         .y1( () => 0)
         .y0( () => this.height )
-        .y1( d  => this.y_scale(d.mean) )
+        .y1( d  => {
+          return this.y_scale(d.mean) 
+        })
         .curve(d3.curveStepAfter);
+      console.log("")
       this.drawing.selectAll("g>path:last-child")
         .attr("clip-path", "url(#depth-clip)")
         .attr("d", area);
     },
   },
   beforeCreate() {
-    // initialize non-reactive data
     this.height = 100;
     this.svg = null;
     this.drawing = null;
@@ -195,7 +192,7 @@ export default {
     if ((this.chrom != null) && (this.start != null) && (this.stop != null) &&
       (this.segmentRegions.every(d => d != null)) && (this.segmentBounds.every(d => d != null))) {
       this.load();
-    }
+    };
   },
   load: function() {
     this.failed = false;
@@ -215,9 +212,6 @@ export default {
     segmentRegions: function(){
       this.draw();
     },
-    // segmentBounds: function(){
-    //   this.draw();
-    // },
     hoveredVarPosition(newVal, oldVal) {
       if(newVal == null){
         this.highlight_line
