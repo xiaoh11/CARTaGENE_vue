@@ -54,6 +54,7 @@
         <FilterBar @filterChange='handleFilterChange'/>
         <!-- HX -->
         <GeneSNVTable 
+          :geneData="geneData"
           :introns="introns"
           :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions"
@@ -141,7 +142,9 @@ export default {
         homAlt:         { title: "Hom Alt", field: "hom_count", val: true},
         frequency:      { title: "Frequency (%)", field: "allele_freq", val: true},
         freq_pop:       { title: "Frequency per population %", field: "allele_pop_freq", val: true}, //HX
+        clinvar:        {title: "ClinVar", field: "ClinVar", val: true}
       },
+      
       showTableMenuDropDown: false,
       showModal: false,
       modalData: {},

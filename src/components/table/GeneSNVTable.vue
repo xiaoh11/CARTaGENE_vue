@@ -15,7 +15,29 @@ export default {
   data: function(){
     return {
       // geneId injected from ancestor component
-      downloadFileName: `variants_${this.geneId}.csv`
+      downloadFileName: `variants_${this.geneId}.csv`,
+      clinVarLoading: true,
+      clinsig_info: {
+        'Uncertain_significance': 'Uncertain Sig',
+        'Conflicting_interpretations_of_pathogenicity': 'Conflict',
+        'Benign': 'Benign',
+        'Pathogenic': 'Pathogenic',
+        'Likely_benign': 'Likely Benign',
+        'Likely_pathogenic': 'Likely Pathogenic',
+        'Benign/Likely_benign': '(Likely) Benign',
+        'Pathogenic/Likely_pathogenic': '(Likely) Pathogenic',
+        'not_provided': 'Not Provided',
+        'risk_factor': 'Risk Factor',
+        'Affects': 'Affects',
+        'association': 'Association',
+        'drug_response': 'Drug Response',
+        'Uncertain_risk_allele': 'Uncertain Risk Allele',
+        'other': 'Other',
+        'protective': 'Protective',
+        'Pathogenic/Likely_pathogenic/Likely_risk_allele': '(Likely) Pathogenic/Risk Allele',
+        'confers_sensitivity': 'Confers Sensitivity',
+        'Pathogenic/Likely_risk_allele': 'Pathogenic/Likely Risk Allele',
+      }
     }
   },
   emits: ['openModal'],
@@ -26,6 +48,25 @@ export default {
     }
   },
   methods: {
+    clinVarData() {
+      const url = `${this.api}/variants/gene/snv/clinVar/${this.ensemblId}`;
+      axios.get(url)
+        .then(response => {
+          this.clinVar=response.data
+          this.clinVarLoading = false; // 
+          this.refreshClinVarColumn();
+          // console.log(this.clinVar);
+          // console.log(this.clinVar[0]);
+        })
+        .catch(error => {
+          console.error('There was an error!', error);
+        });
+    },
+    refreshClinVarColumn() {
+      if (this.tabulator) {
+        this.tabulator.redraw(true); // 强制重绘表格
+      }
+    },
     tblColumnDefs: function(){
       let consequenceCol =  {
         title: "Consequence" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).'>?</a>",
@@ -119,13 +160,83 @@ export default {
         }
       }
 
+      let clinvarCol ={
+        title: "ClinVar"+" <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='Uncertain Sig: Uncertain Significance <br>Conflict: Conflicting Interpretations of Pathogenicity'>?</a>",
+        width: 100, 
+        field: "ClinVar",
+        headerSort: false,
+        visible: this.showCols.ClinVar,
+        formatter: (cell, formatterParams, onRendered) => {
+          let variantId = cell.getRow().getData().variant_id;
+          // console.log(variantId)
+          let variantIdParts = variantId.split("-");
+          let chrom = variantIdParts[0]; // 
+          let pos = variantIdParts[1];
+          // console.log("Chromosome:", chrom);
+          // console.log("Position:", pos);
+          let foundIndex = this.clinVar.findIndex(element => element[0] === variantId);
+
+          if (this.clinVarLoading) {
+            return "Pending"; 
+          } else if (foundIndex !== -1) {
+            // let clnsig = this.clinVar[foundIndex][1]; // CLNSIG
+            let rawClnsig = this.clinVar[foundIndex][1]; // Raw CLNSIG value
+            let clnsigElements = rawClnsig.includes('|') ? rawClnsig.split('|') : [rawClnsig];
+            let clnsigDescriptions = clnsigElements.map(clnsigElement => {
+              return this.clinsig_info[clnsigElement] || clnsigElement;
+            });
+            let clnsigDisplay = clnsigDescriptions.join(', ');
+
+            // let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar?term=${chrom}[chr]%20AND%20${pos}[chrpos]' target='_blank' rel='noopener noreferrer'>${clnsig}</a>`;
+            let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar?term=${cell.getRow().getData().rsids}' target='_blank' rel='noopener noreferrer'>${clnsigDisplay}</a>`;
+
+            // if (cell.getRow().getData().rsids){
+            //   let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar?term=${cell.getRow().getData().rsids}' target='_blank' rel='noopener noreferrer'>${clnsig}</a>`;
+            // } else {
+            //   let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar?term=${chrom}[chr]%20AND%20${pos}[chrpos]' target='_blank' rel='noopener noreferrer'>${clnsig}</a>`;
+            // }
+
+            // let rsids = cell.getRow().getData().rsids;
+            // let url;
+            // if (rsids && rsids.trim() !== "") {
+            //   // 如果rsids有值，使用rsids构建URL
+            //   url = `https://www.ncbi.nlm.nih.gov/clinvar?term=${rsids}`;
+            // } else {
+            //   // 如果rsids为空，使用染色体和位置信息构建URL
+            //   url = `https://www.ncbi.nlm.nih.gov/clinvar?term=${chrom}[chr]%20AND%20${pos}[chrpos]`;
+            // }
+
+            // // 创建包含CLNSIG值的链接，并设置为在新窗口中打开
+            // let html = `<a href='${url}' target='_blank' rel='noopener noreferrer'>${clnsig}</a>`;
+
+            
+            return html; 
+          } else {
+            return "No Information"; // 如果没有找到variantId，返回“None”
+          }
+
+          // if (this.clinVar.includes(variantId)) {
+          //   // console.log("yes")
+          //   // let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar?term=${cell.getRow().getData().rsids}'>Open</a>`;
+          //   let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar?term=${chrom}[chr]%20AND%20${pos}[chrpos]'>Open</a>`;
+          //   return html; 
+          // } else {
+          //   return "None";
+          // }
+        }
+      }
+
+
       // Insert region specific columns into base columns
       let baseCols = this.baseColumnDefs()
-      baseCols.splice(2, 0, consequenceCol, annoCol, lofteeCol)
+      baseCols.splice(2, 0, consequenceCol, annoCol, lofteeCol, clinvarCol)
       // baseCols = baseCols.concat(dynamicCols);
 
       return baseCols 
     },
+  },
+  created() {
+    // this.clinVarData();
   }
 }
 </script>

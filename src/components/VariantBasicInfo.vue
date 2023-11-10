@@ -39,7 +39,7 @@
             <span v-else-if="clinvar_error" class="text-muted">Unavailable</span>
             <span v-else-if="this.clinvar_links.length == 0" class="text-muted">None</span>
             <span v-else v-for="link in this.clinvar_links" style="margin-left:5px">
-              <a :href="link">Open</a>
+              <a :href="link" target="_blank" rel="noopener noreferrer">Open</a>
             </span>
           </div>
         </div>

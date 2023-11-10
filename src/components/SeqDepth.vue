@@ -151,7 +151,7 @@ export default {
           .style("stroke", "black");
     },
     draw: function () {
-      console.log("SeqDepth.vue: cov_data = ", JSON.stringify(this.cov_data, null, 2));
+      // console.log("SeqDepth.vue: cov_data = ", JSON.stringify(this.cov_data, null, 2));
       this.svg.attr("width", this.givenWidth).attr("height", this.height + this.givenMargins.top + this.givenMargins.bottom);
       this.drawing.attr("transform", `translate(${this.givenMargins.left}, ${this.givenMargins.top})`);
       this.drawing_clip

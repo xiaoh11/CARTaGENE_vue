@@ -25,6 +25,7 @@
 import Tabulator from 'tabulator-tables'
 import 'tabulator-tables/dist/css/bootstrap/tabulator_bootstrap4.min.css';//HX
 import axios from "axios" //HX
+axios.defaults.withCredentials=false //HX
 import 'bootstrap/dist/css/bootstrap.css';//HX
 import 'bootstrap/dist/js/bootstrap.js';//HX
 import $ from 'jquery';
@@ -39,6 +40,10 @@ export default {
   },
   emits: ["hover", "scroll"],
   props: {
+    geneData: {
+      type: Object,
+      default: function(){return {}}
+    },
     segmentRegions: {
       type: Array,
       default: function(){return [100000, 101000]},
@@ -63,6 +68,7 @@ export default {
           homAlt:      {val: true},
           frequency:   {val: true},
           freq_pop:    {val: true}, //HX
+          ClinVar:     {val: true}, //HX
         })
       }
     },
@@ -92,7 +98,10 @@ export default {
         'FrenchCanada': 'FC',
         'Haiti': 'HT',
         'Morocco': 'MA',
-      }
+      },
+      scrollTimeout: null,
+      activeRequests: [],
+      clinVar: [],
     }
   },
   computed: {
@@ -100,6 +109,10 @@ export default {
     ajaxUrl() { return(this.api) },
   },
   watch: {
+    clinVarData(newVal, oldVal) {
+      // 检测到clinVarData变化
+      this.tabulator.redraw(true); // 或更新特定的行数据
+    },
     //HX
     introns: function() {
       this.tabulator.setData(this.ajaxUrl)
@@ -132,7 +145,43 @@ export default {
     }
   },
   methods:{
-    getVisibleVariants: function() {
+    delay: function(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    },
+    cancelActiveRequests() {
+      for(let i = 0; i < this.activeRequests.length; i++) {
+        this.activeRequests[i].cancel();
+      }
+      this.activeRequests = [];
+    },
+    async getIdList() {
+      console.log(this.geneData.gene_name);
+      let idList = [];
+      let variantList = [];
+      try {
+        const response = await axios.get(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=clinvar&term=${this.geneData.gene_name}%5Bgene%5D+AND+single_gene%5Bprop%5D&retmax=200000000&retmode=json`, {withCredentials: false});
+        idList = response.data.esearchresult.idlist;
+        console.log(idList);
+      } catch (error) {
+        console.error('Error fetching data in getting idList:', error);
+      }
+
+      for (const uid of idList) {
+        try {
+          const variantResponse = await axios.get(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=${uid}&retmode=json`, {withCredentials: false});
+          // Ensure the data structure matches your expected structure
+          // console.log(variantResponse.data.result[uid].variation_set[0].variation_loc[0].chr);
+          if (variantResponse.data.result[uid].variation_set[0].variation_loc[0].assembly_name == "GRCh38") {
+            variantList.push(variantResponse.data.result[uid].variation_set[0].variation_loc[0].chr + "-" + variantResponse.data.result[uid].variation_set[0].variation_loc[0].start);
+          }
+        } catch (error) {
+          console.error('Error fetching data in making variantList:', error);
+        }
+        await this.delay(300);
+      }
+      console.log(variantList);
+    },
+    getVisibleVariants: async function() {
       let scrollDivHeight = this.tabulator.rowManager.height;
       let scrollDivPosition = this.tabulator.rowManager.scrollTop;
       let lastVisibleRowIndex = this.tabulator.rowManager.vDomBottom;
@@ -157,6 +206,33 @@ export default {
           visibleRowsData.push(this.tabulator.rowManager.displayRows[0][i].data);
         }
       }
+      //HX
+       
+      
+      // console.log(JSON.stringify(visibleRowsData.rsids, null, 2));
+      // let rsidsList = [];
+      // let queries = [];
+      // visibleRowsData.forEach(item => {
+      //     rsidsList.push(...item.rsids); 
+      // });
+      // console.log(rsidsList);
+      // for (const rsid of rsidsList) {
+      //   queries.push(axios.get(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=clinvar&term=${rsid}&retmode=json`,
+      //     {withCredentials: false}
+      //   ));
+      //   await this.delay(500);
+      // }
+      // Promise.all(queries)
+      // .then(results => {
+      //     console.log(results); // 这里你可以看到所有Promise的结果
+      // })
+      // .catch(error => {
+      //     console.error("有一个或多个请求失败:", error);
+      // });
+
+
+
+
       return { 
         firstRowIdx: firstVisibleRowIndex, 
         lastRowIdx:  lastVisibleRowIndex, 
@@ -224,12 +300,12 @@ export default {
     baseColumnDefs: function(){
       return([
         {
-          title: "Variant Id " + "<a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='1)Chromosome 2)Position 3)Reference allele 4)Alternate allele'>?</a>",
+          title: "Variant Id " + "<a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='1)Chromosome <br>2)Position <br>3)Reference allele <br>4)Alternate allele'>?</a>",
           titleDownload: "Variant Id",
           width: 130,
           field: "variant_id",
           visible: this.showCols.variantID,
-          formatter: (cell) => { return `<a href='variant.html?id=${cell.getValue()}'>${cell.getValue()}</a>`; },
+          formatter: (cell) => { return `<a href='variant.html?id=${cell.getValue()}' target='_blank' rel='noopener noreferrer'>${cell.getValue()}</a>`; },
         },
         {
           title: "rsId" + " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Reference SNP (rs) number is a locus accession for a variant type assigned by dbSNP.'>?</a>",
@@ -240,7 +316,7 @@ export default {
           formatter: (cell) => {
             var html = "";
             cell.getValue().forEach(v => {
-              html += `<a href='variant.html?id=${v}'>${v}</a>`;
+              html += `<a href='variant.html?id=${v}' target='_blank' rel='noopener noreferrer'>${v}</a>`;
             });
             return html;
           },
@@ -322,7 +398,7 @@ export default {
         },
         //HX:
         {
-          title: "Frequency per population %" + " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='FC: French-Canada, HT: Haiti, MA: Morocco'>?</a>",
+          title: "Frequency per Population %" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' title='FC: French-Canada <br>HT: Haiti <br>MA: Morocco'>?</a>",
           titleDownload: "Frequency per population %",
           field: "allele_pop_freq",
           headerSort: false,
@@ -339,8 +415,57 @@ export default {
             return freqStr.slice(0, -2);  // remove trailing comma and space
           },
         },
+        // {
+        //   title: "ClinVar",
+        //   titleDownload: "ClinVar",
+        //   width: 100,
+        //   field: "rsids",
+        //   headerSort: false,
+        //   visible: this.showCols.ClinVar,
+        //   formatter: (cell) => {
+        //     var html = "";
+        //     cell.getValue().forEach(v => {
+        //       // html += `<a href='variant.html?id=${v}'>${v}</a>`;
+        //       // console.log(v);
+        //       html += `<a href='https://www.ncbi.nlm.nih.gov/clinvar?term=${v}'>ClinVar</a>`;
+        //       // console.log(html);
+        //     });
+        //     return html;
+        //   },
+        // },
+        // {
+        //   title: "ClinVar",
+        //   titleDownload: "ClinVar",
+        //   width: 100,
+        //   field: "rsids",
+        //   headerSort: false,
+        //   visible: this.showCols.ClinVar,
+        //   formatter: (cell) => {
+        //     var html = "";
+        //         const links = cell.getValue();
+        //         links.forEach(link => {
+        //             html += `<a href='${link}'>ClinVar</a> `;
+        //         });
+        //         return html || "None";
+        //   },
+        // },
+        // {
+        //   title: "ClinVar",
+        //   titleDownload: "ClinVar",
+        //   width: 100,
+        //   field: "ClinVar",
+        //   headerSort: false,
+        //   visible: this.showCols.ClinVar,
+        //   formatter: (cell) => {
+        //     return "Pending";
+        //   },
+        // },
       ])
     }
+  },
+  created() {
+    // this.getIdList();
+    this.clinVarData();
   },
   mounted: function() {
     this.tabulator = new Tabulator(this.$refs.snvtable, {
@@ -381,6 +506,7 @@ export default {
       },
       scrollVertical: (top) => {
         let visVars = this.getVisibleVariants();
+        // console.log(this.visVars.rowsData);
         this.$emit("scroll", visVars.firstRowIdx, visVars.lastRowIdx, visVars.rowsData);
       },
       paginationSize: this.paginationSize,
@@ -389,6 +515,19 @@ export default {
       columns: this.tblColumnDefs(),
       initialSort: [ { column: "variant_id", dir: "asc" } ],
       initialFilter: this.filters,
+
+      rowFormatter: (row) => {
+        // 获取行数据
+        const rowData = row.getData();
+
+        // 检查variant_id是否在clinVar列表中
+        if (this.clinVar.includes(rowData.variant_id)) {
+          // 如果是，更新ClinVar列
+          row.getCell("ClinVar").setValue("Yes");
+        } else {
+          row.getCell("ClinVar").setValue("No");
+        }
+      },
 
       // tabulator-table 5.0 options
       //sortMode: "remote",
@@ -409,7 +548,7 @@ export default {
       dataLoaded:     this.tblDataLoaded,
       renderComplete: this.tblRenderComplete,
       rowMouseEnter:  this.tblRowMouseEnter,
-      rowMouseLeave:  this.tblRowMouseLeave
+      rowMouseLeave:  this.tblRowMouseLeave,
     });
     $(function () {
       $('[data-toggle="tooltip"]').tooltip(); //HX initialize tooltip
