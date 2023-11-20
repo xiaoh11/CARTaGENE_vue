@@ -465,7 +465,7 @@ export default {
   },
   created() {
     // this.getIdList();
-    this.clinVarData();
+    // this.clinVarData();
   },
   mounted: function() {
     this.tabulator = new Tabulator(this.$refs.snvtable, {
@@ -516,18 +516,18 @@ export default {
       initialSort: [ { column: "variant_id", dir: "asc" } ],
       initialFilter: this.filters,
 
-      rowFormatter: (row) => {
-        // 获取行数据
-        const rowData = row.getData();
+      // rowFormatter: (row) => {
+      //   // 获取行数据
+      //   const rowData = row.getData();
 
-        // 检查variant_id是否在clinVar列表中
-        if (this.clinVar.includes(rowData.variant_id)) {
-          // 如果是，更新ClinVar列
-          row.getCell("ClinVar").setValue("Yes");
-        } else {
-          row.getCell("ClinVar").setValue("No");
-        }
-      },
+      //   // 检查variant_id是否在clinVar列表中
+      //   if (this.clinVar.includes(rowData.variant_id)) {
+      //     // 如果是，更新ClinVar列
+      //     row.getCell("ClinVar").setValue("Yes");
+      //   } else {
+      //     row.getCell("ClinVar").setValue("No");
+      //   }
+      // },
 
       // tabulator-table 5.0 options
       //sortMode: "remote",

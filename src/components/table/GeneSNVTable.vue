@@ -16,6 +16,7 @@ export default {
     return {
       // geneId injected from ancestor component
       downloadFileName: `variants_${this.geneId}.csv`,
+      //HX
       clinVarLoading: true,
       clinsig_info: {
         'Uncertain_significance': 'Uncertain Sig',
@@ -48,6 +49,7 @@ export default {
     }
   },
   methods: {
+    //HX
     clinVarData() {
       const url = `${this.api}/variants/gene/snv/clinVar/${this.ensemblId}`;
       axios.get(url)
@@ -67,6 +69,7 @@ export default {
         this.tabulator.redraw(true); // 强制重绘表格
       }
     },
+    //HX
     tblColumnDefs: function(){
       let consequenceCol =  {
         title: "Consequence" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).'>?</a>",
@@ -180,7 +183,7 @@ export default {
             return "Pending"; 
           } else if (foundIndex !== -1) {
             // let clnsig = this.clinVar[foundIndex][1]; // CLNSIG
-            let rawClnsig = this.clinVar[foundIndex][1]; // Raw CLNSIG value
+            let rawClnsig = this.clinVar[foundIndex][2]; // Raw CLNSIG value
             let clnsigElements = rawClnsig.includes('|') ? rawClnsig.split('|') : [rawClnsig];
             let clnsigDescriptions = clnsigElements.map(clnsigElement => {
               return this.clinsig_info[clnsigElement] || clnsigElement;
@@ -188,8 +191,8 @@ export default {
             let clnsigDisplay = clnsigDescriptions.join(', ');
 
             // let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar?term=${chrom}[chr]%20AND%20${pos}[chrpos]' target='_blank' rel='noopener noreferrer'>${clnsig}</a>`;
-            let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar?term=${cell.getRow().getData().rsids}' target='_blank' rel='noopener noreferrer'>${clnsigDisplay}</a>`;
-
+            // let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar?term=${cell.getRow().getData().rsids}' target='_blank' rel='noopener noreferrer'>${clnsigDisplay}</a>`;
+            let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation/${this.clinVar[foundIndex][1]}/' target='_blank' rel='noopener noreferrer'>${clnsigDisplay}</a>`;
             // if (cell.getRow().getData().rsids){
             //   let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar?term=${cell.getRow().getData().rsids}' target='_blank' rel='noopener noreferrer'>${clnsig}</a>`;
             // } else {
@@ -236,7 +239,7 @@ export default {
     },
   },
   created() {
-    // this.clinVarData();
+    this.clinVarData();
   }
 }
 </script>

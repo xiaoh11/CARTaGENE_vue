@@ -2,6 +2,8 @@
 import BaseSNVTable from '@/components/table/BaseSNVTable.vue'
 import lofCategories from '@/domainModel/lofCategories'
 import snvConsequences from '@/domainModel/snvConsequences'
+import axios from "axios" //HX
+
 
 export default {
   name: "RegionSNVTable",
@@ -9,7 +11,30 @@ export default {
   data: function(){
     return {
       // chrom, start, stop are injected from ancestor component
-      downloadFileName: `variants_${this.chrom}-${this.start}-${this.stop}.csv`
+      downloadFileName: `variants_${this.chrom}-${this.start}-${this.stop}.csv`,
+      //HX
+      clinVarLoading: true,
+      clinsig_info: {
+        'Uncertain_significance': 'Uncertain Sig',
+        'Conflicting_interpretations_of_pathogenicity': 'Conflict',
+        'Benign': 'Benign',
+        'Pathogenic': 'Pathogenic',
+        'Likely_benign': 'Likely Benign',
+        'Likely_pathogenic': 'Likely Pathogenic',
+        'Benign/Likely_benign': '(Likely) Benign',
+        'Pathogenic/Likely_pathogenic': '(Likely) Pathogenic',
+        'not_provided': 'Not Provided',
+        'risk_factor': 'Risk Factor',
+        'Affects': 'Affects',
+        'association': 'Association',
+        'drug_response': 'Drug Response',
+        'Uncertain_risk_allele': 'Uncertain Risk Allele',
+        'other': 'Other',
+        'protective': 'Protective',
+        'Pathogenic/Likely_pathogenic/Likely_risk_allele': '(Likely) Pathogenic/Risk Allele',
+        'confers_sensitivity': 'Confers Sensitivity',
+        'Pathogenic/Likely_risk_allele': 'Pathogenic/Likely Risk Allele',
+      }
     }
   },
   emits: ['openModal'],
@@ -21,8 +46,65 @@ export default {
   },
   //HX
   methods: {
+    //HX
+    clinVarData() {
+      const url = `${this.api}/variants/region/snv/clinvar/${this.chrom}-${this.start}-${this.stop}`;
+      axios.get(url)
+        .then(response => {
+          this.clinVar=response.data
+          this.clinVarLoading = false; // 
+          this.refreshClinVarColumn();
+          // console.log(this.clinVar);
+          // console.log(this.clinVar[0]);
+        })
+        .catch(error => {
+          console.error('There was an error!', error);
+        });
+    },
+    refreshClinVarColumn() {
+      if (this.tabulator) {
+        this.tabulator.redraw(true); // 强制重绘表格
+      }
+    },
+    //HX
     // add region implementation for consequence, annotation, and loftee
     tblColumnDefs: function(){
+      let clinvarCol ={
+        title: "ClinVar"+" <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='Uncertain Sig: Uncertain Significance <br>Conflict: Conflicting Interpretations of Pathogenicity'>?</a>",
+        width: 100, 
+        field: "ClinVar",
+        headerSort: false,
+        visible: this.showCols.ClinVar,
+        formatter: (cell, formatterParams, onRendered) => {
+          let variantId = cell.getRow().getData().variant_id;
+          let variantIdParts = variantId.split("-");
+          let chrom = variantIdParts[0]; // 
+          let pos = variantIdParts[1];
+          let foundIndex = this.clinVar.findIndex(element => element[0] === variantId);
+
+          if (this.clinVarLoading) {
+            return "Pending"; 
+          } else if (foundIndex !== -1) {
+            // let clnsig = this.clinVar[foundIndex][1]; // CLNSIG
+            let rawClnsig = this.clinVar[foundIndex][2]; // Raw CLNSIG value
+            let clnsigElements = rawClnsig.includes('|') ? rawClnsig.split('|') : [rawClnsig];
+            let clnsigDescriptions = clnsigElements.map(clnsigElement => {
+              return this.clinsig_info[clnsigElement] || clnsigElement;
+            });
+            let clnsigDisplay = clnsigDescriptions.join(', ');
+
+            // let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar?term=${chrom}[chr]%20AND%20${pos}[chrpos]' target='_blank' rel='noopener noreferrer'>${clnsig}</a>`;
+            // let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar?term=${cell.getRow().getData().rsids}' target='_blank' rel='noopener noreferrer'>${clnsigDisplay}</a>`;
+            let html = `<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation/${this.clinVar[foundIndex][1]}/' target='_blank' rel='noopener noreferrer'>${clnsigDisplay}</a>`;
+           
+            
+            return html; 
+          } else {
+            return "No Information"; // 如果没有找到variantId，返回“None”
+          }
+        }
+      }
+
       let consequenceCol =  {
         title: "Consequence" + " <a class='text-info' onclick='event.stopPropagation();' data-html='true' data-toggle='tooltip' data-placement='top' title='HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).'>?</a>",
         titleDownload: "Consequence",
@@ -120,10 +202,13 @@ export default {
 
       // Insert region specific columns into base columns
       let baseCols = this.baseColumnDefs()
-      baseCols.splice(2, 0, consequenceCol, annoCol, lofteeCol)
+      baseCols.splice(2, 0, consequenceCol, annoCol, lofteeCol, clinvarCol)
 
       return baseCols 
     },
+  },
+  created() {
+    this.clinVarData();
   }
 }
 </script>
