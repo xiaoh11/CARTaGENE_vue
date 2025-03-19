@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-white">
     <a class="navbar-brand" v-bind:href="publicPath">
-      <img class="bo-small-logo" width="34" v-bind:src="logo"/>
+      <img class="bo-small-logo" width="100" v-bind:src="logo"/>
     </a>
 
     <!-- Slot for search box -->
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import logo from "../assets/cg_icon.svg"
+import logo from "../assets/Cartagene_Logos_RVB_Principal_Bicolore_Foncé.png"
 
 export default {
   name: 'NavBar',

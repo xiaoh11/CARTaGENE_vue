@@ -141,7 +141,8 @@ export default {
         titleDownload: "LOFTEE",
         field: "annotation.gene.lof",
         hozAlign: "left",
-        minWidth: 95,
+        minWidth: 100,
+        width:75,
         visible: this.showCols.LOFTEE.val,
         formatter: (cell, params, onrendered) => {
           let html = ""

@@ -210,7 +210,7 @@ export default {
           .attr("x1", 0)
           .attr("y1", 0)
           .attr("x2", 0)
-          .attr("y2", this.height)
+          .attr("y2", this.height*10)
           .attr("stroke-width", 2)
           .attr("stroke-linecap", "round")
           .attr("stroke", "#e77f00")

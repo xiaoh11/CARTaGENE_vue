@@ -27,6 +27,14 @@
           </div>
         </div>
         <div class="row">
+          <div class="col-7 col-sm-7 text-left text-truncate">Missingness</div>
+          <div class="col-5 col-sm-5 text-right text-truncate" :style="{ color: variant.freq_missing > .05 ? 'red'  : 'green' }">
+            {{ `${(this.variant.freq_missing*100).toPrecision(3)}%` }}
+            <span v-if="this.variant.freq_missing > .05" class="badge badge-danger">HIGH</span>
+            <span v-else class="badge badge-success">LOW</span>
+          </div>
+        </div>
+        <div class="row">
           <div class="col-4 col-sm-8 text-left text-truncate">Filter</div>
           <div class="col-8 col-sm-4 text-right">
             <span v-for="item in this.variant.filter" v-bind:class="{ 'badge badge-success': item == 'PASS', 'badge badge-danger': item != 'PASS' }" style="margin-right:1px">{{ item }}</span>

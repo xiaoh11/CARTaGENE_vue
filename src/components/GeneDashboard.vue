@@ -38,19 +38,31 @@
           :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
         <br>
+        
         <TranscriptBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
           :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
           :geneData="geneData"/>
         <br>
         <GeneSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
+          :hoveredVarPosition="hoveredVarPosition"
           :segmentBounds="segmentBounds" 
           :includeIntrons="introns"
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
           :filters="filterArray" :visibleVariants="visibleVariants"/>
-        
+        <br>
+        <ClinVarSigPlot 
+          v-if="showPanels.clinvar.val"
+          @close="showPanels.clinvar.val = false"
+          :hoveredVarPosition="hoveredVarPosition" 
+          :segmentBounds="segmentBounds" 
+          :segmentRegions="segmentRegions" 
+          :givenWidth="childWidth" 
+          :givenMargins="childMargins"/>
         <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
           :givenWidth="childWidth" :givenMargins="childMargins" />
+        <br>
+
         <FilterBar @filterChange='handleFilterChange'/>
         <!-- HX -->
         <GeneSNVTable 
@@ -83,6 +95,7 @@ import GeneSummary    from '@/components/summary/GeneSummary.vue'
 import FilterBar      from '@/components/FilterBar.vue'
 import ToggleList     from '@/components/ToggleList.vue'
 import SeqDepth       from '@/components/SeqDepth.vue'
+import ClinVarSigPlot from '@/components/ClinVarSigPlot.vue'
 import TranscriptBars from '@/components/TranscriptBars.vue'
 import GeneSnvCount   from '@/components/histogram/GeneSnvCount.vue'
 import BpCoordBar     from '@/components/BpCoordBar.vue'
@@ -98,6 +111,7 @@ export default {
     FilterBar,
     ToggleList,
     SeqDepth,
+    ClinVarSigPlot,
     TranscriptBars,
     GeneSnvCount,
     BpCoordBar,
@@ -128,6 +142,7 @@ export default {
         seqDepth:  {title: "Avg. Depth", val: true},
         genes:     {title: "Genes", val: true},
         snvCount:  {title: "Variants Count", val: true},
+        clinvar:   {title: "ClinVar Significance", val: true},
       },
       showCols: {
         variantID:      { title: "Variant ID", field: "variant_id", val: true},
@@ -136,6 +151,7 @@ export default {
         annotation:     { title: "Annotation",field: "annotation.gene.consequence", val: true},
         LOFTEE:         { title: "LOFTEE", field: "annotation.gene.lof", val: true},
         quality:        { title: "Quality", field: "filter", val: true},
+        freq_missing:   { title: "Missing Frequency", field: "freq_missing", val: true},
         CADD:           { title: "CADD", field: "cadd_phred", val: true},
         nAlleles:       { title: "N Alleles", field: "allele_num", val: false},
         het:            { title: "Het", field: "het_count", val: true},
@@ -266,6 +282,7 @@ export default {
     },
     handleTableHover: function(idx, data, hovered){
       this.hoveredVarPosition = data.pos
+      // console.log(this.hoveredVarPosition)
     },
     unwindGeneExons: function (gene) {
       // console.log("unwindGeneExons is called");
@@ -346,6 +363,7 @@ export default {
                 this.start = d.start
                 this.stop = d.stop
                 this.geneData = d
+                // console.log(this.geneData)
                 this.introns = true
                 // HX
                 this.segmentRegions = [d.start, d.stop]

@@ -3,7 +3,7 @@
     <div class="row justify-content-center">
       <div class="col-10 col-sm-8 col-md-6">
         <div class="m-3 m-md-5 text-center">
-          <img class="bo-big-logo" v-bind:src="logo" width="200"/>
+          <img class="bo-big-logo" v-bind:src="logo" width="450"/>
           <template v-if="subtitle">
             <h5>{{ subtitle }}</h5>
             <hr class="margin-centered" width="25%">
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import logo from "../assets/CARTAGENE_logo.jpeg"
+import logo from "../assets/Cartagene_Logos_RVB_Principal_Bicolore_Foncé.png"
 import SearchBox from '@/components/SearchBox.vue'
 
 export default {

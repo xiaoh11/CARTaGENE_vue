@@ -5,7 +5,7 @@
       <div class="col-10 col-sm-8 col-md-6">
         <h1 style="margin-bottom: 1em">About CARTaGENE Variant Browser</h1>
         <p>
-        This variant browser shows chromosome locations, alleles, functional annotations, and allele frequencies for over 80 million variants observed in 2,173 deeply sequenced genomes from the CARTaGENE study in Quebec, Canada.
+        This variant browser shows chromosome locations, alleles, functional annotations, and allele frequencies for over 75 million variants observed in 2,173 deeply sequenced genomes from the CARTaGENE study in Quebec, Canada.
         </p>
         <p>
         The information is publicly available for users that agree to the <a href="terms.html">terms</a>.

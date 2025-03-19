@@ -8,6 +8,7 @@
           <LofteeFilterButton v-bind="$attrs" givenCategory="loftee" title="LOFTEE"/>
           <FrequencyFilterButton v-bind="$attrs" givenCategory="frequency" title="Frequencey" fieldVal="allele_freq"/>
           <BaseMinMaxFilterButton v-bind="$attrs" givenCategory="cadd" title="CADD" fieldVal="cadd_phred"/>
+          <FrequencyFilterButton v-bind="$attrs" givenCategory="freq_missing" title="Missingness" fieldVal="freq_missing"/>
           <!--
           <rsIdFilterButton/>
           -->

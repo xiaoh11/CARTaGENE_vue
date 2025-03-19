@@ -16,7 +16,7 @@
           <div class="container-fluid" >
             <div class="row">
               <div class="col-12">
-                <h5>PheWAS plot from <strong>UKBiobank TOPMed-imputed PheWeb</strong> (<a :href="getUKB()">view original</a>)</h5>
+                <h5>PheWAS plot from <strong>UKBiobank TOPMed-imputed PheWeb</strong> (<a :href="getUKB()" target="_blank" rel="noopener noreferrer">view original</a>)</h5>
               </div>
             </div>
           </div>
@@ -24,12 +24,12 @@
         </div>
         <div class="container-fluid" v-else-if="display_ukb">
           <div class="row">
-            <div class="col-6 col-sm-7 text-left text-truncate">Currently no PheWAS information in <a :href="getUKB()">UKBiobank TOPMed-imputed PheWeb</a></div>
+            <div class="col-6 col-sm-7 text-left text-truncate">Currently no PheWAS information in <a :href="getUKB()" target="_blank" rel="noopener noreferrer">UKBiobank TOPMed-imputed PheWeb</a></div>
           </div>
         </div>
         <div class="container-fluid" v-else>
           <div class="row">
-            <div class="col-6 col-sm-7 text-left text-truncate">Failed to connect FinnGen PheWAS FREEZE 5 (<a :href="getUKB()">view original</a>)</div>
+            <div class="col-6 col-sm-7 text-left text-truncate">Failed to connect FinnGen PheWAS FREEZE 5 (<a :href="getf5()" target="_blank" rel="noopener noreferrer">view original</a>)</div>
           </div>
         </div>
 
@@ -37,7 +37,7 @@
           <div class="container-fluid" >
             <div class="row">
               <div class="col-12">
-                <h5>PheWAS plot from <strong>FinnGen PheWAS FREEZE 5</strong> (<a :href="getf5()">view original</a>)</h5>
+                <h5>PheWAS plot from <strong>FinnGen PheWAS FREEZE 5</strong> (<a :href="getf5()" target="_blank" rel="noopener noreferrer">view original</a>)</h5>
               </div>
             </div>
           </div>
@@ -45,12 +45,12 @@
         </div>
         <div class="container-fluid" v-else-if="display_f5">
           <div class="row">
-            <div class="col-6 col-sm-7 text-left text-truncate">Currently no PheWAS information in <a :href="getf5()">FinnGen PheWAS FREEZE 5</a></div>
+            <div class="col-6 col-sm-7 text-left text-truncate">Currently no PheWAS information in <a :href="getf5()" target="_blank" rel="noopener noreferrer">FinnGen PheWAS FREEZE 5</a></div>
           </div>
         </div>
         <div class="container-fluid" v-else>
           <div class="row">
-            <div class="col-6 col-sm-7 text-left text-truncate">Failed to connect FinnGen PheWAS FREEZE 5 (<a :href="getf5()">view original</a>)</div>
+            <div class="col-6 col-sm-7 text-left text-truncate">Failed to connect FinnGen PheWAS FREEZE 5 (<a :href="getf5()" target="_blank" rel="noopener noreferrer">view original</a>)</div>
           </div>
         </div>
 

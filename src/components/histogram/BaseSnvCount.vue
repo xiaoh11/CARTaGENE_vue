@@ -95,6 +95,10 @@ export default {
     },
     visibleVariants: {
       type: Object
+    },
+    hoveredVarPosition: {
+      type: Number,
+      default: null
     }
   },
   computed: {
@@ -166,6 +170,16 @@ export default {
       this.x_scale = d3.scaleLinear();
       this.y_axis  = d3.axisLeft();
       this.y_scale = d3.scaleLinear();
+      this.highlight_line = this.drawing.append("line")
+          .attr("class", "highlight_line")
+          .attr("x1", 0)
+          .attr("y1", 0)
+          .attr("x2", 0)
+          .attr("y2", this.height)
+          .attr("stroke-width", 2)
+          .attr("stroke-linecap", "round")
+          .attr("stroke", "#e77f00")
+          .attr("visibility", "hidden");
     },
     draw: function () {
       //Show y-axis title
@@ -228,6 +242,7 @@ export default {
     this.y_axis = null;
     this.y_scale = null;
     this.y_axis_g = null;
+    this.highlight_line = null;
   },
   mounted: function() {
     this.initializeSVG();
@@ -258,7 +273,21 @@ export default {
         this.drawHistogram()
         this.drawVariants()
       }
-    }
+    },
+    hoveredVarPosition(newVal, oldVal) {
+      // console.log(newVal)
+      if(newVal == null){
+        this.highlight_line
+          .attr("x1", 0)
+          .attr("x2", 0)
+          .attr("visibility", "hidden")
+      } else {
+        this.highlight_line
+          .attr("x1", this.x_scale(newVal))
+          .attr("x2", this.x_scale(newVal))
+          .attr("visibility", "inherit")
+      }
+    },
   },
 }
 </script>

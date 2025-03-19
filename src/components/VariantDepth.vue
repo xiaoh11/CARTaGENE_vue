@@ -54,7 +54,11 @@ export default {
       x_extent[1] += this.bin_width / 2;
 
       var total_dp_1 = d3.sum(this.variant.dp_hist);
-      var total_dp_2 = d3.sum(this.variant.dp_hist_alt);
+      // var total_dp_2 = d3.sum(this.variant.dp_hist_alt);
+      var total_dp_2 = Array.isArray(this.variant.dp_hist_alt) 
+      ? d3.sum(this.variant.dp_hist_alt.filter(d => typeof d === 'number')) || 0 
+      : 0;
+
       var y_extent_1 = d3.extent(this.variant.dp_hist, function(d) { return d / total_dp_1; });
       var y_extent_2 = d3.extent(this.variant.dp_hist_alt, function(d) { return d / total_dp_2});
 

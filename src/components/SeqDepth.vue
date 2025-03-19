@@ -78,6 +78,7 @@ export default {
         .post(`${this.api}/chunked-coverage`, 
           {chrom: chrom, start: start, stop: stop, continue_from: continue_from})
         .then( resp => {
+          // console.log(resp);
           this.cov_data.push(...resp.data.coverage);
           this.cov_data[this.cov_data.length - 1].last = true
           this.draw()

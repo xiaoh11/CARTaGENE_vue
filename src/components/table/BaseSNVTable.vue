@@ -69,6 +69,7 @@ export default {
           frequency:   {val: true},
           freq_pop:    {val: true}, //HX
           ClinVar:     {val: true}, //HX
+          freq_missing:   {val: true}, //HX
         })
       }
     },
@@ -110,8 +111,7 @@ export default {
   },
   watch: {
     clinVarData(newVal, oldVal) {
-      // 检测到clinVarData变化
-      this.tabulator.redraw(true); // 或更新特定的行数据
+      this.tabulator.redraw(true); 
     },
     //HX
     introns: function() {
@@ -361,6 +361,23 @@ export default {
           formatter: this.formatCaddValue
         },
         {
+          title: "Missingness"+ " <a class='text-info' onclick='event.stopPropagation();' data-toggle='tooltip' title='Proportion of individual genotypes that do not pass genotype-level filter or are missing'>?</a>",
+          titleDownload: "Missingness",
+          field: "freq_missing",
+          width: 130,
+          hozAlign: "left",
+          visible: this.showCols.freq_missing.val,
+          // formatter: (cell, params, onrendered) => `${(cell.getValue() * 100).toPrecision(3)}%`,
+          formatter: (cell, params, onrendered) => {
+            const value = cell.getValue() * 100;
+            // const color = value > .05 ? "red" : value > .01 ? "orange" : "green";
+            const badgeType = value < 5 ? "success" : "danger";
+            const badgeHTML = `<span class="badge badge-${badgeType}" style="margin-left:5px">HIGH</span>`;
+            // cell.getElement().style.color = color;
+            return value < 5 ? `${value.toPrecision(3)}%` : `${value.toPrecision(3)}% ${badgeHTML}`;
+          },
+        },
+        {
           title: "N Alleles",
           titleDownload: "N Alleles",
           field: "allele_num",
@@ -502,6 +519,7 @@ export default {
         this.failed = false;
         this.loading = false;
         this.loaded = true;
+        // console.log("Response Data:", response);
         return response;
       },
       scrollVertical: (top) => {
@@ -559,7 +577,11 @@ export default {
     //this.tabulator.on("renderComplete", this.tblRenderComplete)
     //this.tabulator.on("rowMouseEnter", this.tblRowMouseEnter)
     //this.tabulator.on("rowMouseLeave", this.tblRowMouseLeave)
-
+    // console.log("📊 原始数据:", this.tabulator.getData().map(row => ({
+    //   id: row.id,
+    //   freq_missing: row.freq_missing,
+    //   type: typeof row.freq_missing
+    // })));
   }
 }
 </script>

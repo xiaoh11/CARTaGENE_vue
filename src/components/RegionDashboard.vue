@@ -29,10 +29,22 @@
         <br>
         <RegionSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
           :segmentBounds="segmentBounds" 
+          :hoveredVarPosition="hoveredVarPosition"
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
           :filters="filterArray" :visibleVariants="visibleVariants"/>
+        <br>
+        <ClinVarSig
+          v-if="showPanels.clinvar.val"
+          @close="showPanels.clinvar.val = false"
+          :hoveredVarPosition="hoveredVarPosition" 
+          :segmentBounds="segmentBounds" 
+          :segmentRegions="segmentRegions" 
+          :givenWidth="childWidth" 
+          :givenMargins="childMargins"
+        />
         <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
           :givenWidth="childWidth" :givenMargins="childMargins" />
+        <br>
         <FilterBar @filterChange='handleFilterChange'/>
         <RegionSNVTable
           :show-cols="showCols" 
@@ -46,7 +58,7 @@
 </template>
 
 <script>
-
+import { computed } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faWindowRestore, faDownload, faColumns } 
   from '@fortawesome/free-solid-svg-icons'
@@ -61,6 +73,7 @@ import RegionSnvCount  from '@/components/histogram/RegionSnvCount.vue'
 import BpCoordBar      from '@/components/BpCoordBar.vue'
 import RegionSNVTable  from '@/components/table/RegionSNVTable.vue'
 import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
+import ClinVarSig       from '@/components/ClinVarSigPlotRegion.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -71,6 +84,7 @@ export default {
     FilterBar,
     ToggleList,
     SeqDepth,
+    ClinVarSig,
     GeneBars,
     RegionSnvCount,
     BpCoordBar,
@@ -94,6 +108,7 @@ export default {
         seqDepth:  {title: "Avg. Depth", val: true},
         genes:     {title: "Genes", val: true},
         snvCount:  {title: "Variants Count", val: true},
+        clinvar:   {title: "ClinVar ", val: true},
       },
       showCols: {
         variantID:      { title: "Variant ID", field: "variant_id", val: true},
@@ -102,12 +117,14 @@ export default {
         annotation:     { title: "Annotation",field: "annotation.gene.consequence", val: true},
         LOFTEE:         { title: "LOFTEE", field: "annotation.gene.lof", val: true},
         quality:        { title: "Quality", field: "filter", val: true},
+        freq_missing:   { title: "Missing Frequency", field: "freq_missing", val: true},
         CADD:           { title: "CADD", field: "cadd_phred", val: true},
         nAlleles:       { title: "N Alleles", field: "allele_num", val: false},
         het:            { title: "Het", field: "het_count", val: true},
         homAlt:         { title: "Hom Alt", field: "hom_count", val: true},
         frequency:      { title: "Frequency (%)", field: "allele_freq", val: true},
         freq_pop:       { title: "Frequency per population %", field: "allele_pop_freq", val: true}, //HX
+
       },
       // showCols: {
       //   variantID:      { title: "Variant ID", val: true},
@@ -220,6 +237,8 @@ export default {
   mounted: function() {
     this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
     this.childWidth = this.$el.clientWidth
+    console.log(this.start, this.stop)
+    // this.segmentRegions = [this.start, this.stop]
     window.addEventListener('resize', this.handleResize)
   },
   beforeUnmount: function() {

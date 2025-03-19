@@ -139,7 +139,7 @@ export default {
     },
     doSuggest(suggestion){
       let resultTicket = this.suggestToResultTicket(suggestion);
-      followResultTicket(resultTicket)
+      this.followResultTicket(resultTicket)
     },
     doSearch: function() {
       // Use first autocomplete result, or

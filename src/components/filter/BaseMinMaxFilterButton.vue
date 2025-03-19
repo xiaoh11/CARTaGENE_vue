@@ -13,13 +13,13 @@
             <div class="form-group row">
               <label for="minInput" class="col-sm-2 col-form-label">Min</label>
               <div class="col-sm-10">
-                <input class="form-control" id="minInput" type="number" name="" min="0" max="100" step="0.01" v-model="eMinVal" required>
+                <input class="form-control" id="minInput" type="number" name="" min="0" max="100" step="5" v-model="eMinVal" required>
               </div>
             </div>
             <div class="form-group row">
               <label for="maxInput" class="col-sm-2 col-form-label">Max</label>
               <div class="col-sm-10">
-                <input class="form-control" id="maxInput" type="number" name="" min="0" max="100" step="0.01" v-model="eMaxVal" required>
+                <input class="form-control" id="maxInput" type="number" name="" min="0" max="100" step="5" v-model="eMaxVal" required>
               </div>
             </div>
 
@@ -156,8 +156,11 @@ export default {
       this.emitFilterChange()
     },
     clearEphemeralFilters: function() {
+      this.showDropDown = false
       this.pMinVal = 0
       this.pMaxVal = 100
+      this.emitFilterChange()
+      
     },
     handleClickAway: function(){
       this.showDropDown = false

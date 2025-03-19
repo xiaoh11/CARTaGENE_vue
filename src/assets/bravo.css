@@ -91,7 +91,9 @@
 /* Classes to BEM-ify
  * https://github.com/statgen/bravo_vue/issues/10 */
 .bo-big-logo {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  margin-top: 20%;
+  text-align: center;
 }
 
 .bo-small-logo {

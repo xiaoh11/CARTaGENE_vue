@@ -1,7 +1,33 @@
 <template>
   <NavBar style="margin-left: 5px;">
-    <SearchBox :autofocus="false"/>
+    <SearchBox v-if="!errorMessage" :autofocus="false"/>
   </NavBar>
+
+  <div v-if="errorMessage" style="justify-content: center; text-align: center;" class="border p-3 rounded">
+    <h1>Oops!</h1>
+    <span>{{ errorMessage }}</span>
+    <br>
+    <span>
+      Please try another one!
+    </span>
+    <div class="row justify-content-center" style="margin-top: 2%;">
+      <div class="col-10 col-sm-8 col-md-6">
+        <div id="search-box">
+          <SearchBox :autofocus="true" v-on:noSearchResults="handleNoResults"></SearchBox>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+      <div class="col-10 col-sm-8 col-md-6">
+        <p class="text-center text-muted">
+          Examples:
+          <template  v-for="(value, name) in exampleLinks" v-bind:key="name">
+            <a v-bind:href="publicPath + value">{{ name }}</a>{{', '}}
+          </template>
+        </p>
+      </div>
+    </div>
+  </div>
 
   <div id="variantviz">
     <div v-if="this.ready">
@@ -125,11 +151,20 @@ export default {
       variantId: null,
       ready: false,
       variant: {},
-
+      errorMessage: '',
+      exampleLinks: {
+        'PCSK9': 'gene.html?id=PCSK9', 
+        '1:55,030,000-55,075,000': 'region.html?chrom=1&start=55030000&stop=55075000',
+        '22-16389447-A-G': 'variant.html?chrom=22&pos=16389447&ref=A&alt=G',
+        'rs34747326': 'variant.html?chrom=22&pos=16389447&ref=A&alt=G'
+      }
     }
   },
   methods : {
     // HX
+    goBack() {
+      window.location.href = '/index.html';
+    },
     getLinkUrl() {
       return `https://bravo.sph.umich.edu/freeze5/hg38/variant/${this.variant.variant_id}`;
     },
@@ -139,12 +174,30 @@ export default {
     // HX
     load: function() {
       axios
-        .get(`${this.api}/variant/api/snv/${this.variantId}`)
+        .get(`${this.api}/variant/api/snv/${this.variantId}`, {
+          headers: { 
+            'Accept': 'application/json' 
+          },
+          responseType: 'json',  
+          transformResponse: [(data) => {
+            try {
+              return typeof data === 'string' ? JSON.parse(data) : data;
+            } catch (e) {
+              console.error("Error parsing JSON:", e);
+              return data;
+            }
+          }]
+        })
         .then( response => {
+          // console.log("Response Status:", response.status);
+          // console.log(response.data)
           let payload = response.data;
+          // console.log("Payload Type:", typeof response.data);
+          // console.log(payload)
           let datasets = [];
 
           this.variant = payload.data[0];
+          // console.log(this.variant)
           this.ready = true;
 
           // provide default pub_freq
@@ -167,6 +220,7 @@ export default {
         })
         .catch( error => {
           this.variant = {}
+          this.errorMessage = 'Sorry, we are experiencing some errors loading the data of this variant :(';
           console.log('variant data loading failed.');
         });
     },
