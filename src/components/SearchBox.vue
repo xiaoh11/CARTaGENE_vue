@@ -76,7 +76,7 @@ export default {
 
       // check for empty or null query
       if(!pQuery){
-        return {endpoint: 'notfound'};
+        return {endpoint: '404'};
       }
 
       // check query for DbSNP format
@@ -116,7 +116,7 @@ export default {
       }
 
       // Default to notfound endpoint as suggestion covers gene names.
-      return { endpoint: 'notfound', query: query}
+      return { endpoint: '404'}
     },
     resultTicketToHref: function(ticket) {
       // Append .html extension until dev server mime-type issue is resolved.

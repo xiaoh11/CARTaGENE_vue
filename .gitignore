@@ -9,6 +9,7 @@ node_modules
 # local env files
 .env.local
 .env.*.local
+.env
 
 # staging and production env files
 .env.production

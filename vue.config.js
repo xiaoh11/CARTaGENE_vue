@@ -61,8 +61,8 @@ module.exports = {
       chunks: ['chunk-vendors', 'chunk-common', 'logout']
     },
     404: {
-      entry: 'src/pages/about/main.js',
-      template: 'src/pages/about/terms.html',
+      entry: 'src/pages/404/main.js',
+      template: 'src/pages/404/404.html',
       filename: '404.html',
       title: 'CARTaGENE:404',
       chunks: ['chunk-vendors', 'chunk-common', '404']

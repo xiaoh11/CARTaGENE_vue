@@ -91,6 +91,9 @@
 /* Classes to BEM-ify
  * https://github.com/statgen/bravo_vue/issues/10 */
 .bo-big-logo {
+  width: 100%;
+  max-width: 450px;
+  height: auto;
   margin-bottom: 20px;
   margin-top: 20%;
   text-align: center;

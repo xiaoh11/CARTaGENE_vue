@@ -2,8 +2,8 @@
   <div class="container-fluid">
     <div class="row justify-content-center">
       <div class="col-10 col-sm-8 col-md-6">
-        <div class="m-3 m-md-5 text-center">
-          <img class="bo-big-logo" v-bind:src="logo" width="450"/>
+        <div class="m-3 m-md-5 text-center align-center">
+          <img class="bo-big-logo" v-bind:src="logo"/>
           <template v-if="subtitle">
             <h5>{{ subtitle }}</h5>
             <hr class="margin-centered" width="25%">
